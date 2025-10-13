@@ -33,7 +33,7 @@ public class UserController {
         return "edit-user"; // 對應 /WEB-INF/views/edit-user.html
     }
     
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public String updateUser(@PathVariable("id") Long id, @ModelAttribute("user") User user) {
         userService.updateUser(id, user);
         return "redirect:/users";
