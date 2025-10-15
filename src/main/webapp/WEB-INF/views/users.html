@@ -7,6 +7,10 @@
 </head>
 <body>
     <div class="container mt-4">
+ 	<h1 th:text="${name != null ? name + ' Hello!' : 'Guest Hello!'}"></h1>
+
+
+
         <h1>User List</h1>
         
         <a th:href="@{/users/add}" class="btn btn-primary mb-3">Add New User</a>
@@ -33,5 +37,7 @@
             </tbody>
         </table>
     </div>
+
+<a th:href="@{/logout}" class="btn btn-danger mt-3">Logout</a>
 </body>
 </html>

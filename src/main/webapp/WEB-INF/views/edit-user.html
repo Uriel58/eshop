@@ -21,6 +21,10 @@
             <label>Email</label>
             <input type="email" th:field="*{email}" class="form-control" required>
         </div>
+        <div class="mb-3">
+    		<label>New Password (leave blank to keep current)</label>
+    		<input type="password" name="password" class="form-control">
+		</div>
         <button type="submit" class="btn btn-warning">Update</button>
         <a th:href="@{/users}" class="btn btn-secondary">Cancel</a>
     </form>

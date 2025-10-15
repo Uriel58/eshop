@@ -33,7 +33,7 @@ public class UserController {
         return "edit-user"; // 對應 /WEB-INF/views/edit-user.html
     }
     
-    @PutMapping("/update/{id}")
+    @PostMapping("/update/{id}")//HTML <form> 只支持 GET 和 POST，将后端改为接受 POST（简单、兼容 HTML）
     public String updateUser(@PathVariable("id") Long id, @ModelAttribute("user") User user) {
         userService.updateUser(id, user);
         return "redirect:/users";
@@ -50,4 +50,5 @@ public class UserController {
         userService.deleteUser(id);
         return "redirect:/users";
     }
+    
 }

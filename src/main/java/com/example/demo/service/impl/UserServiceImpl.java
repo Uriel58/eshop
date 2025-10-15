@@ -32,16 +32,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(Long id, User updatedUser) {
-        User existingUser = userRepository.findById(id);
-        if (existingUser != null) {
-            existingUser.setName(updatedUser.getName());
-            existingUser.setEmail(updatedUser.getEmail());
-            userRepository.save(existingUser);
+    	User existingUser = userRepository.findById(id);
+    	if (existingUser == null) {
+    	    throw new RuntimeException("User not found");
+    	}
+
+
+        existingUser.setName(updatedUser.getName());
+        existingUser.setEmail(updatedUser.getEmail());
+
+        // ✅ 如果使用者有輸入密碼，才更新密碼（避免覆蓋成 null 或空字串）
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            existingUser.setPassword(updatedUser.getPassword());
         }
+
+        userRepository.save(existingUser);
     }
+
 
     @Override
     public void deleteUser(Long id) {
         userRepository.delete(id);
     }
+    
+    @Override
+    public User findByEmail(String email) {
+    	return userRepository.findByEmail(email);
+    }
+
 }
