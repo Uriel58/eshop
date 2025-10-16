@@ -7,8 +7,12 @@
 </head>
 <body>
     <div class="container mt-4">
-
-		<h1 th:text="${name}"></h1>
+		<!-- 在 form 下方加一個按鈕就可以回列表 -->
+		
+		
+		<h1 th:text="${name} + Hello"></h1>
+		
+		<a th:href="@{/customers}" class="btn btn-outline-secondary mt-3">Back to Customer List</a>
         <h1>User List</h1>
         
         <a th:href="@{/users/add}" class="btn btn-primary mb-3">Add New User</a>

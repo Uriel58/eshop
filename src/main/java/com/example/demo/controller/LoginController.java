@@ -19,6 +19,12 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
+    
+    // 👉 新增這段：根路徑導向 /login
+    @GetMapping("/")
+    public String redirectToLogin() {
+        return "redirect:/login";
+    }
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
