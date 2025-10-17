@@ -9,8 +9,10 @@
 <div class="container mt-4">
 
     <!-- 登入者名稱 -->
-    <h1 th:text="${name} + Hello"></h1>
-	<a th:href="@{/users}" class="btn btn-outline-secondary mt-3">Back to User List</a>
+    <!---<h1 th:text="${name} + Hello"></h1>--->
+    <h1 th:text="${name != null} ? ${'Hello！ '+ name} : 'Hello！ visitor'"></h1>
+    
+	<a th:href="@{/}" class="btn btn-outline-secondary mt-3">Back </a>
     <h1>Customer List</h1>
 
     <!-- 新增客戶按鈕 -->

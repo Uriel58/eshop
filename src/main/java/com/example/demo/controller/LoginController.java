@@ -19,12 +19,6 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
-    
-    // 👉 新增這段：根路徑導向 /login
-    @GetMapping("/")
-    public String redirectToLogin() {
-        return "redirect:/login";
-    }
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
@@ -39,7 +33,7 @@ public class LoginController {
             // 將 id 和 name 加入 Model，@SessionAttributes 會自動存到 Session
             model.addAttribute("name", user.getName());
             model.addAttribute("id", user.getId());
-            return "redirect:/users";
+            return "redirect:/";
         } else {
             model.addAttribute("error", "Invalid email or password");
             return "login";

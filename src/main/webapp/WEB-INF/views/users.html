@@ -10,9 +10,10 @@
 		<!-- 在 form 下方加一個按鈕就可以回列表 -->
 		
 		
-		<h1 th:text="${name} + Hello"></h1>
+		<!---<h1 th:text="${name} + Hello"></h1>--->
+    	<h1 th:text="${name != null} ? ${'Hello！ '+ name} : 'Hello！ visitor'"></h1>
 		
-		<a th:href="@{/customers}" class="btn btn-outline-secondary mt-3">Back to Customer List</a>
+		<a th:href="@{/}" class="btn btn-outline-secondary mt-3">Back</a>
         <h1>User List</h1>
         
         <a th:href="@{/users/add}" class="btn btn-primary mb-3">Add New User</a>
