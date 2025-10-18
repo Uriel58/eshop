@@ -50,7 +50,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerDAO.save(existingCustomer);
     }
-
     @Override
     public void deleteCustomer(Long customerId) {
         customerDAO.delete(customerId);

@@ -49,6 +49,14 @@
             <label>Barcode</label>
             <input type="text" th:field="*{prodBarcode}" class="form-control">
         </div>
+        
+        <div class="mb-3">
+    		<label>Created Times</label>
+    		<!--<input type="text" class="form-control" th:value="${#dates.format(product.createdTime, 'yyyy-MM-dd HH:mm:ss.SSS')}" readonly>-->
+    		<input type="text" class="form-control"
+       			th:value="${product.createdTime.toLocalDateTime()}" readonly>
+		</div>
+
 
         <div class="mb-3">
             <label>Tags</label>

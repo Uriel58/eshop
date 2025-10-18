@@ -9,40 +9,46 @@
 <div class="container mt-4">
 
     <!-- 登入者名稱 -->
-    <h1 th:text="${name != null} ? ${'Hello！ '+ name} : 'Hello！ visitor'"></h1>
-    
+    <h1 th:text="${name != null} ? ${'Hello！ ' + name} : 'Hello！ visitor'"></h1>
+
     <a th:href="@{/}" class="btn btn-outline-secondary mt-3">Back</a>
     <h1>Product List</h1>
 
     <!-- 新增商品按鈕 -->
     <a th:href="@{/products/add}" class="btn btn-primary mb-3">Add New Product</a>
-	<a th:href="@{/products/edit/{prodNum}(prodNum=${product.prodNum})}" class="btn btn-warning btn-sm">Edit</a>
-    <a th:href="@{/products/delete/{prodNum}(prodNum=${product.prodNum})}" class="btn btn-danger btn-sm">Delete</a>
+	
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th>Product Number</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Line</th>
-                <th>Price</th>
-                <th>Stock Qty</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Product Tag</th>
+            <th>Product Image</th>
+			<th>Product Type</th><!---類別--->
+            <th>Product Line</th><!---細項--->
+            <th>Product Name</th>
+			<th>Product Information</th>
+			<th>Product Created Time</th>
+            <th>Product Price</th>
+            <th>Product Stock Quantity</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.prodNum}"></td>
-                <td th:text="${product.prodName}"></td>
-                <td th:text="${product.prodType}"></td>
-                <td th:text="${product.prodLine}"></td>
-                <td th:text="${product.prodPrice}"></td>
-                <td th:text="${product.prodStockQty}"></td>
-                <td>
+        <!-- prodTags,prodImages,prodType,prodLine,prodName,prodInfo,createdTime,prodPrice,prodStockQty -->
+        <tr th:each="product : ${products}">
+        	<td th:text="${product.prodTags}"></td>
+        	<td th:text="${product.prodImages}"></td>
+        	<td th:text="${product.prodType}"></td>
+            <td th:text="${product.prodLine}"></td>
+            <td th:text="${product.prodName}"></td>
+			<td th:text="${product.prodInfo}"></td>
+			<td th:text="${product.createdTime}"></td>
+            <td th:text="${product.prodPrice}"></td>
+            <td th:text="${product.prodStockQty}"></td>
+            <td>
                 <a th:href="@{/products/edit/{prodNum}(prodNum=${product.prodNum})}" class="btn btn-warning btn-sm">Edit</a>
-    			<a th:href="@{/products/delete/{prodNum}(prodNum=${product.prodNum})}" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
+                <a th:href="@{/products/delete/{prodNum}(prodNum=${product.prodNum})}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
         </tbody>
     </table>
 
