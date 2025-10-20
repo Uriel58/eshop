@@ -5,6 +5,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
+	/**
+	    * User有id(使用者id),name(使用者名稱),email(使用者電子郵件),password(使用者密碼)
+	*/
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

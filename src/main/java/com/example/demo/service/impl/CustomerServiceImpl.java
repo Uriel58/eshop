@@ -35,6 +35,11 @@ public class CustomerServiceImpl implements CustomerService {
     public void saveCustomer(Customer customer) {
         customerDAO.save(customer);
     }
+    @Override
+    public boolean isEmailExists(String email) {
+        return customerDAO.findByEmail(email) != null;
+    }
+
 
     @Override
     public void updateCustomer(Long customerId, Customer updatedCustomer) {
@@ -45,6 +50,11 @@ public class CustomerServiceImpl implements CustomerService {
 
         existingCustomer.setName(updatedCustomer.getName());
         existingCustomer.setEmail(updatedCustomer.getEmail());
+        existingCustomer.setTelephone(updatedCustomer.getTelephone());
+        existingCustomer.setAddress(updatedCustomer.getAddress());
+        existingCustomer.setKeyword(updatedCustomer.getKeyword());
+        existingCustomer.setAge(updatedCustomer.getAge());
+        existingCustomer.setGender(updatedCustomer.getGender());
 
 
 

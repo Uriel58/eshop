@@ -24,6 +24,11 @@
                 <th>Customer ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Telephone</th>
+                <th>Address</th>
+                <th>Keyword</th>
+                <th>Age</th>
+                <th>Gender</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -32,15 +37,19 @@
                 <td th:text="${customer.customerId}"></td>
                 <td th:text="${customer.name}"></td>
                 <td th:text="${customer.email}"></td>
+                <td th:text="${customer.telephone}"></td>
+                <td th:text="${customer.address}"></td>
+                <td th:text="${customer.keyword}"></td>
+                <td th:text="${customer.age}"></td>
+                <td th:text="${customer.gender}"></td>
                 <td>
                     <a th:href="@{/customers/edit/{id}(id=${customer.customerId})}" class="btn btn-warning btn-sm">Edit</a>
-                    <a th:href="@{/customers/delete/{id}(id=${customer.customerId})}" class="btn btn-danger btn-sm">Delete</a>
+                    <a th:href="@{/customers/delete/{id}(id=${customer.customerId})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure you want to delete this customer?');">Delete</a>
                 </td>
             </tr>
         </tbody>
     </table>
-
-
 
     <!-- 登出按鈕 -->
     <a th:href="@{/logout}" class="btn btn-danger mt-3">Logout</a>

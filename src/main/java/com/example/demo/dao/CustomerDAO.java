@@ -9,4 +9,9 @@ public interface CustomerDAO {
     void save(Customer customer);
     void delete(Long customerId);
     Customer findByEmail(String email);
+    /*// interface: CustomerDAO
+    List<Customer> findByKeyword(String keyword);
+    List<Customer> findByAgeRange(int minAge, int maxAge);
+    List<Customer> findByGender(String gender);
+    */
 }

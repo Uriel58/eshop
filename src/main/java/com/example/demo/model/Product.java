@@ -7,17 +7,24 @@ import java.time.ZoneId;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.List;
+import java.util.ArrayList;
+
+
 @Entity
 @Table(name = "products")
 public class Product {
-
-    // product有prod_num,prod_name,prod_type(大類),prod_line(大類的細分),prod_price,
-    // prod_info(產品資訊),prod_keywords,prod_barcode(條碼）,created_time,
-    // prod_tags,prod_images,prod_stock_qty
-
+	/**
+    * Product有prod_num,prod_name,prod_type(大類),prod_line(大類的細分),prod_price,
+    * prod_info(產品資訊),prod_keywords,prod_barcode(條碼）,created_time,
+    * prod_tags,prod_images,prod_stock_qty
+	*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long prodNum; // 商品編號（主鍵）
+    private Long prodNum; // 商品編號（主鍵)
+    
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetail> orderDetails = new ArrayList<>();//關聯到OrderDetail
 
     @Column(name = "prod_name", nullable = false)
     private String prodName; // 產品名稱
@@ -84,6 +91,24 @@ public class Product {
     // Getters and Setters
     public Long getProdNum() { return prodNum; }
     public void setProdNum(Long prodNum) { this.prodNum = prodNum; }
+    
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public void addOrderDetail(OrderDetail detail) {
+        orderDetails.add(detail);
+        detail.setProduct(this);
+    }
+
+    public void removeOrderDetail(OrderDetail detail) {
+        orderDetails.remove(detail);
+        detail.setProduct(null);
+    }
 
     public String getProdName() { return prodName; }
     public void setProdName(String prodName) { this.prodName = prodName; }
