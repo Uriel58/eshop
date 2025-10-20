@@ -35,10 +35,6 @@ public class CustomerServiceImpl implements CustomerService {
     public void saveCustomer(Customer customer) {
         customerDAO.save(customer);
     }
-    @Override
-    public boolean isEmailExists(String email) {
-        return customerDAO.findByEmail(email) != null;
-    }
 
 
     @Override
