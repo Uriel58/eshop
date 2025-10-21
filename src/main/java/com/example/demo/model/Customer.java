@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "customers") // 資料表名稱，注意：和 order 表中的外鍵一致
@@ -15,6 +16,10 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id") // 對應資料表欄位
     private Long customerId;
+    
+    @OneToMany
+    (mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts = new ArrayList<>();//關聯Cart
 
     @Column(name = "name", nullable = false)
     private String name;

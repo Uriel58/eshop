@@ -34,11 +34,15 @@ public class ProductController {
     public String home(HttpSession session, Model model) {
         String name = (String) session.getAttribute("name");
         Long id = (Long) session.getAttribute("id");
-
+        
         model.addAttribute("name", name);
         model.addAttribute("id", id);
+        
+       
         return "home";
     }
+    
+    
 
     // 顯示新增表單
     @GetMapping("/add")
@@ -123,5 +127,11 @@ public class ProductController {
         List<Product> products = productService.findByKeyword(keyword);
         model.addAttribute("products", products);
         return "products";
+    }
+    @GetMapping("/details/{id}")
+    public String getProductDetail(@PathVariable Long id, Model model) {
+        Product product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        return "products_details"; // 指向 product_details.html
     }
 }

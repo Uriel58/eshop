@@ -4,6 +4,14 @@
   <artifactId>echop</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+  
+      <!-- ✅ 正確地定義 parent -->
+     <!-- <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.12</version>
+        <relativePath/> <! 可選，讓它自動去遠端倉庫抓 
+    <!</parent>-->
    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
@@ -109,6 +117,7 @@
            <version>${junit.version}</version>
            <scope>test</scope>
        </dependency>
+       
     </dependencies>
     
     <build>

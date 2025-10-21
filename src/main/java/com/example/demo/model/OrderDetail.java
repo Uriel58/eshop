@@ -11,7 +11,7 @@ import java.util.Objects;
 public class OrderDetail {
 	/**
 	    * Product有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),ord_price(總共產品價格),
-	    * prod_price(各產品價格)
+	    * prod_price(各產品價格),fare(運費)
 	*/
 
     @Id
@@ -35,6 +35,9 @@ public class OrderDetail {
     @ManyToOne //跟product連動
     @JoinColumn(name = "prodNum", insertable = false, updatable = false)
     private Product product;
+    
+    @Column(name = "fare", precision = 10, scale = 2)
+    private BigDecimal fare;
 
     // Getter, Setter
 
@@ -85,4 +88,22 @@ public class OrderDetail {
     public void setProduct(Product product) {
         this.product = product;
     }
+    public BigDecimal getFare() {
+        return fare;
+    }
+
+    public void setFare(BigDecimal fare) {
+        this.fare = fare;
+    }
+    @Override
+    public String toString() {
+        return "OrderDetail{" +
+                "ordNum=" + ordNum +
+                ", prodNum=" + prodNum +
+                ", ordQty=" + ordQty +
+                ", ordPrice=" + ordPrice +
+                ", fare=" + fare +
+                '}';
+    }
+
 }

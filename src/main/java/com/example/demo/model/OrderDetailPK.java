@@ -8,11 +8,11 @@ public class OrderDetailPK implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long ordNum;
-    private String prodNum;
+    private Long prodNum;
 
     public OrderDetailPK() {}
 
-    public OrderDetailPK(Long ordNum, String prodNum) {
+    public OrderDetailPK(Long ordNum, Long prodNum) {
         this.ordNum = ordNum;
         this.prodNum = prodNum;
     }
@@ -25,11 +25,11 @@ public class OrderDetailPK implements Serializable {
         this.ordNum = ordNum;
     }
 
-    public String getProdNum() {
+    public Long getProdNum() {
         return prodNum;
     }
 
-    public void setProdNum(String prodNum) {
+    public void setProdNum(Long prodNum) {
         this.prodNum = prodNum;
     }
 
