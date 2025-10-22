@@ -10,7 +10,7 @@ import java.util.Objects;
 @IdClass(OrderDetailPK.class)
 public class OrderDetail {
 	/**
-	    * Product有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),ord_price(總共產品價格),
+	    * OrderDetail有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),ord_price(總共產品價格),
 	    * prod_price(各產品價格),fare(運費)
 	*/
 

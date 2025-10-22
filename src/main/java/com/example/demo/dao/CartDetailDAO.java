@@ -11,4 +11,6 @@ public interface CartDetailDAO {
     void update(CartDetail cartDetail);
     void deleteById(Long id); // 僅限特殊情況（不推薦）
     void deleteAllByCustomerId(Long customerId); // 結帳後清空
+    
+    void deleteByCustomerIdAndProductId(Long customerId, Long productId);
 }

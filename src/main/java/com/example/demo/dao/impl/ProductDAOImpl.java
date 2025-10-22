@@ -60,4 +60,12 @@ public class ProductDAOImpl implements ProductDAO {
                 .setParameter("kw", "%" + keyword + "%")
                 .list();
     }
+    @Override
+    public Product findByProdNum(Long prodNum) {
+        String hql = "FROM Product WHERE prodNum = :prodNum";
+        return getCurrentSession()
+                .createQuery(hql, Product.class)
+                .setParameter("prodNum", prodNum)
+                .uniqueResult();
+    }
 }

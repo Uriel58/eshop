@@ -9,9 +9,15 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @Repository
 public class CartDetailDAOImpl implements CartDetailDAO {
-
+	
+	@PersistenceContext
+    private EntityManager entityManager;
+	
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -56,5 +62,13 @@ public class CartDetailDAOImpl implements CartDetailDAO {
         getSession().createQuery(hql)
                 .setParameter("customerId", customerId)
                 .executeUpdate();
+    }
+    
+    @Override
+    public void deleteByCustomerIdAndProductId(Long customerId, Long productId) {
+        entityManager.createQuery("DELETE FROM CartDetail cd WHERE cd.customer.customerId = :customerId AND cd.product.prodNum = :productId")
+            .setParameter("customerId", customerId)
+            .setParameter("productId", productId)
+            .executeUpdate();
     }
 }

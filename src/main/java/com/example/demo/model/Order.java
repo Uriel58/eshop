@@ -25,10 +25,29 @@ public class Order {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private ZonedDateTime ordDate = ZonedDateTime.now(ZoneId.of("Asia/Taipei")); // ✅ 自動產生訂單時間
     
+    @Column(name = "required_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private ZonedDateTime requiredDate;
+
+    public ZonedDateTime getRequiredDate() {
+        return requiredDate;
+    }
+
+    public void setRequiredDate(ZonedDateTime requiredDate) {
+        this.requiredDate = requiredDate;
+    }
     // ✅ 改成 ManyToOne 關聯到 Customer
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
     private Customer customer;
+    
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
     @Column(name = "county", length = 50)
     private String county;

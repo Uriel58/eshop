@@ -13,4 +13,6 @@ public interface ProductService {
     Product findByBarcode(String barcode);
     // ✅ 加這一行，讓 ProductServiceImpl 能呼叫
     List<Product> findByKeyword(String keyword);
+    
+    Product findByProdNum(Long prodNum);
 }

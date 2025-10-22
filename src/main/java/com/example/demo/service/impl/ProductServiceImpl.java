@@ -73,4 +73,10 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findByKeyword(String keyword) {
         return productDAO.findByKeyword(keyword);
     }
+    
+    @Override
+    public Product findByProdNum(Long prodNum) {
+        return productDAO.findByProdNum(prodNum);
+    }
+
 }
