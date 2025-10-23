@@ -2,12 +2,19 @@ package com.example.demo.dao.impl;
 
 import com.example.demo.dao.OrderDetailDAO;
 import com.example.demo.model.OrderDetail;
+import com.example.demo.model.Order;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.Optional;
 
 @Repository
 public class OrderDetailDAOImpl implements OrderDetailDAO {
@@ -18,6 +25,8 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
     private Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     public List<OrderDetail> findByOrderId(Long ordNum) {
@@ -46,5 +55,17 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
                 .setParameter("prodNum", prodNum)
                 .uniqueResult();
         return count != null && count > 0;
+    }
+    public Optional<Order> findByIdWithDetails(Long ordNum) {
+        String jpql = "SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderDetails WHERE o.ordNum = :id";
+        TypedQuery<Order> query = em.createQuery(jpql, Order.class);
+        query.setParameter("id", ordNum);
+        Order order = null;
+        try {
+            order = query.getSingleResult();
+        } catch (Exception e) {
+            // 可能是 NoResultException，這裡可以選擇忽略或記錄
+        }
+        return Optional.ofNullable(order);
     }
 }

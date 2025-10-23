@@ -13,8 +13,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "`order`")  // 避免與 SQL 保留字衝突
 public class Order {
 	/**
-	    * Order有ord_num(訂單編號),prod_name,ord_date(訂單日期),county(購買地區),cust_num（顧客編號),
-	    * order_status(訂單狀態),payment_method(付款方式),order_barcode(訂單條碼)
+	    * Order有ord_num(訂單編號),ord_date(創建訂單日期,自動),required_date(更新訂單日期,自動),county(購買地區),cust_num（顧客編號),
+	    * order_status(訂單狀態),payment_method(付款方式),order_barcode(訂單條碼,自動)
 	*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +28,9 @@ public class Order {
     @Column(name = "required_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private ZonedDateTime requiredDate;
-
-    public ZonedDateTime getRequiredDate() {
-        return requiredDate;
-    }
-
-    public void setRequiredDate(ZonedDateTime requiredDate) {
-        this.requiredDate = requiredDate;
-    }
+    
+    
+    
     // ✅ 改成 ManyToOne 關聯到 Customer
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
@@ -48,7 +43,7 @@ public class Order {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-
+    
     @Column(name = "county", length = 50)
     private String county;
 
@@ -68,13 +63,16 @@ public class Order {
     private String orderBarcode; // ✅ 自動生成條碼
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderDetail> orderDetails = new ArrayList<>();
+    private List<OrderDetail> orderDetails = new ArrayList<>();//連到orderdetail
 
     // ✅ 在新增前自動設定訂單時間與條碼
     @PrePersist
     protected void onCreate() {
         if (this.ordDate == null) {
             this.ordDate = ZonedDateTime.now();
+        }
+        else if (this.ordDate != null) {
+        	this.requiredDate = ZonedDateTime.now();
         }
 
         if (this.orderBarcode == null) {
@@ -99,6 +97,14 @@ public class Order {
 
     public void setOrdDate(ZonedDateTime ordDate) {
         this.ordDate = ordDate;
+    }
+    
+    public ZonedDateTime getRequiredDate() {
+        return requiredDate;
+    }
+
+    public void setRequiredDate(ZonedDateTime requiredDate) {
+        this.requiredDate = requiredDate;
     }
 
     public String getCounty() {

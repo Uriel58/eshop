@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -51,7 +52,14 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getAllOrders() {
         return orderDAO.findAll();
     }
-
+	@Transactional//(readOnly = true)
+    public Optional<Order> getOrderWithDetails(Long id) {
+        return orderDAO.findByIdWithDetails(id);
+    }
+	@Override
+    public Optional<Order> getOrderByIdWithDetails(Long ordNum) {
+        return orderDAO.findByIdWithDetails(ordNum);
+    }
     @Override
     public Order getOrderById(Long ordNum) {
         return orderDAO.findById(ordNum);

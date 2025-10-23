@@ -9,20 +9,33 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.Optional;
+
 @Repository
 public class OrderDAOImpl implements OrderDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
+    
+    @Autowired
+    private OrderDAO orderDAO;
 
     private Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
-
+    
+    @PersistenceContext
+    private EntityManager em;
+    
     @Override
     public List<Order> findAll() {
         return getCurrentSession().createQuery("FROM Order", Order.class).list();
     }
+    
+
 
     @Override
     public Order findById(Long ordNum) {
@@ -40,5 +53,17 @@ public class OrderDAOImpl implements OrderDAO {
         if (order != null) {
             getCurrentSession().delete(order);
         }
+    }
+    public Optional<Order> findByIdWithDetails(Long ordNum) {
+        String jpql = "SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderDetails WHERE o.ordNum = :id";
+        TypedQuery<Order> query = em.createQuery(jpql, Order.class);
+        query.setParameter("id", ordNum);
+        Order order = null;
+        try {
+            order = query.getSingleResult();
+        } catch (Exception e) {
+            // 沒有找到或其他錯誤，可以記錄
+        }
+        return Optional.ofNullable(order);
     }
 }
