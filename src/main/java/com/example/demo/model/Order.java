@@ -62,7 +62,7 @@ public class Order {
     @Column(name = "order_barcode", length = 100, unique = true)
     private String orderBarcode; // ✅ 自動生成條碼
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails = new ArrayList<>();//連到orderdetail
 
     // ✅ 在新增前自動設定訂單時間與條碼
