@@ -27,6 +27,9 @@ public class OrderDetail {
 
 	@Column(name = "ord_price", precision = 10, scale = 2) // 金錢顯示前面 8 位 + 小數點後 2 位）。
 	private BigDecimal ordPrice;
+	
+	@Column(name = "fare", precision = 10, scale = 2)
+	private BigDecimal fare;
 
 	@ManyToOne // 跟order連動
 	@JoinColumn(name = "ord_num", insertable = false, updatable = false)
@@ -35,9 +38,6 @@ public class OrderDetail {
 	@ManyToOne // 跟product連動
 	@JoinColumn(name = "prodNum", insertable = false, updatable = false)
 	private Product product;
-
-	@Column(name = "fare", precision = 10, scale = 2)
-	private BigDecimal fare;
 
 	// Getter for the composite primary key
 	public OrderDetailPK getPk() {
