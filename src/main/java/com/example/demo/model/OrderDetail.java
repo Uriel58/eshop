@@ -10,100 +10,102 @@ import java.util.Objects;
 @IdClass(OrderDetailPK.class)
 public class OrderDetail {
 	/**
-	    * OrderDetail有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),ord_price(總共產品價格),
-	    * prod_price(各產品價格),fare(運費)
-	*/
+	 * OrderDetail有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),ord_price(總共產品價格),
+	 * prod_price(各產品價格),fare(運費)
+	 */
 
-    @Id
-    @Column(name = "ord_num")
-    private Long ordNum;
+	@Id
+	@Column(name = "ord_num")
+	private Long ordNum;
 
-    @Id
-    @Column(name = "prodNum")
-    private Long prodNum;
+	@Id
+	@Column(name = "prodNum")
+	private Long prodNum;
 
-    @Column(name = "ord_qty")
-    private Integer ordQty;
+	@Column(name = "ord_qty")
+	private Integer ordQty;
 
-    @Column(name = "ord_price", precision = 10, scale = 2)//金錢顯示前面 8 位 + 小數點後 2 位）。
-    private BigDecimal ordPrice;
+	@Column(name = "ord_price", precision = 10, scale = 2) // 金錢顯示前面 8 位 + 小數點後 2 位）。
+	private BigDecimal ordPrice;
 
-    @ManyToOne //跟order連動
-    @JoinColumn(name = "ord_num", insertable = false, updatable = false)
-    private Order order;
+	@ManyToOne // 跟order連動
+	@JoinColumn(name = "ord_num", insertable = false, updatable = false)
+	private Order order;
 
-    @ManyToOne //跟product連動
-    @JoinColumn(name = "prodNum", insertable = false, updatable = false)
-    private Product product;
-    
-    @Column(name = "fare", precision = 10, scale = 2)
-    private BigDecimal fare;
+	@ManyToOne // 跟product連動
+	@JoinColumn(name = "prodNum", insertable = false, updatable = false)
+	private Product product;
 
-    // Getter, Setter
+	@Column(name = "fare", precision = 10, scale = 2)
+	private BigDecimal fare;
 
-    public Long getOrdNum() {
-        return ordNum;
-    }
+	// Getter for the composite primary key
+	public OrderDetailPK getPk() {
+		return new OrderDetailPK(ordNum, prodNum);
+	}
 
-    public void setOrdNum(Long ordNum) {
-        this.ordNum = ordNum;
-    }
+	// Getter, Setter
 
-    public Long getProdNum() {
-        return prodNum;
-    }
+	public Long getOrdNum() {
+		return ordNum;
+	}
 
-    public void setProdNum(Long prodNum) {
-        this.prodNum = prodNum;
-    }
+	public void setOrdNum(Long ordNum) {
+		this.ordNum = ordNum;
+	}
 
-    public Integer getOrdQty() {
-        return ordQty;
-    }
+	public Long getProdNum() {
+		return prodNum;
+	}
 
-    public void setOrdQty(Integer ordQty) {
-        this.ordQty = ordQty;
-    }
+	public void setProdNum(Long prodNum) {
+		this.prodNum = prodNum;
+	}
 
-    public BigDecimal getOrdPrice() {
-        return ordPrice;
-    }
+	public Integer getOrdQty() {
+		return ordQty;
+	}
 
-    public void setOrdPrice(BigDecimal ordPrice) {
-        this.ordPrice = ordPrice;
-    }
+	public void setOrdQty(Integer ordQty) {
+		this.ordQty = ordQty;
+	}
 
-    public Order getOrder() {
-        return order;
-    }
+	public BigDecimal getOrdPrice() {
+		return ordPrice;
+	}
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+	public void setOrdPrice(BigDecimal ordPrice) {
+		this.ordPrice = ordPrice;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public Order getOrder() {
+		return order;
+	}
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-    public BigDecimal getFare() {
-        return fare;
-    }
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 
-    public void setFare(BigDecimal fare) {
-        this.fare = fare;
-    }
-    @Override
-    public String toString() {
-        return "OrderDetail{" +
-                "ordNum=" + ordNum +
-                ", prodNum=" + prodNum +
-                ", ordQty=" + ordQty +
-                ", ordPrice=" + ordPrice +
-                ", fare=" + fare +
-                '}';
-    }
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public BigDecimal getFare() {
+		return fare;
+	}
+
+	public void setFare(BigDecimal fare) {
+		this.fare = fare;
+	}
+
+	@Override
+	public String toString() {
+		return "OrderDetail{" + "ordNum=" + ordNum + ", prodNum=" + prodNum + ", ordQty=" + ordQty + ", ordPrice="
+				+ ordPrice + ", fare=" + fare + '}';
+	}
 
 }
