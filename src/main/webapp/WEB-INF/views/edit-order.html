@@ -9,7 +9,7 @@
 <div class="container mt-4">
     <h1>Edit Order</h1>
 
-    <form th:action="@{/orders/update/{ordNum}(ordNum=${order.ordNum})}" th:object="${order}" method="post">
+    <form th:action="@{/orders/update/{orderId}(orderId=${order.ordNum})}" th:object="${order}" method="post">
         <div class="mb-3">
             <label>Order Number</label>
             <input type="text" th:value="${order.ordNum}" class="form-control" readonly>
@@ -18,11 +18,13 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label>Order Date</label>
-                <input type="datetime-local" th:field="*{ordDate}" class="form-control" required>
+                <input type="text" class="form-control"
+       			th:value="${order.ordDate.toLocalDateTime()}" readonly>
             </div>
             <div class="col-md-4 mb-3">
                 <label>Required Date</label>
-                <input type="datetime-local" th:field="*{requiredDate}" class="form-control" required>
+                <input type="text" class="form-control"
+       			th:value="${order.requiredDate.toLocalDateTime()}" required/>
             </div>
             <div class="col-md-4 mb-3">
                 <label>County</label>
@@ -30,7 +32,7 @@
             </div>
             <div class="col-md-4 mb-3">
                 <label>Customer Number</label>
-                <input type="text" th:field="*{custNum}" class="form-control" required>
+                <input type="text" th:field="*{customer.customerId}" class="form-control" required>
             </div>
             <div class="col-md-4 mb-3">
                 <label>Order Status</label>

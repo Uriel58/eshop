@@ -29,8 +29,10 @@
 		<div class="row mt-4">
 			<!-- 左半：圖片展示 -->
 			<div class="col-md-6">
-				<img class="product-image-large" th:src="@{${product.prodImages}}"
-					alt="Product Image"> <!-- alt="Product Image" -->
+				<img class="product-image"
+					th:src="@{'/resources/images/' + ${product.prodImages}}"
+					style="width: 300px; height: auto;" />
+				<!-- alt="Product Image" -->
 			</div>
 
 			<!-- 右半：商品資訊 -->
@@ -67,8 +69,8 @@
 
 		<!-- 返回按鈕 -->
 		<div class="mt-4">
-			<a th:href="@{/}"class="btn btn-secondary">回首頁</a>
-			<a th:href="@{/}"class="btn btn-secondary">加入購物車</a>
+			<a th:href="@{/}" class="btn btn-secondary">回首頁</a> <a th:href="@{/}"
+				class="btn btn-secondary">加入購物車</a>
 		</div>
 	</div>
 </body>

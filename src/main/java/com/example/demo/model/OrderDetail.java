@@ -2,16 +2,15 @@ package com.example.demo.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.io.Serializable;
-import java.util.Objects;
+
 
 @Entity
 @Table(name = "order_detail")
 @IdClass(OrderDetailPK.class)
 public class OrderDetail {
 	/**
-	 * OrderDetail有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),ord_price(總共產品價格),
-	 * prod_price(各產品價格),fare(運費)
+	 * OrderDetail有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),
+	 * ord_price(這個產品價格),fare(運費)
 	 */
 
 	@Id

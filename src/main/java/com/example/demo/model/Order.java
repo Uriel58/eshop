@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "`order`")  // 避免與 SQL 保留字衝突
 public class Order {
 	/**
-	    * Order有ord_num(訂單編號),ord_date(創建訂單日期,自動),required_date(更新訂單日期,自動),county(購買地區),cust_num（顧客編號),
+	    * Order有ord_num(訂單編號),ord_date(創建訂單日期,自動),required_date(更新訂單日期,自動),county(購買地區),customerId（顧客編號),
 	    * order_status(訂單狀態),payment_method(付款方式),order_barcode(訂單條碼,自動)
 	*/
     @Id
@@ -27,7 +26,7 @@ public class Order {
     
     @Column(name = "required_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private ZonedDateTime requiredDate;
+    private ZonedDateTime requiredDate = ZonedDateTime.now(ZoneId.of("Asia/Taipei"));;
     
     
     
@@ -47,9 +46,6 @@ public class Order {
     @Column(name = "county", length = 50)
     private String county;
 
-    @Column(name = "cust_num", length = 5)
-    private String custNum;
-
     @Column(name = "order_status", length = 20)
     private String orderStatus;
 
@@ -62,8 +58,8 @@ public class Order {
     @Column(name = "order_barcode", length = 100, unique = true)
     private String orderBarcode; // ✅ 自動生成條碼
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
-    private List<OrderDetail> orderDetails = new ArrayList<>();//連到orderdetail
+    @OneToMany(mappedBy = "order",  cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+    private List<OrderDetail> orderDetails = new ArrayList<>();//連到orderdetail fetch = FetchType.EAGER
 
     // ✅ 在新增前自動設定訂單時間與條碼
     @PrePersist
@@ -113,14 +109,6 @@ public class Order {
 
     public void setCounty(String county) {
         this.county = county;
-    }
-
-    public String getCustNum() {
-        return custNum;
-    }
-
-    public void setCustNum(String custNum) {
-        this.custNum = custNum;
     }
 
     public String getOrderStatus() {

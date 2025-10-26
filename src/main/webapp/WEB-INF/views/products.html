@@ -41,14 +41,16 @@
 				<!-- prodTags,prodImages,prodType,prodLine,prodName,prodInfo,createdTime,prodPrice,prodStockQty -->
 				<tr th:each="product : ${products}">
 					<td th:text="${product.prodTags}"></td>
-					<td th:text="${product.prodImages}"></td>
+					<td><img class="product-image"
+						th:src="@{'/resources/images/' + ${product.prodImages}}"
+						style="width: 100px; height: auto;" /></td>
 					<td th:text="${product.prodType}"></td>
 					<td th:text="${product.prodLine}"></td>
 					<td th:text="${product.prodName}"></td>
 					<td th:text="${product.prodInfo}"></td>
 					<td th:text="${product.createdTime}"></td>
-					<td>
-						<span th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">0元</span>
+					<td><span
+						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">0元</span>
 					</td>
 					<td th:text="${product.prodStockQty}"></td>
 					<td><a

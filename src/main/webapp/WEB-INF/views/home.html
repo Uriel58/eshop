@@ -124,8 +124,9 @@
 				<a th:href="@{/products/details/{id}(id=${product.prodNum})}"
 					style="text-decoration: none; color: inherit;">
 					<div class="product-card">
-						<img class="product-image" th:src="@{${product.prodImages}}"
-							alt="" />
+						<img class="product-image"
+							th:src="@{'/resources/images/' + ${product.prodImages}}"
+							style="width: 100px; height: auto;" />
 						<!-- alt="Product Image" -->
 						<h5 th:text="${product.prodName}">商品名稱</h5>
 						<p class="price"

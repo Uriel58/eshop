@@ -2,12 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Order Details</title>
+<title>Orders</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
 </head>
 <body>
+	<!-- 
+	    * Order有ord_num(訂單編號),ord_date(創建訂單日期,自動),required_date(更新訂單日期,自動),county(購買地區),
+	    * order_status(訂單狀態),payment_method(付款方式),order_barcode(訂單條碼,自動)
+	-->
 	<div class="container mt-4">
 		<h1 th:if="${name}">
 			<span th:text="#{home.message} + ${name}"></span>
@@ -32,97 +36,35 @@
 					<th>Status</th>
 					<th>Payment Method</th>
 					<th>Order Barcode</th>
-					<th>Product Number</th>
-					<th>Price Each</th>
-					<th>Quantity Ordered</th>
-					<th>Fare</th>
-					<th>Actions</th>
+					<th>Function</th>
 				</tr>
 			</thead>
 			<tbody>
-				<!-- 遍历所有订单 -->
+				<!-- 遍历所有订单 rowspan="${#lists.size(orderDetails)}"-->
 				<tr th:each="order : ${orders}">
 					<!-- 主订单信息 -->
-					<td th:text="${order.ordNum}"
-						rowspan="${#lists.size(order.orderDetails)}"></td>
-					<td th:text="${order.ordDate}"
-						rowspan="${#lists.size(orderDetails)}"></td>
-					<td th:text="${order.requiredDate}"
-						rowspan="${#lists.size(orderDetails)}"></td>
-					<td th:text="${order.county}"
-						rowspan="${#lists.size(orderDetails)}"></td>
-					<td th:text="${order.custNum}"
-						rowspan="${#lists.size(orderDetails)}"></td>
-					<td th:text="${order.orderStatus}"
-						rowspan="${#lists.size(orderDetails)}"></td>
-					<td th:text="${order.paymentMethod}"
-						rowspan="${#lists.size(orderDetails)}"></td>
-					<td th:text="${order.orderBarcode}"
-						rowspan="${#lists.size(orderDetails)}"></td>
-
-					<!-- 第一条订单明细 -->
-					
-					<td th:if="${order.orderDetails}"> 
-						<span th:text="${order.orderDetails[0].prodNum}"></span>
+					<td>
+						<a th:href="@{/orderDetails/{orderId}(orderId=${order.ordNum})}" th:text="${order.ordNum}"></a>
 					</td>
-					<td th:unless="${order.orderDetails}">
-						<span th:text=" "></span>
-					</td>
-					<td th:if="${order.orderDetails}"> 
-						<span th:text="${order.orderDetails[0].ordQty}"></span>
-					</td>
-					<td th:unless="${order.orderDetails}">
-						<span th:text=" "></span>
-					</td>
-					<td th:if="${order.orderDetails}">
-						<span th:text="${order.orderDetails[0].ordPrice}"></span>
-					</td>
-					<td th:unless="${order.orderDetails}">
-						<span th:text=" "></span>
-					</td>
-					<td th:if="${order.orderDetails}">
-						<span th:text="${order.orderDetails[0].fare}"></span>
-					</td>
-					<td th:unless="${order.orderDetails}">
-						<span th:text=" "></span>
-					</td>
-					<td><a
-						th:href="@{/orders/details/{ordNum}/delete-detail/{prodNum}(ordNum=${order.orderDetails[0].ordNum}, prodNum=${order.orderDetails[0].prodNum})}"
+					<td th:text="${order.ordDate}"></td>
+					<td th:text="${order.requiredDate}"></td>
+					<td th:text="${order.county}"></td>
+					<td th:text="${order.customer.customerId}"></td>
+					<td th:text="${order.orderStatus}"></td>
+					<td th:text="${order.paymentMethod}"></td>
+					<td th:text="${order.orderBarcode}"></td>
+					<td>
+						<!-- Delete 按鈕：只有當有 orderDetails 時才顯示 -->
+						<!-- <a th:if="${order.orderDetails != null and !#lists.isEmpty(order.orderDetails)}"
+						th:href="@{/orders/details/{ordNum}/delete-detail/{prodNum}
+           				(ordNum=${order.orderDetails[0].ordNum}, prodNum=${order.orderDetails[0].prodNum})}"
 						class="btn btn-danger btn-sm"
-						onclick="return confirm('Are you sure you want to delete this detail?');">Delete</a>
-					</td>
-				</tr>
-
-				<!-- 遍历除了第一条外的其他订单明细 -->
-				<tr th:each="detail : ${orderDetails}">
-					<td th:if="${order.orderDetails != null}">
-						<span th:text="${detail.prodNum}"></span>
-					</td>
-					<td th:unless="${order.orderDetails == null}">
-						<span th:text="'N/A'"></span>
-					</td>
-					<td th:if="${order.orderDetails != null}">
-						<span th:text="${detail.ordQty}"></span>
-					</td>
-					<td th:unless="${order.orderDetails == null}">
-						<span th:text="'N/A'"></span>
-					</td>
-					<td th:if="${order.orderDetails != null}">
-						<span th:text="${detail.ordPrice}"></span>
-					</td>
-					<td th:unless="${order.orderDetails == null}">
-						<span th:text="'N/A'"></span>
-					</td>
-					<td th:if="${order.orderDetails != null}">
-						<span th:text="${detail.fare}"></span>
-					</td>
-					<td th:unless="${order.orderDetails == null}">
-						<span th:text="'N/A'"></span>
-					</td>
-					<td><a
-						th:href="@{/orders/details/{ordNum}/delete-detail/{prodNum}(ordNum=${detail.ordNum}, prodNum=${detail.prodNum})}"
-						class="btn btn-danger btn-sm"
-						onclick="return confirm('Are you sure you want to delete this detail?');">Delete</a>
+						onclick="return confirm('Are you sure you want to delete this order and details?');">
+						Delete All</a>--> <!-- Edit 按鈕：永遠顯示 --> 
+						<a th:href="@{/orders/edit/{orderId}(orderId=${order.ordNum})}"
+						class="btn btn-warning btn-sm"> Edit </a>
+						<a th:href="@{/orders/delete/{orderId}(orderId=${order.ordNum})}"
+						class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to delete this order?');">Delete</a>
 					</td>
 				</tr>
 			</tbody>

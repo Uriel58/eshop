@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 
