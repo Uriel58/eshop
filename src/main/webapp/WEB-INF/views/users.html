@@ -25,6 +25,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Actions</th>
+                    <th>Identify Name</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,7 @@
                     <td th:text="${user.id}"></td>
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
+                    <td th:text="${user.identifyName}"></td>
                     <td>
                         <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-warning btn-sm">Edit</a>
                         <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-danger btn-sm">Delete</a>
