@@ -4,33 +4,27 @@ import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 
+import java.util.List;
+import java.util.ArrayList;
 @Entity
 @Table(name = "carts")
 public class Cart {
 	/**
-	 * Cart 有customerid（抓取customer的customerid）,prodNum（抓取product的prodNum）,
-	 * ord_num(連接Order的ord_num),saved_for_late(願望清單),
+	 * Cart 有customerid（抓取customer的customerid）,
+	 * saved_for_late(願望清單),
 	 * created_at(加入購物車的時間),updated_at(更新時間)
+	 * 結帳需送進Order
+	 * 連接到customer,cartDetail
 	 */
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+    
 	// 關聯 Customer
 	@ManyToOne
 	@JoinColumn(name = "customerid", nullable = false)
 	private Customer customer;
-
-	// 關聯 Product
-	@ManyToOne
-	@JoinColumn(name = "prodNum", nullable = false)
-	private Product product;
-
-	// 可選的關聯到 Order（送出訂單後填入）
-	@ManyToOne
-	@JoinColumn(name = "ord_num", referencedColumnName = "ord_num")
-	private Order order;
 
 	@Column(name = "saved_for_late")
 	private Boolean savedForLate = false;
@@ -40,6 +34,10 @@ public class Cart {
 
 	@Column(name = "updated_at")
 	private ZonedDateTime updatedAt;
+	
+	// 修改： Cart 对应 CartDetail 的外键关联
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CartDetail> cartDetails = new ArrayList<>(); 
 
 	// 自動時間設定
 	@PrePersist
@@ -65,30 +63,6 @@ public class Cart {
 		this.id = id;
 	}
 
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-
-	public Order getOrder() {
-		return order;
-	}
-
-	public void setOrder(Order order) {
-		this.order = order;
-	}
-
 	public Boolean getSavedForLater() {
 		return savedForLate;
 	}
@@ -112,17 +86,31 @@ public class Cart {
 	public void setUpdatedAt(ZonedDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+	
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+	
+	public List<CartDetail> getCartDetails() {
+		return cartDetails;
+	}
+
+	public void setCartDetails(List<CartDetail> cartDetails) {
+		this.cartDetails = cartDetails;
+	}
 	@Override
 	public String toString() {
 	    return "Cart{" +
 	            "id=" + id +
 	            ", customerId=" + (customer != null ? customer.getCustomerId() : "null") +
-	            ", productId=" + (product != null ? product.getProdNum() : "null") +
-	            ", productName='" + (product != null ? product.getProdName() : "null") + '\'' +
 	            ", savedForLate=" + savedForLate +
 	            ", createdAt=" + createdAt +
 	            ", updatedAt=" + updatedAt +
-	            ", orderId=" + (order != null ? order.getOrdNum() : "null") +
+	            ", cartDetails=" + cartDetails.size() +
 	            '}';
 	}
 	

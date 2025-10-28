@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
+
 import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "`order`")  // 避免與 SQL 保留字衝突
@@ -14,15 +15,18 @@ public class Order {
 	/**
 	    * Order有ord_num(訂單編號),ord_date(創建訂單日期,自動),required_date(更新訂單日期,自動),county(購買地區),customerId（顧客編號),
 	    * order_status(訂單狀態),payment_method(付款方式),order_barcode(訂單條碼,自動)
+	    * 連接到OrderDetail,Customer
 	*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ord_num")
     private Long ordNum; // ✅ 改成 Long 型別，自動編號
-
+    
+    
     @Column(name = "ord_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private ZonedDateTime ordDate = ZonedDateTime.now(ZoneId.of("Asia/Taipei")); // ✅ 自動產生訂單時間
+    
     
     @Column(name = "required_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -35,13 +39,6 @@ public class Order {
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
     private Customer customer;
     
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
     
     @Column(name = "county", length = 50)
     private String county;
@@ -159,5 +156,30 @@ public class Order {
     public void removeOrderDetail(OrderDetail detail) {
         orderDetails.remove(detail);
         detail.setOrder(null);
+    }
+    
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return "Order{" +
+                "ordNum=" + ordNum +
+                ", ordDate=" + ordDate +
+                ", requiredDate=" + requiredDate +
+                ", county='" + county + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", deliveryMethod='" + deliveryMethod + '\'' +
+                ", orderBarcode='" + orderBarcode + '\'' +
+                ", customer=" + customer  +  
+                ", orderDetails=" + orderDetails.size()  + 
+                '}';
     }
 }

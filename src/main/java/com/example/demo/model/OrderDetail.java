@@ -3,14 +3,14 @@ package com.example.demo.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-
 @Entity
 @Table(name = "order_detail")
 @IdClass(OrderDetailPK.class)
 public class OrderDetail {
 	/**
 	 * OrderDetail有ord_num(訂單編號),prodNum(產品編號),ord_qty(訂單數量),
-	 * ord_price(這個產品價格),fare(運費)
+	 * ord_price(這個產品價格),fare(運費) 有關連到order product OrderDetailPK
+	 * 連接到Order,product
 	 */
 
 	@Id
@@ -26,7 +26,7 @@ public class OrderDetail {
 
 	@Column(name = "ord_price", precision = 10, scale = 2) // 金錢顯示前面 8 位 + 小數點後 2 位）。
 	private BigDecimal ordPrice;
-	
+
 	@Column(name = "fare", precision = 10, scale = 2)
 	private BigDecimal fare;
 
@@ -104,7 +104,7 @@ public class OrderDetail {
 	@Override
 	public String toString() {
 		return "OrderDetail{" + "ordNum=" + ordNum + ", prodNum=" + prodNum + ", ordQty=" + ordQty + ", ordPrice="
-				+ ordPrice + ", fare=" + fare + '}';
+				+ ordPrice + ", fare=" + fare + ", order=" + order + ", product=" + product + '}';
 	}
 
 }
