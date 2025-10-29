@@ -25,6 +25,10 @@
             <label for="password" class="form-label">Password</label>
             <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Enter password" required>
         </div>
+        
+        <div class="mb-3" hidden>
+            <input type="hidden" th:field="*{identifyName}" th:value="${user.identifyName = 'customer'}"  id="identifyName"  />
+        </div>
 
         <button type="submit" class="btn btn-success">Save</button>
         <a th:href="@{/}" class="btn btn-secondary">Cancel</a>

@@ -67,57 +67,26 @@
 			<a th:href="@{/?lang=en}" class="btn btn-primary me-2">English</a> <a
 				th:href="@{/?lang=zh_TW}" class="btn btn-primary">繁體中文</a>
 
-
-			<!-- 動作按鈕 -->
-
-			<!-- 登入按鈕 -->
-			<a th:href="@{/login}" class="btn btn-success me-2"
-				th:text="#{a.login}">Login</a>
+			<hr>
 			<!-- 登出按鈕 -->
+			<div th:if="${name}">
 			<a th:href="@{/logout}" class="btn btn-danger me-2"
 				th:text="#{a.logout}">Logout</a>
-			<!-- 註冊按鈕 -->
 			<a th:href="@{/users/add}" class="btn btn-warning"
 				th:text="#{a.register}">Register</a>
+			</div>
+			<!-- 登入按鈕 -->
+			<div th:unless="${name}">
+			<a th:href="@{/login}" class="btn btn-success me-2"
+				th:text="#{a.login}">Login</a>
+			<a th:href="@{/users/add}" class="btn btn-warning"
+				th:text="#{a.register}">Register</a>
+			</div>
+			<!-- 註冊按鈕 -->
+			
 		</div>
 		<hr>
-		<!--<div class="container mt-4 text-center">
-			<a th:href="@{/customers}" class="btn btn-outline-secondary mt-3"th:text="#{a.customer_list}">Customer List</a>
-    		<a th:href="@{/users}" class="btn btn-outline-secondary mt-3"th:text="#{a.user_list}">User List</a>
-    		<a th:href="@{/orders}" class="btn btn-outline-secondary mt-3"th:text="#{a.order_list}">Order List</a>
-    		<a th:href="@{/products}" class="btn btn-outline-secondary mt-3"th:text="#{a.products}">products</a> 也可用btn-danger-->
 
-
-		<!--</div>-->
-		<!--  <div class="container mt-4">
-			<!-- 商品列表 
-			<div
-				class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-				<div class="col" th:each="product : ${products}">
-					<div class="card h-100">
-						<img th:src="@{${product.prodImages}}" alt="Product Image" 
-							class="card-img-top">
-						<div class="card-body">
-							<h5 class="card-title" th:text="${product.prodName}">Product
-								Name</h5>
-							<p class="card-price"
-								th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">
-								$1,000.00</p>
-						</div>
-					</div>
-				</div>
-			</div>-->
-		<!-- <div class="row">
-			<div class="col-md-3" th:each="product : ${products}">
-				<div class="product-card">
-					<img class="product-image" th:src="@{${product.prodImages}}"
-						alt="Product Image" />
-					<h5 th:text="${product.prodName}">商品名稱</h5>
-					<p class="price"
-						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">價格</p>
-				</div>
-			</div>
-		</div> -->
 		<!-- 商品列表，顯示商品圖片名字價格，點進去可以跳轉商品詳細頁面 -->
 		<div class="row">
 			<div class="col-md-3" th:each="product : ${products}">

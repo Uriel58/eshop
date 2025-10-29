@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @Table(name = "carts")
 public class Cart {
 	/**
-	 * Cart 有customerid（抓取customer的customerid）,
+	 * Cart  有 id customerid（抓取customer的customerid）,
 	 * saved_for_late(願望清單),
 	 * created_at(加入購物車的時間),updated_at(更新時間)
 	 * 結帳需送進Order

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Table(name = "cart_details")
 public class CartDetail {
 	/**
-	 * CartDetail 有 prodNum（抓取 product 的prodNum),prodPrice（抓取 product的
+	 * CartDetail 有Long id prodNum（抓取 product 的prodNum),prodPrice（抓取 product的
 	 * prodPrice 並且送出訂單後存到 ord_price),cart_qty（暫存的購物車數量)
 	 * cart_total（使用 HQL 暫存給顧客看),shipping_fee（運費）
 	 * 送出訂單後存在 OrderDetail
@@ -21,7 +21,7 @@ public class CartDetail {
 	// 關聯 Cart
 	@ManyToOne
 	@MapsId // 這表示使用相同的主鍵來對應 Cart 的主鍵
-	@JoinColumn(name = "cart_id")
+	@JoinColumn(name = "id")
 	private Cart cart;
 
 	// 關聯 Product

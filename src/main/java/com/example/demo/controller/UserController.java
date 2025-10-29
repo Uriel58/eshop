@@ -36,20 +36,14 @@ public class UserController {
     
     @PostMapping("/update/{id}")//HTML <form> 只支持 GET 和 POST，将后端改为接受 POST（简单、兼容 HTML）
     public String updateUser(@PathVariable("id") Long id, @ModelAttribute("user") User user) {
-    	// 如果 identifyName 没有传入，会使用默认值 "customer"
-        if (user.getIdentifyName() == null || user.getIdentifyName().isEmpty()) {
-            user.setIdentifyName("customer");
-        }
+   
         userService.updateUser(id, user);
         return "redirect:/users";
     }
     
     @PostMapping("/save")
     public String saveUser(@ModelAttribute User user) {
-    	// 如果 identifyName 没有传入，会使用默认值 "customer"
-        if (user.getIdentifyName() == null || user.getIdentifyName().isEmpty()) {
-            user.setIdentifyName("customer");
-        }
+    	
         userService.saveUser(user);
         return "redirect:/users";
     }

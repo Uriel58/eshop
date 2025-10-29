@@ -30,7 +30,7 @@
 			</div>
 			<div class="mb-3">
 				<label for="identifyName">Identify Name</label> <input type="text"
-					name="identifyName" class="form-control">
+					th:field="*{identifyName}" class="form-control" required>
 			</div>
 			<button type="submit" class="btn btn-warning">Update</button>
 			<a th:href="@{/users}" class="btn btn-secondary">Cancel</a>
