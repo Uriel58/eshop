@@ -26,14 +26,16 @@ public class Cart {
 	@JoinColumn(name = "customerid", nullable = false)
 	private Customer customer;
 
-	@Column(name = "saved_for_late")
-	private Boolean savedForLate = false;
+	@Column(name = "checked_Out")
+	private Boolean checkedOut = false;
 
 	@Column(name = "created_at")
 	private ZonedDateTime createdAt;
 
 	@Column(name = "updated_at")
 	private ZonedDateTime updatedAt;
+	
+	
 	
 	// 修改： Cart 对应 CartDetail 的外键关联
 	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -63,12 +65,12 @@ public class Cart {
 		this.id = id;
 	}
 
-	public Boolean getSavedForLater() {
-		return savedForLate;
+	public Boolean getCheckedOut() {
+		return checkedOut;
 	}
 
-	public void setSavedForLater(Boolean savedForLater) {
-		this.savedForLate = savedForLater;
+	public void setCheckedOut(Boolean checkedOut) {
+		this.checkedOut = checkedOut;
 	}
 
 	public ZonedDateTime getCreatedAt() {
@@ -107,7 +109,7 @@ public class Cart {
 	    return "Cart{" +
 	            "id=" + id +
 	            ", customerId=" + (customer != null ? customer.getCustomerId() : "null") +
-	            ", savedForLate=" + savedForLate +
+	            ", checkedOut=" + checkedOut +
 	            ", createdAt=" + createdAt +
 	            ", updatedAt=" + updatedAt +
 	            ", cartDetails=" + cartDetails.size() +

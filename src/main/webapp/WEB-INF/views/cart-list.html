@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart List</title>
+</head>
+<body>
+    <h1>All Carts</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Cart ID</th>
+                <th>Customer ID</th>
+                <th>Saved For Later</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="cart : ${carts}">
+                <td th:text="${cart.id}"></td>
+                <td th:text="${cart.customer.customerId}"></td>
+                <td th:text="${cart.savedForLater}"></td>
+                <td th:text="${cart.createdAt}"></td>
+                <td th:text="${cart.updatedAt}"></td>
+                <td>
+                    <a th:href="@{/cart/delete/{id}(id=${cart.id})}">Delete</a> |
+                    <a th:href="@{/cart/{cartId}/cartdetails(cartId=${cart.id})}">View Details</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/cart/add">Add New Cart</a>
+</body>
+</html>

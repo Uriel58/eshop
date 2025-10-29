@@ -7,9 +7,9 @@ public interface UserDAO {
     
     List<User> findAll();
     
-    User findById(Long id);
+    User findById(Long id);//改用Optional<User>
     
-    void save(User user);
+    void save(User user);//改用User
     
     void delete(Long id);
     
