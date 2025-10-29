@@ -26,7 +26,7 @@ public class User {
 	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "identify_name", unique = true, nullable = false)
+	@Column(name = "identify_name", nullable = false)
 	private String identifyName;
 
 	@OneToOne(mappedBy = "user") // 和customer關聯

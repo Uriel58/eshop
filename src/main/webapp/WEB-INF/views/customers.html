@@ -17,7 +17,9 @@
 
     <!-- 新增客戶按鈕 -->
     <a th:href="@{/customers/add}" class="btn btn-primary mb-3">Add New Customer</a>
-
+    		<a th:href="@{/users}" class="btn btn-primary mb-3"th:text="#{a.user_list}">User List</a>
+    		<a th:href="@{/orders}" class="btn btn-primary mb-3"th:text="#{a.order_list}">Order List</a>
+    		<a th:href="@{/products}" class="btn btn-primary mb-3"th:text="#{a.products}">products</a>
     <table class="table table-striped">
         <thead>
             <tr>

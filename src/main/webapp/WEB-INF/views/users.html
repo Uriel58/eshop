@@ -17,7 +17,9 @@
         <h1>User List</h1>
         
         <a th:href="@{/users/add}" class="btn btn-primary mb-3">Add New User</a>
-        
+		<a th:href="@{/customers}" class="btn btn-primary mb-3"th:text="#{a.customer_list}">Customer List</a>	
+    	<a th:href="@{/orders}" class="btn btn-primary mb-3"th:text="#{a.order_list}">Order List</a>
+		<a th:href="@{/products}" class="btn btn-primary mb-3"th:text="#{a.products}">products</a> 
         <table class="table table-striped">
             <thead>
                 <tr>

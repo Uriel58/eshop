@@ -19,7 +19,9 @@
 		<!-- 新增商品按鈕 -->
 		<a th:href="@{/products/add}" class="btn btn-primary mb-3">Add New
 			Product</a>
-
+			<a th:href="@{/customers}" class="btn btn-primary mb-3"th:text="#{a.customer_list}">Customer List</a>
+    		<a th:href="@{/users}" class="btn btn-primary mb-3"th:text="#{a.user_list}">User List</a>
+    		<a th:href="@{/orders}" class="btn btn-primary mb-3"th:text="#{a.order_list}">Order List</a>
 		<table class="table table-striped">
 			<thead>
 				<tr>
