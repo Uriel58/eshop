@@ -56,7 +56,10 @@ public class CustomerController extends LoginBaseController{
     // 儲存新客戶
     @PostMapping("/save")
     public String saveCustomer(@ModelAttribute Customer customer) {
-        customerService.saveCustomer(customer);
+    	// 確保 user.id 已經綁定，這裡可依據 id 重新抓出完整 user 實體
+        User user = userService.getUserById(customer.getUser().getId());
+        customer.setUser(user);
+        customerService.save(customer);
         return "redirect:/customers";
     }
 

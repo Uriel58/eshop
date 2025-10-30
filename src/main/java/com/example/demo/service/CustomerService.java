@@ -14,4 +14,5 @@ public interface CustomerService {
     Customer getCurrentCustomer();
     Customer findByUsername(String username);
     public Customer getCustomerByUserId(Long userId);
+    void save(Customer customer);
 }

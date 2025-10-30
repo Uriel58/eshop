@@ -84,7 +84,7 @@
 			<div class="mb-3">
 				<label>User</label> <select th:field="*{user.id}"
 					class="form-control">
-					<option th:each="user : ${users}" th:value="${user.id}"
+					<option th:each="user : ${users}" th:value="${user}"
 						th:text="${user.name}"
 						th:selected="${user.id == customer.user.id}"></option>
 				</select>

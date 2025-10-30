@@ -58,6 +58,9 @@ public class Order {
     @OneToMany(mappedBy = "order",  cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<OrderDetail> orderDetails = new ArrayList<>();//連到orderdetail fetch = FetchType.EAGER
 
+    // 每個訂單對應一個訂單地址
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private OrderAddress orderAddress;
     // ✅ 在新增前自動設定訂單時間與條碼
     @PrePersist
     protected void onCreate() {
@@ -165,7 +168,16 @@ public class Order {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-    
+    public OrderAddress getOrderAddress() {
+        return orderAddress;
+    }
+
+    public void setOrderAddress(OrderAddress orderAddress) {
+        this.orderAddress = orderAddress;
+        if(orderAddress != null) {
+            orderAddress.setOrder(this); // 保持雙向關聯
+        }
+    }
     
     @Override
     public String toString() {

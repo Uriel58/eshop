@@ -91,4 +91,7 @@ public class CustomerServiceImpl implements CustomerService {
 	public Customer getCustomerByUserId(Long userId) {
 		return customerDAO.findByUserId(userId);
 	}
+	public void save(Customer customer) {
+		customerDAO.save(customer);
+    }
 }

@@ -148,6 +148,13 @@ public class Customer {
 	public void setCarts(List<Cart> carts) {
 		this.carts = carts;
 	}
+	public User getUser() {
+	    return user;
+	}
+
+	public void setUser(User user) {
+	    this.user = user;
+	}
 
 	// toString()
     @Override

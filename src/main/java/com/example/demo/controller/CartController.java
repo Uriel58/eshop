@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @SessionAttributes({ "id", "name" })
 @RequestMapping("/cart")
@@ -115,12 +116,44 @@ public class CartController extends LoginBaseController{
 	}
 
 	// 加入購物車
-	@PostMapping("/{cartId}/add-product")
+	/*@PostMapping("/{cartId}/add-product")
 	public String addProduct(@PathVariable Long cartId, @RequestParam Long productId, @RequestParam int quantity,
 			@RequestParam double price) {
 
 		cartService.addOrUpdateProduct(cartId, productId, quantity, price);
 		return "redirect:/cart/product/" + productId + "?success=true";
+	}*/
+	// 加入購物車（已有購物車）
+	@PostMapping("/add-product/{cartId}")
+	public String addProductToCart(@PathVariable Long cartId,
+	                               @RequestParam Long productId,
+	                               @RequestParam int quantity,
+	                               @RequestParam double price,
+	                               RedirectAttributes redirectAttributes) {
+
+	    cartService.addOrUpdateProduct(cartId, productId, quantity, price);
+	    redirectAttributes.addFlashAttribute("cartMessage", "✅ 商品已加入購物車！");
+	    return "redirect:/cart/product/" + productId;
+	}
+	// 建立新購物車並加入商品
+	@PostMapping("/add/{cartId}")
+	public String createCartAndAddProduct(@RequestParam Long customerId,
+	                                      @RequestParam Long productId,
+	                                      @RequestParam int quantity,
+	                                      @RequestParam double price,
+	                                      RedirectAttributes redirectAttributes) {
+
+	    // 建立新購物車
+	    Cart cart = new Cart();
+	    Customer customer = customerService.getCustomerById(customerId);
+	    cart.setCustomer(customer);
+	    cartService.saveCart(cart);
+
+	    // 將商品加入新購物車
+	    cartService.addOrUpdateProduct(cart.getId(), productId, quantity, price);
+
+	    redirectAttributes.addFlashAttribute("cartMessage", "🛒 已建立新購物車並加入商品！");
+	    return "redirect:/cart/product/" + productId;
 	}
 
 	// 更新購物車
