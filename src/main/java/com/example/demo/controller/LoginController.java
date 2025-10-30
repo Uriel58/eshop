@@ -8,10 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.support.SessionStatus;
-
+import javax.servlet.http.HttpSession;
 @Controller
 @SessionAttributes({"id", "name"}) // 宣告要存入 Session 的屬性
-public class LoginController {
+public class LoginController{
 
     @Autowired
     private UserService userService;
@@ -22,7 +22,7 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String login(@ModelAttribute("user") User formUser, Model model) {
         User user = userService.findByEmail(formUser.getEmail());
         if (user != null && user.getPassword().equals(formUser.getPassword())) {
@@ -35,6 +35,18 @@ public class LoginController {
             return "login";
         }
     	
+    }*/
+    @PostMapping("/login")
+    public String login(@ModelAttribute("user") User formUser, HttpSession session, Model model) {
+        User user = userService.findByEmail(formUser.getEmail());
+        if (user != null && user.getPassword().equals(formUser.getPassword())) {
+            session.setAttribute("id", user.getId());
+            session.setAttribute("name", user.getName());
+            return "redirect:/";
+        } else {
+            model.addAttribute("error", "Invalid email or password");
+            return "login";
+        }
     }
 
 

@@ -15,5 +15,7 @@ public interface CartService {
     void removeProduct(Long cartId, Long productId);
     void calculateTotal(Long cartId);
     void checkout(Long cartId); // 將 Cart -> Order
+    // ✅ 新增這行
+    Cart getCartByCustomerId(Long customerId);
 }
 

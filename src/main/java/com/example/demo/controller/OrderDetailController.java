@@ -12,7 +12,7 @@ import java.util.List;
 @Controller
 @SessionAttributes({ "customerId", "name" })
 @RequestMapping("/orderDetails")
-public class OrderDetailController {
+public class OrderDetailController extends LoginBaseController {
 
 	@Autowired
 	private OrderDetailService orderDetailService;

@@ -31,6 +31,7 @@
                 <th>Keyword</th>
                 <th>Age</th>
                 <th>Gender</th>
+                <th>User</th> <!-- 新增了 User 列 -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -44,6 +45,11 @@
                 <td th:text="${customer.keyword}"></td>
                 <td th:text="${customer.age}"></td>
                 <td th:text="${customer.gender}"></td>
+                 <!-- 添加 User 选择框 -->
+                <td>
+
+                </td>
+                
                 <td>
                     <a th:href="@{/customers/edit/{id}(id=${customer.customerId})}" class="btn btn-warning btn-sm">Edit</a>
                     <a th:href="@{/customers/delete/{id}(id=${customer.customerId})}" class="btn btn-danger btn-sm"

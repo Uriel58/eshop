@@ -24,12 +24,14 @@
     * prod_price(每3位數加,),prod_info(產品資訊),prod_images,prod_stock_qty
     * 而prod_images需展示大些（右半邊）
 	-->
+	<p>歡迎，<span th:text="${name}">使用者</span>！</p>
+	<p>歡迎，<span th:text="${id}">使用者</span>！</p>
 	<div class="container mt-5">
 		<h2 th:text="${product.prodName}">商品名稱</h2>
 		<div class="row mt-4">
 			<!-- 左半：圖片展示 -->
 			<div class="col-md-6">
-				<img class="product-image"
+				<img class="product-image" th:if="${product.prodImages != null}"
 					th:src="@{'/resources/images/' + ${product.prodImages}}"
 					style="width: 300px; height: auto;" />
 				<!-- alt="Product Image" -->
@@ -67,11 +69,51 @@
 			</div>
 		</div>
 
-		<!-- 返回按鈕 -->
+
+
 		<div class="mt-4">
-			<a th:href="@{/}" class="btn btn-secondary">回首頁</a> <a th:href="@{/}"
-				class="btn btn-secondary">加入購物車</a>
+			<!-- /*返回按鈕 */-->
+			<a th:href="@{/}" class="btn btn-secondary">回首頁</a>
+
+			<!-- 已有購物車 -->
+			<form th:if="${cart != null}"
+				th:action="@{/cart/{cartId}/add-product(cartId=${cart.cartId})}"
+				method="post" class="d-inline">
+				<input type="hidden" name="productId" th:value="${product.id}" /> <input
+					type="hidden" name="quantity" value="1" /> <input type="hidden"
+					name="price" th:value="${product.prodPrice}" />
+				<button type="submit" class="btn btn-secondary">加入購物車</button>
+			</form>
+
+			<!-- 尚未有購物車 -->
+			<form th:if="${cart == null and customer != null}"
+				th:action="@{/cart/add}" method="post" class="d-inline">
+				<input type="hidden" name="customerId"
+					th:value="${customer.customerId}" /> <input type="hidden"
+					name="productId" th:value="${product.prodNum}" /> <input
+					type="hidden" name="quantity" value="1" /> <input type="hidden"
+					name="price" th:value="${product.prodPrice}" />
+				<button type="submit" class="btn btn-primary">建立購物車並加入商品</button>
+			</form>
+
+			<!-- 尚未登入 -->
+			<div th:if="${customer == null}">
+				<p class="text-danger mt-3">請先登入後再加入購物車。</p>
+				<a th:href="@{/login}" class="btn btn-outline-primary mt-2">登入</a>
+			</div>
+
+			<!-- 顯示成功訊息（若有） -->
+			<div id="cart-message" th:text="${successMessage}"
+				style="display: none;"></div>
+
+			<script>
+				document.addEventListener("DOMContentLoaded", function() {
+					let msgDiv = document.getElementById("cart-message");
+					if (msgDiv && msgDiv.textContent.trim().length > 0) {
+						alert(msgDiv.textContent.trim());
+					}
+				});
+			</script>
 		</div>
-	</div>
 </body>
 </html>

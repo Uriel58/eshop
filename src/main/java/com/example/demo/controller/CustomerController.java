@@ -6,26 +6,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
 
 @Controller
 @RequestMapping("/customers")
 @SessionAttributes({"customerId", "name"}) // 如果你需要存在 session 中
-public class CustomerController {
+public class CustomerController extends LoginBaseController{
 
     @Autowired
     private CustomerService customerService;
-
+    
+    @Autowired
+    private UserService userService;
+    
     // 顯示所有客戶
     @GetMapping
     public String listCustomers(Model model) {
         model.addAttribute("customers", customerService.getAllCustomers());
-        return "customers"; // 對應 /WEB-INF/views/customers.html
+        model.addAttribute("users", userService.getAllUsers()); // 确保将 users 传递到模板
+        return "customers"; // 对应 /WEB-INF/views/customers.html
     }
 
     // 顯示新增客戶表單
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("customer", new Customer());
+        model.addAttribute("users", userService.getAllUsers());  // 加入所有 User
         return "add-customer"; // 對應 /WEB-INF/views/add-customer.html
     }
 
@@ -34,6 +41,7 @@ public class CustomerController {
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Customer customer = customerService.getCustomerById(id);
         model.addAttribute("customer", customer);
+        model.addAttribute("users", userService.getAllUsers());  // 加入所有 User
         return "edit-customer"; // 對應 /WEB-INF/views/edit-customer.html
     }
 

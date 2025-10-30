@@ -13,8 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
-@SessionAttributes({ "id", "name" })
-public class HomeController {
+public class HomeController extends LoginBaseController{
 
 	@Autowired
 	private ProductService productService;

@@ -70,7 +70,7 @@
 					<option value="連江縣">連江縣</option>
 				</select>
 			</div>
-
+			
 			<div class="mb-3">
 				<label>Gender</label> <select th:field="*{gender}"
 					class="form-control">
@@ -80,7 +80,14 @@
 					<option value="Other">Other</option>
 				</select>
 			</div>
-
+			
+			<div class="mb-3">
+            <label for="user" class="form-label">User</label>
+            <select th:field="*{user.id}" class="form-control">
+                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+            </select>
+        </div>
+			
 			<button type="submit" class="btn btn-success">Save</button>
 			<a th:href="@{/customers}" class="btn btn-secondary">Cancel</a>
 		</form>

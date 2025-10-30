@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/users")
 @SessionAttributes({"id", "name"}) // 宣告要存入 Session 的屬性
-public class UserController {
+public class UserController extends LoginBaseController{
     
     @Autowired
     private UserService userService;

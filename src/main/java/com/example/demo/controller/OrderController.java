@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/orders")
 @SessionAttributes({"customerId", "name"})
-public class OrderController {
+public class OrderController extends LoginBaseController{
 
     @Autowired
     private OrderService orderService;

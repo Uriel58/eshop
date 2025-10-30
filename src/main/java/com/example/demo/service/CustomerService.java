@@ -10,4 +10,8 @@ public interface CustomerService {
     void updateCustomer(Long customerId, Customer updatedCustomer);
     void deleteCustomer(Long customerId);
     Customer findByEmail(String email);
+    ///// CartController抓目前登入顧客
+    Customer getCurrentCustomer();
+    Customer findByUsername(String username);
+    public Customer getCustomerByUserId(Long userId);
 }

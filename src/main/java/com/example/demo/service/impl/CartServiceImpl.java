@@ -177,6 +177,12 @@ public class CartServiceImpl implements CartService {
 		// 更新购物车
 		cartDao.update(cart);
 	}
+	// ✅ 新增這個方法
+    @Override
+    public Cart getCartByCustomerId(Long customerId) {
+        List<Cart> carts = cartDao.findByCustomerId(customerId);
+        return carts.isEmpty() ? null : carts.get(0); // 只回傳第一個購物車
+    }
 	/*
 	 * @Override
 	 * 

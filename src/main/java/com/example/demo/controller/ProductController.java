@@ -13,18 +13,26 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/products")
-@SessionAttributes({"customerId", "name"})
-public class ProductController {
+public class ProductController extends LoginBaseController{
 
     @Autowired
     private ProductService productService;
 
     // 顯示所有商品
     @GetMapping
-    public String listProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
-        model.addAttribute("products", products);
-        return "products"; // 對應 templates/products.html
+    public String listProducts(HttpSession session,Model model) {
+    	Long id = (Long) session.getAttribute("id");
+        String name = (String) session.getAttribute("name");
+
+        // 如果沒登入，導回登入頁
+        if (id == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("name", name);
+        model.addAttribute("id", id);
+        model.addAttribute("products", productService.getAllProducts());
+        return "products";// 對應 templates/products.html
     }
 
     // 回首頁（session 顯示）
@@ -116,7 +124,7 @@ public class ProductController {
     public String getProductByBarcode(@PathVariable("barcode") String barcode, Model model) {
         Product product = productService.findByBarcode(barcode);
         model.addAttribute("product", product);
-        return "product-detail";
+        return "/";
     }
 
     // 關鍵字模糊查詢
@@ -128,8 +136,13 @@ public class ProductController {
     }
     @GetMapping("/details/{id}")
     public String getProductDetail(@PathVariable Long id, Model model) {
-        Product product = productService.getProductById(id);
+    	Product product = productService.getProductById(id);
         model.addAttribute("product", product);
+
+        // 直接從 session 取得登入者，繼承 BaseController，無需重複編寫
+        if (model.containsAttribute("customer")) {
+            model.addAttribute("successMessage", "商品已成功加入購物車！");
+        }
         return "products_details"; // 指向 product_details.html
     }
 }

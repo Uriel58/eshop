@@ -50,4 +50,12 @@ public class CustomerDAOImpl implements CustomerDAO {
                 .setParameter("email", email)
                 .uniqueResult();
     }
+    @Override
+    public Customer findByUserId(Long userId) {
+        String hql = "FROM Customer c WHERE c.user.id = :userId";
+        return getCurrentSession()
+                .createQuery(hql, Customer.class)
+                .setParameter("userId", userId)
+                .uniqueResult();
+    }
 }
