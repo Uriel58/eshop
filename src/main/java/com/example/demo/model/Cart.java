@@ -6,13 +6,16 @@ import java.time.ZoneId;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 @Entity
 @Table(name = "carts")
 public class Cart {
 	/**
 	 * Cart  有 id customerid（抓取customer的customerid）,
 	 * saved_for_late(願望清單),
-	 * created_at(加入購物車的時間),updated_at(更新時間)
+	 * created_at(加入購物車的時間),updated_at(更新時間),checked_Out是否送出訂單
 	 * 結帳需送進Order
 	 * 連接到customer,cartDetail
 	 */
@@ -37,8 +40,9 @@ public class Cart {
 	
 	
 	
-	// 修改： Cart 对应 CartDetail 的外键关联
-	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	// 修改： Cart 对应 CartDetail 的外键关联fetch = FetchType.EAGER,
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Fetch(FetchMode.SUBSELECT)
 	private List<CartDetail> cartDetails = new ArrayList<>(); 
 
 	// 自動時間設定

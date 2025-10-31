@@ -20,9 +20,8 @@ public class CartDetail {
 	
 	// 關聯 Cart
 	@ManyToOne
-	@MapsId // 這表示使用相同的主鍵來對應 Cart 的主鍵
-	@JoinColumn(name = "id")
-	private Cart cart;
+	@JoinColumn(name = "cart_id", nullable = false) // 使用 cart_id 作為外鍵
+    private Cart cart;
 
 	// 關聯 Product
 	@ManyToOne

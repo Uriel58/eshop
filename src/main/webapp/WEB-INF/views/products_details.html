@@ -79,25 +79,15 @@
 			<!-- /*返回按鈕 */-->
 			<a th:href="@{/}" class="btn btn-secondary">回首頁</a>
 
-			<!-- 已有購物車 -->
-			<form th:if="${cart != null}"
-				th:action="@{/cart/{cartId}/add-product(cartId=${cart.cartId})}"
-				method="post" class="d-inline">
-				<input type="hidden" name="productId" th:value="${product.id}" /> <input
-					type="hidden" name="quantity" value="1" /> <input type="hidden"
-					name="price" th:value="${product.prodPrice}" />
-				<button type="submit" class="btn btn-secondary">加入購物車</button>
-			</form>
-
-			<!-- 尚未有購物車 -->
-			<form th:if="${cart == null and customer != null}"
-				th:action="@{/cart/add}" method="post" class="d-inline">
+			<!-- 自動新增購物車的商品 -->
+			<form th:if="${customer != null}"
+				th:action="@{/cart/create-and-add-product}" method="post" class="d-inline">
 				<input type="hidden" name="customerId"
 					th:value="${customer.customerId}" /> <input type="hidden"
 					name="productId" th:value="${product.prodNum}" /> <input
 					type="hidden" name="quantity" value="1" /> <input type="hidden"
 					name="price" th:value="${product.prodPrice}" />
-				<button type="submit" class="btn btn-primary">建立購物車並加入商品</button>
+				<button type="submit" class="btn btn-primary">加入購物車</button>
 			</form>
 
 			<!-- 尚未登入 -->

@@ -53,6 +53,7 @@ public class CartDAOImpl implements CartDAO {
         return getSession()
                 .createQuery("from Cart c where c.customer.customerId = :customerId", Cart.class)
                 .setParameter("customerId", customerId)
-                .list();
+                .list(); ///uniqueResult();
+        //SELECT c FROM Customer c LEFT JOIN FETCH c.carts WHERE c.id = :customerId
     }
 }

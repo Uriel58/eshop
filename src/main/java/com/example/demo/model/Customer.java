@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 @Entity
 @Table(name = "customers") // 資料表名稱，注意：和 order 表中的外鍵一致
 public class Customer {
@@ -23,8 +25,9 @@ public class Customer {
     @JoinColumn(name = "user_id", referencedColumnName = "id") // This links to the 'id' field in User table
     private User user;//關聯user one to one
     
-    @OneToMany
-    (mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany//
+    (fetch = FetchType.EAGER,mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Cart> carts = new ArrayList<>();//關聯Cart
 
     @Column(name = "name", nullable = false)
