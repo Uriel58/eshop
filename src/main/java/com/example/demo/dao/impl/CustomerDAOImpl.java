@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CustomerDAOImpl implements CustomerDAO {
@@ -25,8 +26,9 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public Customer findById(Long customerId) {
-        return getCurrentSession().get(Customer.class, customerId);
+    public Optional<Customer> findById(Long id) {
+        Customer customer = getCurrentSession().get(Customer.class, id);
+        return Optional.ofNullable(customer);  // 返回 Optional 來處理可能的 null 值
     }
 
     @Override

@@ -104,6 +104,11 @@ public class Cart {
 	public void setCartDetails(List<CartDetail> cartDetails) {
 		this.cartDetails = cartDetails;
 	}
+	// 添加 CartDetail 的方法
+    public void addCartDetail(CartDetail cartDetail) {
+        cartDetails.add(cartDetail);
+        cartDetail.setCart(this); // 设置 CartDetail 对应的 Cart
+    }
 	@Override
 	public String toString() {
 	    return "Cart{" +
@@ -115,29 +120,4 @@ public class Cart {
 	            ", cartDetails=" + cartDetails.size() +
 	            '}';
 	}
-	
-	/*public Order checkoutCart(List<Cart> cartItems, Customer customer) {
-	    Order order = new Order();
-	    order.setCustomer(customer);
-	    order.setOrderStatus("Pending");
-	    order.setPaymentMethod("Credit Card"); // 依實際設定
-	    order.setDeliveryMethod("Home Delivery");
-
-	    for (Cart cart : cartItems) {
-	        OrderDetail detail = new OrderDetail();
-	        detail.setProduct(cart.getProduct());
-	        detail.setProdPrice(cart.getProdPrice());
-	        detail.setQuantity(cart.getCartQty());
-	        detail.setOrder(order);
-	        
-	        order.addOrderDetail(detail);
-
-	        cart.setOrder(order); // 設定關聯
-	    }
-
-	    return orderRepository.save(order); // 一併儲存 order 與 detail
-	}*/
-	
-
-
 }

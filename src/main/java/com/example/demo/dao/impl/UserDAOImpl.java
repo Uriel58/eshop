@@ -1,5 +1,5 @@
 package com.example.demo.dao.impl;
-
+import java.util.Optional;
 import com.example.demo.dao.UserDAO;
 import com.example.demo.model.User;
 import org.hibernate.Session;
@@ -25,8 +25,9 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User findById(Long id) {
-        return getCurrentSession().get(User.class, id);
+    public Optional<User> findById(Long id) {
+        User user = getCurrentSession().get(User.class, id);
+        return Optional.ofNullable(user);  // 返回 Optional<User>
     }
 
     @Override

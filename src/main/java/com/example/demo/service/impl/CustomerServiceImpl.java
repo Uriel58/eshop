@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,7 +33,8 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getCustomerById(Long customerId) {
 		logger.info("編輯資料，Customer ID={}", customerId);
-		return customerDAO.findById(customerId);
+		Optional<Customer> optionalCustomer = customerDAO.findById(customerId);
+        return optionalCustomer.orElseThrow(() -> new RuntimeException("Customer not found"));
 	}
 
 	@Override
@@ -42,10 +44,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public void updateCustomer(Long customerId, Customer updatedCustomer) {
-		Customer existingCustomer = customerDAO.findById(customerId);
-		if (existingCustomer == null) {
-			throw new RuntimeException("Customer not found");
-		}
+		Optional<Customer> optionalCustomer = customerDAO.findById(customerId);
+	    Customer existingCustomer = optionalCustomer.orElseThrow(() -> new RuntimeException("Customer not found"));
+	    
 		existingCustomer.setName(updatedCustomer.getName());
 		existingCustomer.setEmail(updatedCustomer.getEmail());
 		existingCustomer.setTelephone(updatedCustomer.getTelephone());

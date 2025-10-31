@@ -66,6 +66,11 @@ public class Customer {
         this.orders = new ArrayList<>(); // 初始化 orders
 		this.carts = new ArrayList<>(); // 初始化 orders
     }
+    ///自動添加customer到cart
+    public void addCart(Cart cart) {
+        carts.add(cart);  // 将 Cart 添加到 Customer 的 carts 列表中
+        cart.setCustomer(this); // 將當前的 Customer 設置 Cart 的擁有者
+    }
 
     // Getters and Setters
     public Long getCustomerId() {

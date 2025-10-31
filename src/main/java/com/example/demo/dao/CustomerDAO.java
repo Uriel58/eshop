@@ -2,18 +2,19 @@ package com.example.demo.dao;
 
 import com.example.demo.model.Customer;
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomerDAO {
 	List<Customer> findAll();
 
-	Customer findById(Long customerId);
+	Optional<Customer> findById(Long id);//Customer findById(Long customerId);
 
 	void save(Customer customer);
 
 	void delete(Long customerId);
 
 	Customer findByEmail(String email);
-
+	
 	// 新增這個方法
 	Customer findByUserId(Long userId);
 	/*

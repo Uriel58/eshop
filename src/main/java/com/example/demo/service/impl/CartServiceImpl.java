@@ -86,7 +86,8 @@ public class CartServiceImpl implements CartService {
 
 		// 創建訂單 (Order)
 		Order order = new Order();
-		Customer customer = customerDao.findById(cart.getCustomer().getCustomerId()); // 查找 Customer
+		Customer customer = customerDao.findById(cart.getCustomer().getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));// 查找 Customer
 		order.setCustomer(customer); // 設定 Customer 物件
 		order.setOrderStatus("未處理"); // 設定訂單狀態
 		orderDao.save(order); // 保存訂單
@@ -182,6 +183,10 @@ public class CartServiceImpl implements CartService {
     public Cart getCartByCustomerId(Long customerId) {
         List<Cart> carts = cartDao.findByCustomerId(customerId);
         return carts.isEmpty() ? null : carts.get(0); // 只回傳第一個購物車
+    }
+    @Override
+    public void saveCartDetail(CartDetail cartDetail) {
+    	cartDetailDao.save(cartDetail); // 保存 CartDetail 到数据库
     }
 	/*
 	 * @Override

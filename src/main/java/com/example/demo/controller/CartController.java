@@ -18,10 +18,12 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.math.BigDecimal;
+
 @Controller
 @SessionAttributes({ "id", "name" })
 @RequestMapping("/cart")
-public class CartController extends LoginBaseController{
+public class CartController extends LoginBaseController {
 
 	@Autowired
 	private CartService cartService;
@@ -73,88 +75,136 @@ public class CartController extends LoginBaseController{
 	}
 
 	// 顯示商品詳細頁（含登入檢查）
-	@GetMapping("/product/{id}")
-	public String viewProduct(@PathVariable Long id, @RequestParam(required = false) String success, Model model,
-			HttpServletRequest request) {
+	@PostMapping("/create-and-add-product")
+	public String createCartAndAddProduct(
+	        @RequestParam(required = false) Long customerId,  // 允许为空，如果为空则从会话中获取
+	        @RequestParam Long productId,
+	        @RequestParam int quantity,
+	        @RequestParam double price,
+	        HttpServletRequest request,
+	        RedirectAttributes redirectAttributes) {
 
-		// 取得商品
-		Product product = productService.getProductById(id);
-		model.addAttribute("product", product);
-
-		// ✅ 直接從 session 取登入者
-		// 直接從 session 取登入者
-		Long userId = (Long) request.getSession().getAttribute("id");
-		if (userId == null) {
-		    return "redirect:/login"; // 尚未登入 → 導向登入頁
-		}
-
-		// ✅ 用 User ID 取得對應的 Customer
-	    Customer currentCustomer = customerService.getCustomerByUserId(userId);
-	    if (currentCustomer == null) {
-	        return "redirect:/login"; // 防呆，確保有對應 Customer
+	    // 如果没有传递 customerId，尝试从会话中获取
+	    if (customerId == null) {
+	        customerId = (Long) request.getSession().getAttribute("id");
 	    }
-	    model.addAttribute("customer", currentCustomer);
 
-		// 取得該顧客的購物車
-		// 取得或建立該顧客的購物車
-	    Cart cart = cartService.getCartByCustomerId(currentCustomer.getCustomerId());
-	    if (cart == null) {
-	        // 尚未有購物車時，model 裡也可以放 null（頁面會判斷）
-	        model.addAttribute("cart", null);
-	    } else {
-	        model.addAttribute("cart", cart);
+	    // 如果还是没有 customerId，重定向到登录页
+	    if (customerId == null) {
+	        return "redirect:/login"; // 确保用户已经登录
 	    }
-		// 成功提示
-		if ("true".equals(success)) {
-			model.addAttribute("successMessage", "商品已成功加入購物車！");
-		}
-		
-		// 將登入者資訊加入 model，方便顯示在頁面
-	    model.addAttribute("id", currentCustomer.getCustomerId());
-	    model.addAttribute("name", currentCustomer.getName());
-		return "products_details";
+
+	    // 根据 customerId 查找顾客
+	    Customer customer = customerService.getCustomerById(customerId);
+	    if (customer == null) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "找不到该顾客!");
+	        return "redirect:/error"; // 如果顾客不存在，重定向到错误页面
+	    }
+
+	    // 创建新的购物车并将其与顾客关联
+	    Cart cart = new Cart();
+	    cart.setCustomer(customer); // 显式地设置 customer 到 cart
+
+	    // 将购物车添加到顾客的购物车列表
+	    customer.addCart(cart); // 如果有双向关系
+
+	    // 保存顾客和购物车（这会自动保存关联的购物车）
+	    customerService.saveCustomer(customer);
+
+	    // 获取商品信息
+	    Product product = productService.getProductById(productId);
+	    if (product == null) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "找不到该商品!");
+	        return "redirect:/error"; // 如果商品不存在，重定向到错误页面
+	    }
+
+	    // 创建新的购物车详情 (CartDetail)
+	    CartDetail cartDetail = new CartDetail();
+	    cartDetail.setCart(cart); // 将购物车与购物车详情关联
+	    cartDetail.setProduct(product); // 将商品与购物车详情关联
+	    cartDetail.setProdPrice(BigDecimal.valueOf(price)); // 设置商品价格
+	    cartDetail.setCartQty(quantity); // 设置商品数量
+	    cartDetail.setShippingFee(BigDecimal.ZERO); // 设置运费（假设暂时为零）
+	    cartDetail.setCartTotal(BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity))); // 计算总价
+
+	    // 将购物车详情添加到购物车
+	    cart.addCartDetail(cartDetail);  // 如果 Cart 类有 addCartDetail 方法
+
+	    // 保存购物车详情（这会自动保存关联的 CartDetail）
+	    cartService.saveCartDetail(cartDetail);  // 保存 CartDetail 对象
+
+	    // 重定向并显示成功消息
+	    redirectAttributes.addFlashAttribute("cartMessage", "🛒 新购物车已创建并加入商品！");
+	    return "redirect:/cart/product/" + productId;
 	}
 
-	// 加入購物車
-	/*@PostMapping("/{cartId}/add-product")
-	public String addProduct(@PathVariable Long cartId, @RequestParam Long productId, @RequestParam int quantity,
-			@RequestParam double price) {
 
-		cartService.addOrUpdateProduct(cartId, productId, quantity, price);
-		return "redirect:/cart/product/" + productId + "?success=true";
-	}*/
+	/*
+	 * @PostMapping("/{cartId}/add-product") public String addProduct(@PathVariable
+	 * Long cartId, @RequestParam Long productId, @RequestParam int quantity,
+	 * 
+	 * @RequestParam double price) {
+	 * 
+	 * cartService.addOrUpdateProduct(cartId, productId, quantity, price); return
+	 * "redirect:/cart/product/" + productId + "?success=true"; }
+	 */
 	// 加入購物車（已有購物車）
 	@PostMapping("/add-product/{cartId}")
-	public String addProductToCart(@PathVariable Long cartId,
-	                               @RequestParam Long productId,
-	                               @RequestParam int quantity,
-	                               @RequestParam double price,
-	                               RedirectAttributes redirectAttributes) {
+	public String addProductToCart(@PathVariable Long cartId, @RequestParam Long productId, @RequestParam int quantity,
+			@RequestParam double price, RedirectAttributes redirectAttributes) {
 
-	    cartService.addOrUpdateProduct(cartId, productId, quantity, price);
-	    redirectAttributes.addFlashAttribute("cartMessage", "✅ 商品已加入購物車！");
-	    return "redirect:/cart/product/" + productId;
+		cartService.addOrUpdateProduct(cartId, productId, quantity, price);
+		redirectAttributes.addFlashAttribute("cartMessage", "✅ 商品已加入購物車！");
+		return "redirect:/cart/product/" + productId;
 	}
+
 	// 建立新購物車並加入商品
-	@PostMapping("/add/{cartId}")
-	public String createCartAndAddProduct(@RequestParam Long customerId,
-	                                      @RequestParam Long productId,
-	                                      @RequestParam int quantity,
-	                                      @RequestParam double price,
-	                                      RedirectAttributes redirectAttributes) {
+	
+	/*@PostMapping("/add/{cartId}")
+	public String createCartAndAddProduct(@RequestParam Long customerId, @RequestParam Long productId,
+			@RequestParam int quantity, @RequestParam double price, RedirectAttributes redirectAttributes) {
 
-	    // 建立新購物車
-	    Cart cart = new Cart();
-	    Customer customer = customerService.getCustomerById(customerId);
-	    cart.setCustomer(customer);
-	    cartService.saveCart(cart);
+		// 根据顾客ID查找顾客
+		Customer customer = customerService.getCustomerById(customerId);
+		if (customer == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "顾客不存在!");
+			return "redirect:/login"; // 如果找不到顾客，重定向到登入页面
+		}
 
-	    // 將商品加入新購物車
-	    cartService.addOrUpdateProduct(cart.getId(), productId, quantity, price);
+		// 创建新的购物车并与顾客关联
+		Cart cart = new Cart();
+		customer.addCart(cart); // 将购物车添加到顾客
 
-	    redirectAttributes.addFlashAttribute("cartMessage", "🛒 已建立新購物車並加入商品！");
-	    return "redirect:/cart/product/" + productId;
-	}
+		// 保存顾客（这会自动保存关联的购物车）
+		customerService.saveCustomer(customer);
+
+		// 将商品添加到购物车
+		cartService.addOrUpdateProduct(cart.getId(), productId, quantity, price);
+
+		// 重定向并显示成功信息
+		redirectAttributes.addFlashAttribute("cartMessage", "🛒 已创建新购物车并加入商品！");
+		return "redirect:/cart/product/" + productId;
+	}*/
+	/*
+	 * @PostMapping("/add/{cartId}") public String
+	 * createCartAndAddProduct(@RequestParam Long customerId,
+	 * 
+	 * @RequestParam Long productId,
+	 * 
+	 * @RequestParam int quantity,
+	 * 
+	 * @RequestParam double price, RedirectAttributes redirectAttributes) {
+	 * 
+	 * // 建立新購物車 Cart cart = new Cart(); Customer customer =
+	 * customerService.getCustomerById(customerId); cart.setCustomer(customer);
+	 * cartService.saveCart(cart);
+	 * 
+	 * // 將商品加入新購物車 cartService.addOrUpdateProduct(cart.getId(), productId,
+	 * quantity, price);
+	 * 
+	 * redirectAttributes.addFlashAttribute("cartMessage", "🛒 已建立新購物車並加入商品！");
+	 * return "redirect:/cart/product/" + productId; }
+	 */
 
 	// 更新購物車
 	@PostMapping("/{cartId}/update-product")

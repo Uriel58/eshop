@@ -24,11 +24,11 @@
     * prod_price(每3位數加,),prod_info(產品資訊),prod_images,prod_stock_qty
     * 而prod_images需展示大些（右半邊）
 	-->
-	<p>
-		歡迎，<span th:text="${name}">使用者</span>！
+	<p th:if="${customer != null}">
+		歡迎，<span th:text="${customer.name}">顧客名稱</span>！
 	</p>
-	<p>
-		歡迎，<span th:text="${id}">使用者</span>！
+	<p th:if="${customer == null}">
+		歡迎，<span th:text="#{home.visitor}">訪客</span>！
 	</p>
 	<div class="container mt-5">
 		<h2 th:text="${product.prodName}">商品名稱</h2>
@@ -110,7 +110,7 @@
 			<div id="cart-message" th:text="${successMessage}"
 				style="display: none;"></div>
 
-			<script>
+			<!--  <script>
 				document.addEventListener("DOMContentLoaded", function() {
 					const msgDiv = document.getElementById("cart-message");
 					const message = msgDiv ? msgDiv.textContent.trim() : "";
@@ -118,7 +118,7 @@
 						alert(message); // ✅ 只有在購物動作後 redirect 回來才會顯示
 					}
 				});
-			</script>
+			</script>-->
 		</div>
 </body>
 </html>
