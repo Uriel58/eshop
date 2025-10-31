@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import javax.servlet.http.HttpSession;
 @Controller
-@SessionAttributes({"id", "name"}) // 宣告要存入 Session 的屬性
 public class LoginController{
 
     @Autowired
@@ -56,7 +55,8 @@ public class LoginController{
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // 清除整個 Session
+        session.invalidate(); // 清除 HttpSession
+        ///sessionStatus.setComplete(); // 清除 @SessionAttributes 管理的屬性
         return "redirect:/login";
     }
 }
