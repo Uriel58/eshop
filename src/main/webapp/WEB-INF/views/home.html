@@ -54,7 +54,7 @@
 		</div>
 
 		<!-- 右側：購物車按鈕 -->
-		<div th:if="${carts != null}">
+		<div th:if="${cart != null}">
 			<a th:href="@{/cart/{cartId}/cartdetails(cartId=${cart.id})}"
 				class="btn btn-outline-secondary mt-3" th:text="#{a.Carts}">Check
 				carts...</a>

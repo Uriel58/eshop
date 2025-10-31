@@ -55,8 +55,8 @@ public class LoginController{
 
 
     @GetMapping("/logout")
-    public String logout(SessionStatus sessionStatus) {
-        sessionStatus.setComplete(); // 清除 @SessionAttributes 管理的 Session 資料
+    public String logout(HttpSession session) {
+        session.invalidate(); // 清除整個 Session
         return "redirect:/login";
     }
 }
