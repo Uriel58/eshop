@@ -95,6 +95,13 @@ public class User {
 	public void setPasswordResetToken(List<PasswordResetToken> passwordResetTokens) {
 		this.passwordResetTokens = passwordResetTokens;
 	}
+	public Customer getCustomer() {
+	    return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+	    this.customer = customer;
+	}
 	
 	@Override
 	public String toString() {

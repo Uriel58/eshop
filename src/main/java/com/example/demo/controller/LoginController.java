@@ -42,6 +42,9 @@ public class LoginController{
         if (user != null && user.getPassword().equals(formUser.getPassword())) {
             session.setAttribute("id", user.getId());
             session.setAttribute("name", user.getName());
+            if(user.getCustomer() != null) {
+                session.setAttribute("customerId", user.getCustomer().getCustomerId());
+            }
             return "redirect:/";
         } else {
             model.addAttribute("error", "Invalid email or password");

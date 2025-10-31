@@ -53,10 +53,11 @@
 			</h1>
 		</div>
 
-		<!-- 右側：購物車按鈕 -->
+		<!-- 右側：購物車按鈕th:if="${carts != null}" -->
 		<div>
-			<a th:href="@{/cart/cart-list}" class="btn btn-outline-secondary mt-3"
-				th:text="#{a.Carts}">Check carts...</a><!-- @{/cart/{cartId}/cartdetails} -->
+			<a th:href="@{/cart/{cartId}/cartdetails(cartId=${cart.id})}"
+				class="btn btn-outline-secondary mt-3" th:text="#{a.Carts}">Check
+				carts...</a>
 		</div>
 	</div>
 
@@ -70,20 +71,18 @@
 			<hr>
 			<!-- 登出按鈕 -->
 			<div th:if="${name}">
-			<a th:href="@{/logout}" class="btn btn-danger me-2"
-				th:text="#{a.logout}">Logout</a>
-			<a th:href="@{/users/add}" class="btn btn-warning"
-				th:text="#{a.register}">Register</a>
+				<a th:href="@{/logout}" class="btn btn-danger me-2"
+					th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
+					class="btn btn-warning" th:text="#{a.register}">Register</a>
 			</div>
 			<!-- 登入按鈕 -->
 			<div th:unless="${name}">
-			<a th:href="@{/login}" class="btn btn-success me-2"
-				th:text="#{a.login}">Login</a>
-			<a th:href="@{/users/add}" class="btn btn-warning"
-				th:text="#{a.register}">Register</a>
+				<a th:href="@{/login}" class="btn btn-success me-2"
+					th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
+					class="btn btn-warning" th:text="#{a.register}">Register</a>
 			</div>
 			<!-- 註冊按鈕 -->
-			
+
 		</div>
 		<hr>
 

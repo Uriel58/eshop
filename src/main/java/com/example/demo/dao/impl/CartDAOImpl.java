@@ -47,13 +47,24 @@ public class CartDAOImpl implements CartDAO {
             getSession().delete(cart);
         }
     }
-
     @Override
     public List<Cart> findByCustomerId(Long customerId) {
         return getSession()
-                .createQuery("from Cart c where c.customer.customerId = :customerId", Cart.class)
+                .createQuery("FROM Cart c WHERE c.customer.customerId = :customerId", Cart.class)
                 .setParameter("customerId", customerId)
-                .list(); ///uniqueResult();
-        //SELECT c FROM Customer c LEFT JOIN FETCH c.carts WHERE c.id = :customerId
+                .list();
     }
+    /*@Override
+    public Cart findByCustomerIdWithDetails(Long customerId) {
+        return getSession()
+                .createQuery(
+                    "SELECT c FROM Cart c " +
+                    "JOIN FETCH c.cartDetails cd " +
+                    "JOIN FETCH cd.product " +
+                    "WHERE c.customer.customerId = :customerId", 
+                    Cart.class
+                )
+                .setParameter("customerId", customerId)
+                .uniqueResult(); // 因為一個顧客通常只有一個 Cart
+    }*/
 }

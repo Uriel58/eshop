@@ -10,4 +10,5 @@ public interface CartDAO {
     void update(Cart cart);
     void delete(Long id);
     List<Cart> findByCustomerId(Long customerId);
+    //List<Cart> findByCustomerIdWithDetails(Long customerId); // 新增，配合CartController
 }

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Cart;
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.example.demo.service.CartService;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -16,6 +18,9 @@ public class HomeController extends LoginBaseController{
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private CartService cartService; // ✅ 確保有注入
 
 	private static final int PAGE_SIZE = 12; // 每頁10筆
 
@@ -24,10 +29,18 @@ public class HomeController extends LoginBaseController{
 
 		String name = (String) session.getAttribute("name");
 		Long id = (Long) session.getAttribute("id");
+		Long customerId = (Long) session.getAttribute("customerId"); // ✅ 從 session 取得 customerId
 
 		model.addAttribute("name", name);
 		model.addAttribute("id", id);
-
+		
+		// 取得當前用戶的購物車
+	    Cart cart = null;
+	    if (customerId != null) {
+	    	cart = cartService.getCartByCustomerId(customerId); // ✅ 取得 Cart
+	    }
+	    model.addAttribute("cart", cart); // 注意這裡傳一個 Cart 對象
+	    
 		List<Product> allProducts = productService.getAllProducts();
 
 		int totalProducts = allProducts.size();
