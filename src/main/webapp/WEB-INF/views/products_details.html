@@ -99,20 +99,6 @@
 			<div th:if="${cartMessage}" th:text="${cartMessage}" class="alert"
 				th:classappend="${cartMessage.contains('⚠️')} ? 'alert-warning' : 'alert-success'">
 			</div>
-
-			<!-- 顯示成功訊息（若有） -->
-			<div id="cart-message" th:text="${successMessage}"
-				style="display: none;"></div>
-
-			<!--  <script>
-				document.addEventListener("DOMContentLoaded", function() {
-					const msgDiv = document.getElementById("cart-message");
-					const message = msgDiv ? msgDiv.textContent.trim() : "";
-					if (message.length > 0) {
-						alert(message); // ✅ 只有在購物動作後 redirect 回來才會顯示
-					}
-				});
-			</script>-->
 		</div>
 </body>
 </html>
