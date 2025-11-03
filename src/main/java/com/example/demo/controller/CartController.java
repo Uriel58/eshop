@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Cart;
+import com.example.demo.model.Order;
 import com.example.demo.model.CartDetail;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Product;
-import com.example.demo.service.CartDetailService;
 import com.example.demo.service.CartService;
 import com.example.demo.service.CustomerService;
 import com.example.demo.service.ProductService;
@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.List;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,8 +26,6 @@ public class CartController extends LoginBaseController {
 
 	@Autowired
 	private CartService cartService;
-	@Autowired
-	private CartDetailService cartDetailService;
 	@Autowired
 	private ProductService productService;
 	@Autowired
@@ -65,13 +62,16 @@ public class CartController extends LoginBaseController {
 	@GetMapping("/{cartId}/cartdetails")
 	public String viewCartDetails(@PathVariable Long cartId, Model model) {
 		Cart cart = cartService.getCart(cartId);
+		if (cart == null) {
+	        return "redirect:/cart";
+	    }
 		model.addAttribute("cart", cart);
-		List<CartDetail> details = cartDetailService.getDetailsByCart(cartId);
 		model.addAttribute("details", cart.getCartDetails());
 		// ✅ 計算總價（包含運費）
 		BigDecimal total = cart.getCartDetails().stream().map(CartDetail::getCartTotal).reduce(BigDecimal.ZERO,
 				BigDecimal::add);
 		model.addAttribute("total", total); // 傳給 前端
+		model.addAttribute("order", new Order()); // 新增結帳表單綁定物件
 		return "cartdetails";
 	}
 
@@ -164,8 +164,8 @@ public class CartController extends LoginBaseController {
 
 	// 結帳
 	@PostMapping("/{cartId}/checkout")
-	public String checkout(@PathVariable Long cartId) {
-		cartService.checkout(cartId);
+	public String checkout(@PathVariable Long cartId, @ModelAttribute Order order) {
+		cartService.checkout(cartId,order);
 		return "redirect:/";
 	}
 }

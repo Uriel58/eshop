@@ -5,7 +5,6 @@ import com.example.demo.model.OrderDetail;
 import com.example.demo.model.Product;
 import com.example.demo.model.Customer;
 import com.example.demo.dao.OrderDAO;
-import com.example.demo.dao.OrderDetailDAO;
 import com.example.demo.dao.CartDetailDAO;
 import com.example.demo.dao.CustomerDAO;
 import com.example.demo.dao.ProductDAO;
@@ -30,8 +29,6 @@ public class CartServiceImpl implements CartService {
 	@Autowired
 	private OrderDAO orderDao;
 
-	@Autowired
-	private OrderDetailDAO orderDetailDao;
 
 	@Autowired
 	private CartDetailDAO cartDetailDao;
@@ -76,7 +73,7 @@ public class CartServiceImpl implements CartService {
 	// 結帳
 	@Override
 	@Transactional
-	public void checkout(Long cartId) {
+	public void checkout(Long cartId , Order orderForm) {
 	    // 1️⃣ 取得購物車
 	    Cart cart = cartDao.findById(cartId);
 	    if (cart == null || cart.getCartDetails().isEmpty()) {
@@ -88,9 +85,12 @@ public class CartServiceImpl implements CartService {
 	    Customer customer = customerDao.findById(cart.getCustomer().getCustomerId())
 	            .orElseThrow(() -> new RuntimeException("Customer not found"));
 	    order.setCustomer(customer);
+	    
+	    // 使用前端選項
+	    order.setCounty(orderForm.getCounty());
+	    order.setPaymentMethod(orderForm.getPaymentMethod());
+	    order.setDeliveryMethod(orderForm.getDeliveryMethod());
 	    order.setOrderStatus("未處理");
-	    order.setPaymentMethod("貨到付款"); // 可預設
-	    order.setDeliveryMethod("宅配");    // 可預設
 
 	    // 3️⃣ 將購物車明細轉換成訂單明細
 	    for (CartDetail cartDetail : cart.getCartDetails()) {

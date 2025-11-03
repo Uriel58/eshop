@@ -105,18 +105,61 @@
 					<h3 class="cartTotal" th:unless="${total != null and total > 0}">
 						總價: <span>0.00元</span>
 					</h3>
-					<form th:action="@{/cart/{cartId}/checkout(cartId=${cart.id})}"
-						method="post">
-						<button type="submit" class="btn btn-success">結帳</button>
-					</form>
 				</div>
+				<form th:action="@{/cart/{cartId}/checkout(cartId=${cart.id})}"
+					method="post" th:object="${order}">
+					<div class="mb-3">
+						<div class="mb-3">
+							<label>County</label> <select th:field="*{county}"
+								class="form-control">
+								<option value="">-- Select --</option>
+								<option value="台北市">台北市</option>
+								<option value="新北市">新北市</option>
+								<option value="台中市">台中市</option>
+								<option value="高雄市">高雄市</option>
+								<option value="台南市">台南市</option>
+								<option value="桃園市">桃園市</option>
+								<option value="新竹市">新竹市</option>
+								<option value="嘉義市">嘉義市</option>
+								<option value="基隆市">基隆市</option>
+								<option value="新竹縣">新竹縣</option>
+								<option value="苗栗縣">苗栗縣</option>
+								<option value="彰化縣">彰化縣</option>
+								<option value="南投縣">南投縣</option>
+								<option value="雲林縣">雲林縣</option>
+								<option value="嘉義縣">嘉義縣</option>
+								<option value="屏東縣">屏東縣</option>
+								<option value="宜蘭縣">宜蘭縣</option>
+								<option value="花蓮縣">花蓮縣</option>
+								<option value="台東縣">台東縣</option>
+								<option value="澎湖縣">澎湖縣</option>
+								<option value="金門縣">金門縣</option>
+								<option value="連江縣">連江縣</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label>Payment Method</label><br /> <input type="radio"
+								th:field="*{paymentMethod}" value="CASH" /> 現金 <input
+								type="radio" th:field="*{paymentMethod}" value="CREDIT_CARD" />
+							刷卡 <input type="radio" th:field="*{paymentMethod}"
+								value="E_PAYMENT" /> 電子支付
+						</div>
+						<div class="mb-3">
+							<label>Delivery Method</label><br /> <input type="radio"
+								th:field="*{deliveryMethod}" value="PICK_UP" /> 自取(PICK_UP) <input
+								type="radio" th:field="*{deliveryMethod}" value="HOME_DELIVERY" />
+							宅配到府 (HOME_DELIVERY) <input type="radio" th:field="*{deliveryMethod}"
+								value="STORE_DELIVERY" /> 超商取貨 (STORE_DELIVERY) <input type="radio"
+								th:field="*{deliveryMethod}" value="POSTAL" /> 郵寄 (POSTAL)
+						</div>
+							<button type="submit" class="btn btn-success">結帳</button>
+						</form>
+					</div>
+					<!-- 返回購物車列表 -->
+					<div class="mt-4">
+						<a th:href="@{/}" class="btn btn-secondary">返回商品列表</a>
+					</div>
 			</div>
 		</div>
-
-		<!-- 返回購物車列表 -->
-		<div class="mt-4">
-			<a th:href="@{/}" class="btn btn-secondary">返回商品列表</a>
-		</div>
-	</div>
 </body>
 </html>
