@@ -166,6 +166,6 @@ public class CartController extends LoginBaseController {
 	@PostMapping("/{cartId}/checkout")
 	public String checkout(@PathVariable Long cartId) {
 		cartService.checkout(cartId);
-		return "redirect:/order/order-list";
+		return "redirect:/";
 	}
 }
