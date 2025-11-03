@@ -81,7 +81,8 @@
 
 			<!-- 自動新增購物車的商品 -->
 			<form th:if="${customer != null}"
-				th:action="@{/cart/create-and-add-product}" method="post" class="d-inline">
+				th:action="@{/cart/create-and-add-product}" method="post"
+				class="d-inline">
 				<input type="hidden" name="customerId"
 					th:value="${customer.customerId}" /> <input type="hidden"
 					name="productId" th:value="${product.prodNum}" /> <input
@@ -94,6 +95,9 @@
 			<div th:if="${customer == null}">
 				<p class="text-danger mt-3">請先登入後再加入購物車。</p>
 				<a th:href="@{/login}" class="btn btn-outline-primary mt-2">登入</a>
+			</div>
+			<div th:if="${cartMessage}" th:text="${cartMessage}" class="alert"
+				th:classappend="${cartMessage.contains('⚠️')} ? 'alert-warning' : 'alert-success'">
 			</div>
 
 			<!-- 顯示成功訊息（若有） -->

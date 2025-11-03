@@ -69,10 +69,9 @@ public class CartController extends LoginBaseController {
 		List<CartDetail> details = cartDetailService.getDetailsByCart(cartId);
 		model.addAttribute("details", cart.getCartDetails());
 		// ✅ 計算總價（包含運費）
-	    BigDecimal total = cart.getCartDetails().stream()
-	            .map(CartDetail::getCartTotal)
-	            .reduce(BigDecimal.ZERO, BigDecimal::add);
-	    model.addAttribute("total", total); // 傳給 前端
+		BigDecimal total = cart.getCartDetails().stream().map(CartDetail::getCartTotal).reduce(BigDecimal.ZERO,
+				BigDecimal::add);
+		model.addAttribute("total", total); // 傳給 前端
 		return "cartdetails";
 	}
 
@@ -100,19 +99,19 @@ public class CartController extends LoginBaseController {
 		}
 
 		// 查找顾客的购物车
-		Cart cart = cartService.getCartByCustomerId(customerId);  // 修改为通过 findByCustomerId 查找购物车	
+		Cart cart = cartService.getCartByCustomerId(customerId); // 修改为通过 findByCustomerId 查找购物车
 
 		// 如果顾客已经有购物车，直接使用现有购物车
 		if (cart == null) {
-			 // 如果顾客没有购物车，则创建一个新的购物车
-	        cart = new Cart();
-	        cart.setCustomer(customer); // 显式地设置 customer 到 cart
+			// 如果顾客没有购物车，则创建一个新的购物车
+			cart = new Cart();
+			cart.setCustomer(customer); // 显式地设置 customer 到 cart
 
-	        // 将购物车添加到顾客的购物车列表
-	        customer.addCart(cart); // 如果有双向关系
+			// 将购物车添加到顾客的购物车列表
+			customer.addCart(cart); // 如果有双向关系
 
-	        // 保存顾客和购物车（这会自动保存关联的购物车）
-	        customerService.saveCustomer(customer);
+			// 保存顾客和购物车（这会自动保存关联的购物车）
+			customerService.saveCustomer(customer);
 		}
 
 		// 获取商品信息
@@ -121,34 +120,54 @@ public class CartController extends LoginBaseController {
 			redirectAttributes.addFlashAttribute("errorMessage", "找不到该商品!");
 			return "redirect:/error"; // 如果商品不存在，重定向到错误页面
 		}
-		
-		//创建新的购物车详情 (CartDetail)
-		CartDetail cartDetail = new CartDetail();
-		cartDetail.setCart(cart); // 将购物车与购物车详情关联
-		cartDetail.setProduct(product); // 将商品与购物车详情关联
-		cartDetail.setProdPrice(BigDecimal.valueOf(price)); // 设置商品价格
-		cartDetail.setCartQty(quantity); // 设置商品数量
-		BigDecimal productTotal = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));// 计算商品總價
-		BigDecimal shippingFee = BigDecimal.valueOf(12);//設定運費
-		cartDetail.setShippingFee(shippingFee);
-		cartDetail.setCartTotal(productTotal.add(shippingFee));// 計算總價 + 運費
+		// ✅ 檢查購物車中是否已存在相同商品
+		CartDetail existingDetail = cart.getCartDetails().stream()
+				.filter(d -> d.getProduct().getProdNum().equals(productId)).findFirst().orElse(null);
 
-		// 将购物车详情添加到购物车
-		cart.addCartDetail(cartDetail); // 如果 Cart 类有 addCartDetail 方法
+		BigDecimal shippingFee = BigDecimal.valueOf(12);
+		BigDecimal productTotal = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));
 
-		// 保存购物车详情（这会自动保存关联的 CartDetail）
-		cartService.saveCartDetail(cartDetail); // 保存 CartDetail 对象*/
-
-		// 重定向并显示成功消息
-		redirectAttributes.addFlashAttribute("cartMessage", "🛒 商品已加入购物车！");
+		if (existingDetail != null) {
+			// 如果已存在，回傳訊息
+			redirectAttributes.addFlashAttribute("cartMessage", "⚠️ 商品已存在於購物車，請前往購物車修改數量！");
+		} else {
+			// 如果不存在，新增 CartDetail
+			CartDetail cartDetail = new CartDetail();
+			cartDetail.setCart(cart);
+			cartDetail.setProduct(product);
+			cartDetail.setProdPrice(BigDecimal.valueOf(price));
+			cartDetail.setCartQty(quantity);
+			cartDetail.setShippingFee(shippingFee);
+			cartDetail.setCartTotal(productTotal.add(shippingFee));
+			cart.addCartDetail(cartDetail);
+			cartService.saveCartDetail(cartDetail);
+			// 重定向并显示成功消息
+			redirectAttributes.addFlashAttribute("cartMessage", "🛒 商品已加入购物车！");
+		}
+		// 创建新的购物车详情 (CartDetail)
+		/*
+		 * CartDetail cartDetail = new CartDetail(); cartDetail.setCart(cart); //
+		 * 将购物车与购物车详情关联 cartDetail.setProduct(product); // 将商品与购物车详情关联
+		 * cartDetail.setProdPrice(BigDecimal.valueOf(price)); // 设置商品价格
+		 * cartDetail.setCartQty(quantity); // 设置商品数量 BigDecimal productTotal =
+		 * BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));// 计算商品總價
+		 * BigDecimal shippingFee = BigDecimal.valueOf(12);//設定運費
+		 * cartDetail.setShippingFee(shippingFee);
+		 * cartDetail.setCartTotal(productTotal.add(shippingFee));// 計算總價 + 運費
+		 * 
+		 * // 将购物车详情添加到购物车 cart.addCartDetail(cartDetail); // 如果 Cart 类有 addCartDetail
+		 * 方法
+		 * 
+		 * // 保存购物车详情（这会自动保存关联的 CartDetail） cartService.saveCartDetail(cartDetail); //
+		 * 保存 CartDetail 对象
+		 */
 		return "redirect:/products/details/" + productId;
 	}
 
-	
 	// 更新購物車
 	@PostMapping("/{cartId}/update-product")
 	public String updateProduct(@PathVariable Long cartId, @RequestParam Long productId, @RequestParam int quantity) {
-		
+
 		cartService.setProductQuantity(cartId, productId, quantity);
 		return "redirect:/cart/" + cartId + "/cartdetails";
 	}
