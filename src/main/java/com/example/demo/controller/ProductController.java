@@ -25,9 +25,9 @@ public class ProductController extends LoginBaseController{
         String name = (String) session.getAttribute("name");
 
         // 如果沒登入，導回登入頁
-        if (id == null) {
+        /*if (id == null) {
             return "redirect:/login";
-        }
+        }*/
 
         model.addAttribute("name", name);
         model.addAttribute("id", id);

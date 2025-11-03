@@ -68,10 +68,15 @@ public class CartController extends LoginBaseController {
 		model.addAttribute("cart", cart);
 		List<CartDetail> details = cartDetailService.getDetailsByCart(cartId);
 		model.addAttribute("details", cart.getCartDetails());
+		// ✅ 計算總價（包含運費）
+	    BigDecimal total = cart.getCartDetails().stream()
+	            .map(CartDetail::getCartTotal)
+	            .reduce(BigDecimal.ZERO, BigDecimal::add);
+	    model.addAttribute("total", total); // 傳給 前端
 		return "cartdetails";
 	}
 
-	// 顯示商品詳細頁（含登入檢查）
+	// 增加商品詳細頁（含登入檢查）
 	@PostMapping("/create-and-add-product")
 	public String createCartAndAddProduct(@RequestParam(required = false) Long customerId, // 允许为空，如果为空则从会话中获取
 			@RequestParam Long productId, @RequestParam int quantity, @RequestParam double price,
@@ -123,8 +128,10 @@ public class CartController extends LoginBaseController {
 		cartDetail.setProduct(product); // 将商品与购物车详情关联
 		cartDetail.setProdPrice(BigDecimal.valueOf(price)); // 设置商品价格
 		cartDetail.setCartQty(quantity); // 设置商品数量
-		cartDetail.setShippingFee(BigDecimal.ZERO); // 设置运费（假设暂时为零）
-		cartDetail.setCartTotal(BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity))); // 计算总价
+		BigDecimal productTotal = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));// 计算商品總價
+		BigDecimal shippingFee = BigDecimal.valueOf(12);//設定運費
+		cartDetail.setShippingFee(shippingFee);
+		cartDetail.setCartTotal(productTotal.add(shippingFee));// 計算總價 + 運費
 
 		// 将购物车详情添加到购物车
 		cart.addCartDetail(cartDetail); // 如果 Cart 类有 addCartDetail 方法
@@ -141,8 +148,8 @@ public class CartController extends LoginBaseController {
 	// 更新購物車
 	@PostMapping("/{cartId}/update-product")
 	public String updateProduct(@PathVariable Long cartId, @RequestParam Long productId, @RequestParam int quantity) {
-
-		cartService.addOrUpdateProduct(cartId, productId, quantity, 0);
+		
+		cartService.setProductQuantity(cartId, productId, quantity);
 		return "redirect:/cart/" + cartId + "/cartdetails";
 	}
 

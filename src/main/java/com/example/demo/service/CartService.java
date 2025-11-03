@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.Cart;
 import com.example.demo.model.CartDetail;
 import java.util.List;
+import java.math.BigDecimal;
 
 public interface CartService {
     Cart getCart(Long id);
@@ -12,7 +13,7 @@ public interface CartService {
     void deleteCart(Long id);
     List<Cart> getCartsByCustomer(Long customerId);
     //送進cart->order,cartDeatil->orderDetail
-    void addOrUpdateProduct(Long cartId, Long productId, int quantity, double price);
+    void setProductQuantity(Long cartId, Long productId, int quantity);
     void removeProduct(Long cartId, Long productId);
     void saveCartDetail(CartDetail cartDetail); // 新增保存 CartDetail 的方法
     void calculateTotal(Long cartId);

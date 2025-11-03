@@ -107,37 +107,37 @@ public class CartServiceImpl implements CartService {
 		cartDao.update(cart); // 更新購物車狀態
 	}
 
-	// 新增或更新商品數量
+	// 設定或更新商品數量
 	@Override
 	@Transactional
-	public void addOrUpdateProduct(Long cartId, Long productId, int quantity, double price) {
-		Cart cart = cartDao.findById(cartId);
-		boolean found = false;
+	public void setProductQuantity(Long cartId, Long productId, int quantity) {
+	    Cart cart = cartDao.findById(cartId);
+	    boolean found = false;
 
-		// 比較 cartDetail 中的商品 ID 與 productId
-		for (CartDetail detail : cart.getCartDetails()) {
-			// 使用 `prodNum` 或 `id` 比較 Product 和 productId
-			if (detail.getProduct().getProdNum().equals(productId)) { // 假設 `prodNum` 是 Product 的 ID
-				detail.setCartQty(detail.getCartQty() + quantity); // 更新數量
-				found = true;
-				break;
-			}
-		}
+	    for (CartDetail detail : cart.getCartDetails()) {
+	        if (detail.getProduct().getProdNum().equals(productId)) {
+	            // ✅ 直接設定數量（不是加法）
+	            detail.setCartQty(quantity);
+	            found = true;
+	            break;
+	        }
+	    }
 
-		if (!found) {
-			// 如果商品不存在，則新增商品到購物車
-			CartDetail detail = new CartDetail();
-			detail.setCart(cart);
-			Product product = productDao.findById(productId);
-			detail.setProduct(product);
-			detail.setCartQty(quantity);
-			detail.setProdPrice(BigDecimal.valueOf(price));
-			cart.getCartDetails().add(detail);
-		}
+	    if (!found) {
+	        // ✅ 商品不存在時，自動新增
+	        Product product = productDao.findById(productId);
+	        CartDetail detail = new CartDetail();
+	        detail.setCart(cart);
+	        detail.setProduct(product);
+	        detail.setCartQty(quantity);
+	        detail.setProdPrice(product.getProdPrice()); // ✅ 使用商品原價
+	        detail.setShippingFee(detail.getShippingFee());
+	        cart.getCartDetails().add(detail);
+	    }
 
-		// 更新總價
-		calculateTotal(cartId);
-		cartDao.update(cart);
+	    // ✅ 更新總價
+	    calculateTotal(cartId);
+	    cartDao.update(cart);
 	}
 
 	// 移除商品
@@ -172,11 +172,14 @@ public class CartServiceImpl implements CartService {
 		}
 
 		// 计算整个购物车的总价
-		BigDecimal cartTotal = cart.getCartDetails().stream().map(CartDetail::getCartTotal).reduce(BigDecimal.ZERO,
+		/*BigDecimal cartTotal = cart.getCartDetails().stream().map(CartDetail::getCartTotal).reduce(BigDecimal.ZERO,
 				BigDecimal::add); // 计算总价
-
-		// 更新购物车
-		cartDao.update(cart);
+		
+	    if (!cart.getCartDetails().isEmpty()) {
+	        CartDetail firstDetail = cart.getCartDetails().get(0);
+	        firstDetail.setCartTotal(cartTotal); // 把总价放在第一笔明细
+	        cartDetailDao.update(firstDetail);
+	    }*/
 	}
 	// ✅ 新增這個方法
     @Override
