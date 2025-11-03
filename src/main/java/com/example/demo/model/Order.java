@@ -54,9 +54,12 @@ public class Order {
 
     @Column(name = "order_barcode", length = 100, unique = true)
     private String orderBarcode; // ✅ 自動生成條碼
+    
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetail> orderDetails = new ArrayList<>();//連到orderdetail
 
-    @OneToMany(mappedBy = "order",  cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
-    private List<OrderDetail> orderDetails = new ArrayList<>();//連到orderdetail fetch = FetchType.EAGER
+    /*@OneToMany(mappedBy = "order",  cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+    private List<OrderDetail> orderDetails = new ArrayList<>();*///連到orderdetail fetch = FetchType.EAGER
 
     // 每個訂單對應一個訂單地址
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

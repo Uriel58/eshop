@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.OrderDetail;
+import com.example.demo.model.Order;
 import com.example.demo.service.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +38,10 @@ public class OrderDetailController extends LoginBaseController {
 	@PostMapping("/save/{orderId}")
 	public String saveOrderDetail(@PathVariable("orderId") Long orderId,
 	        @ModelAttribute("orderDetail") OrderDetail orderDetail) {
-	    orderDetail.setOrdNum(orderId);// 設定訂單編號
+		// ✅ 建立一個暫時的 Order 物件，只設主鍵就行
+	    Order order = new Order();
+	    order.setOrdNum(orderId);
+	    orderDetail.setOrder(order);
 	    orderDetailService.saveOrderDetail(orderDetail);
 	    return "redirect:/orderDetails/" + orderId;// 保存后跳转到订单列表页面
 	}
@@ -48,11 +52,18 @@ public class OrderDetailController extends LoginBaseController {
 			Model model) {
 		List<OrderDetail> details = orderDetailService.getOrderDetailsByOrderId(orderId);
 		OrderDetail detail = details.stream().filter(d -> d.getProdNum().equals(productId)).findFirst().orElse(null);
-
+		
 		if (detail == null) {
-			return "redirect:/orderDetails/" + orderId;
-		}
-
+	        return "redirect:/orderDetails/" + orderId;
+	    }
+		
+		if (detail.getOrder() == null) {
+	        Order order = new Order();
+	        order.setOrdNum(orderId);
+	        detail.setOrder(order);
+	    } else if (detail.getOrder().getOrdNum() == null) {
+	        detail.getOrder().setOrdNum(orderId);
+	    }
 		model.addAttribute("detail", detail);
 		return "edit-orderdetail"; // 對應 HTML
 	}
@@ -62,7 +73,10 @@ public class OrderDetailController extends LoginBaseController {
 	public String updateOrderDetail(@PathVariable("orderId") Long orderId, @PathVariable("productId") Long productId,
 			@ModelAttribute("detail") OrderDetail detail) {
 		// 保證 ID 不會丟失
-		detail.setOrdNum(orderId);
+		 // ✅ 建立 Order 並關聯
+	    Order order = new Order();
+	    order.setOrdNum(orderId);
+	    detail.setOrder(order);
 		detail.setProdNum(productId);
 
 		// 用 saveOrderDetail 代替 update

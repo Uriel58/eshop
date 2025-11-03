@@ -7,24 +7,23 @@ public class OrderDetailPK implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long ordNum;
+    private Long order;
     private Long prodNum;
 
     public OrderDetailPK() {}
 
-    public OrderDetailPK(Long ordNum, Long prodNum) {
-        this.ordNum = ordNum;
+    public OrderDetailPK(Long order, Long prodNum) {
+    	this.order = order;
         this.prodNum = prodNum;
     }
 
-    public Long getOrdNum() {
-        return ordNum;
+    public Long getOrder() {
+    	return order;
     }
 
-    public void setOrdNum(Long ordNum) {
-        this.ordNum = ordNum;
+    public void setOrder(Long order) {
+        this.order = order;
     }
-
     public Long getProdNum() {
         return prodNum;
     }
@@ -38,13 +37,13 @@ public class OrderDetailPK implements Serializable {
         if (this == o) return true;
         if (!(o instanceof OrderDetailPK)) return false;
         OrderDetailPK that = (OrderDetailPK) o;
-        return Objects.equals(ordNum, that.ordNum) &&
+        return Objects.equals(order, that.order) &&
                 Objects.equals(prodNum, that.prodNum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ordNum, prodNum);
+        return Objects.hash(order, prodNum);
     }
 }
 

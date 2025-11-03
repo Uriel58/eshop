@@ -10,7 +10,6 @@
 <div class="container mt-4">
     <h1>Add New OrderDetail</h1>
 
-    <p th:text="'orderId = ' + ${orderId}"></p>
 
     <form th:action="@{/orderDetails/save/{orderId}(orderId=${orderId})}"
           th:object="${orderDetail}" method="post">

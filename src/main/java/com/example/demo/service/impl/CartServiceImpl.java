@@ -77,35 +77,75 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public void checkout(Long cartId) {
-		// 獲取購物車
-		Cart cart = cartDao.findById(cartId);
-		if (cart.getCartDetails().isEmpty()) {
-			// 如果購物車沒有商品，直接返回
-			return;
-		}
+	    // 1️⃣ 取得購物車
+	    Cart cart = cartDao.findById(cartId);
+	    if (cart == null || cart.getCartDetails().isEmpty()) {
+	        return; // 沒有購物車或購物車是空的就直接結束
+	    }
 
-		// 創建訂單 (Order)
-		Order order = new Order();
-		Customer customer = customerDao.findById(cart.getCustomer().getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));// 查找 Customer
-		order.setCustomer(customer); // 設定 Customer 物件
-		order.setOrderStatus("未處理"); // 設定訂單狀態
-		orderDao.save(order); // 保存訂單
+	    // 2️⃣ 建立訂單
+	    Order order = new Order();
+	    Customer customer = customerDao.findById(cart.getCustomer().getCustomerId())
+	            .orElseThrow(() -> new RuntimeException("Customer not found"));
+	    order.setCustomer(customer);
+	    order.setOrderStatus("未處理");
+	    order.setPaymentMethod("貨到付款"); // 可預設
+	    order.setDeliveryMethod("宅配");    // 可預設
 
-		// 創建訂單明細 (OrderDetail) 並將每個 CartDetail 轉換成 OrderDetail
-		for (CartDetail cartDetail : cart.getCartDetails()) {
-			OrderDetail orderDetail = new OrderDetail();
-			orderDetail.setOrder(order); // 設定訂單
-			orderDetail.setProduct(cartDetail.getProduct()); // 設定商品ID
-			orderDetail.setOrdQty(cartDetail.getCartQty()); // 設定數量
-			orderDetail.setOrdPrice(cartDetail.getProdPrice()); // 設定價格
-			orderDetailDao.save(orderDetail); // 保存訂單明細
-		}
+	    // 3️⃣ 將購物車明細轉換成訂單明細
+	    for (CartDetail cartDetail : cart.getCartDetails()) {
+	        OrderDetail orderDetail = new OrderDetail();
+	        orderDetail.setOrder(order); // 維持雙向關聯
+	        orderDetail.setProduct(cartDetail.getProduct());
+	        orderDetail.setProdNum(cartDetail.getProduct().getProdNum()); // ✅ 設定複合主鍵
+	        orderDetail.setOrdQty(cartDetail.getCartQty());
+	        orderDetail.setOrdPrice(cartDetail.getProdPrice());
+	        orderDetail.setFare(cartDetail.getShippingFee()); // ✅ 加上運費
+	        //orderDetail.setOrdTotal(cartDetail.getCartTotal());      // ✅ 加上總價（含運費）
 
-		// 標記購物車為已結帳
-		cart.setCheckedOut(true);
-		cartDao.update(cart); // 更新購物車狀態
+	        order.addOrderDetail(orderDetail); // ✅ 放進訂單明細清單中
+	    }
+
+	    // 4️⃣ 保存訂單（因為 Order 有 cascade，會自動保存所有 OrderDetail）
+	    orderDao.save(order);
+
+	    // 5️⃣ 標記購物車為已結帳
+	    cart.setCheckedOut(true);
+	    cartDao.update(cart);
 	}
+
+	/*@Override
+	@Transactional
+	public void checkout(Long cartId) {
+	    // 獲取購物車
+	    Cart cart = cartDao.findById(cartId);
+	    if (cart.getCartDetails().isEmpty()) return;
+
+	    // 創建訂單
+	    Order order = new Order();
+	    Customer customer = customerDao.findById(cart.getCustomer().getCustomerId())
+	            .orElseThrow(() -> new RuntimeException("Customer not found"));
+	    order.setCustomer(customer);
+	    order.setOrderStatus("未處理");
+
+	    // 將購物車明細轉成訂單明細
+	    for (CartDetail cartDetail : cart.getCartDetails()) {
+	        OrderDetail orderDetail = new OrderDetail();
+	        orderDetail.setProduct(cartDetail.getProduct());
+	        orderDetail.setOrdQty(cartDetail.getCartQty());
+	        orderDetail.setOrdPrice(cartDetail.getProdPrice());
+	        order.addOrderDetail(orderDetail); // ✅ 加入 order 的明細列表
+	    }
+
+	    // 保存訂單（cascade 會自動 save 明細）
+	    orderDao.save(order); 
+
+	    // 標記購物車為已結帳
+	    cart.setCheckedOut(true);
+	    cartDao.update(cart);
+	}*/
+
+	
 
 	// 設定或更新商品數量
 	@Override
@@ -170,16 +210,6 @@ public class CartServiceImpl implements CartService {
 		for (CartDetail detail : cart.getCartDetails()) {
 			cartDetailDao.update(detail); // 逐個更新 CartDetail
 		}
-
-		// 计算整个购物车的总价
-		/*BigDecimal cartTotal = cart.getCartDetails().stream().map(CartDetail::getCartTotal).reduce(BigDecimal.ZERO,
-				BigDecimal::add); // 计算总价
-		
-	    if (!cart.getCartDetails().isEmpty()) {
-	        CartDetail firstDetail = cart.getCartDetails().get(0);
-	        firstDetail.setCartTotal(cartTotal); // 把总价放在第一笔明细
-	        cartDetailDao.update(firstDetail);
-	    }*/
 	}
 	// ✅ 新增這個方法
     @Override
@@ -191,15 +221,5 @@ public class CartServiceImpl implements CartService {
     public void saveCartDetail(CartDetail cartDetail) {
     	cartDetailDao.save(cartDetail); // 保存 CartDetail 到数据库
     }
-	/*
-	 * @Override
-	 * 
-	 * @Transactional public void calculateTotal(Long cartId) { CartDetail cart =
-	 * cartDao.findById(cartId); // 使用 BigDecimal 計算總價 BigDecimal total =
-	 * cart.getCartDetails().stream() .map(detail ->
-	 * detail.getProdPrice().multiply(new BigDecimal(detail.getCartQty())))
-	 * .reduce(BigDecimal.ZERO, BigDecimal::add); // 計算總價 // 計算總價
-	 * cartDetail.getCartTotal(total); // 設定總價 cartDetailDao.update(cartDetail); //
-	 * 更新購物車 }
-	 */
+
 }

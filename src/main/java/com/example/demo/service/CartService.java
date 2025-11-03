@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.model.Cart;
 import com.example.demo.model.CartDetail;
 import java.util.List;
-import java.math.BigDecimal;
 
 public interface CartService {
     Cart getCart(Long id);

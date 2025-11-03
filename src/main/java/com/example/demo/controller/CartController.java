@@ -144,23 +144,6 @@ public class CartController extends LoginBaseController {
 			// 重定向并显示成功消息
 			redirectAttributes.addFlashAttribute("cartMessage", "🛒 商品已加入购物车！");
 		}
-		// 创建新的购物车详情 (CartDetail)
-		/*
-		 * CartDetail cartDetail = new CartDetail(); cartDetail.setCart(cart); //
-		 * 将购物车与购物车详情关联 cartDetail.setProduct(product); // 将商品与购物车详情关联
-		 * cartDetail.setProdPrice(BigDecimal.valueOf(price)); // 设置商品价格
-		 * cartDetail.setCartQty(quantity); // 设置商品数量 BigDecimal productTotal =
-		 * BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));// 计算商品總價
-		 * BigDecimal shippingFee = BigDecimal.valueOf(12);//設定運費
-		 * cartDetail.setShippingFee(shippingFee);
-		 * cartDetail.setCartTotal(productTotal.add(shippingFee));// 計算總價 + 運費
-		 * 
-		 * // 将购物车详情添加到购物车 cart.addCartDetail(cartDetail); // 如果 Cart 类有 addCartDetail
-		 * 方法
-		 * 
-		 * // 保存购物车详情（这会自动保存关联的 CartDetail） cartService.saveCartDetail(cartDetail); //
-		 * 保存 CartDetail 对象
-		 */
 		return "redirect:/products/details/" + productId;
 	}
 
