@@ -2,7 +2,9 @@ package com.example.demo.model;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.time.ZoneId;
 
+import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "password_reset_tokens")
 public class PasswordResetToken {
@@ -26,9 +28,24 @@ public class PasswordResetToken {
 
     @Column(name = "used", nullable = false)
     private Boolean used = false; // 是否已经使用
-
+    
+    private static final ZoneId ZONE_TAIPEI = ZoneId.of("Asia/Taipei");
+	// 自動時間設定
+	@PrePersist
+    protected void onCreate() {
+        ZonedDateTime now = ZonedDateTime.now(ZONE_TAIPEI);
+        createdAt = expiryDate = now;
+        if (expiryDate == null) {
+        	expiryDate = now;
+        }
+    }
+    @PreUpdate
+    protected void onUpdate() {
+    	expiryDate = ZonedDateTime.now(ZONE_TAIPEI);
+    }
+    
     //  Getter & Setter ====
-
+    
     public PasswordResetToken() {
     }
 

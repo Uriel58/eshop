@@ -38,25 +38,26 @@ public class Cart {
 	@Column(name = "updated_at")
 	private ZonedDateTime updatedAt;
 	
-	
-	
 	// 修改： Cart 对应 CartDetail 的外键关联fetch = FetchType.EAGER,
 	@OneToMany(fetch = FetchType.EAGER,mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.SUBSELECT)
 	private List<CartDetail> cartDetails = new ArrayList<>(); 
 
+	private static final ZoneId ZONE_TAIPEI = ZoneId.of("Asia/Taipei");
 	// 自動時間設定
 	@PrePersist
-	protected void onCreate() {
-		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Taipei"));
-		this.createdAt = now;
-		this.updatedAt = now;
-	}
-
-	@PreUpdate
-	protected void onUpdate() {
-		this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Taipei"));
-	}
+    protected void onCreate() {
+        ZonedDateTime now = ZonedDateTime.now(ZONE_TAIPEI);
+        createdAt = updatedAt = now;
+        if (updatedAt == null) {
+        	updatedAt = now;
+        }
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = ZonedDateTime.now(ZONE_TAIPEI);
+    }
+	
 
 	// Getter 和 Setter 略（可自行補上）
 	// ==== Getter & Setter ====

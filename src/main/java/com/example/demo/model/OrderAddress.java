@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import javax.persistence.*;
 
 import lombok.Data;
@@ -12,52 +13,53 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderAddress {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "address_id")
+	private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY) // 🔹 加上 fetch 屬性避免不必要的查詢(ManyToOne)?
-    @JoinColumn(name = "ord_num", nullable = false) // 🔹 指明外鍵不可為 null
-    private Order order;
+	@OneToOne(fetch = FetchType.LAZY) // 🔹 加上 fetch 屬性避免不必要的查詢(ManyToOne)?
+	@JoinColumn(name = "ord_num", nullable = false) // 🔹 指明外鍵不可為 null
+	private Order order;
 
-    @Column(name = "recipient_name", nullable = false)
-    private String recipientName;
+	@Column(name = "recipient_name", nullable = false)
+	private String recipientName;
 
-    @Column(nullable = false)
-    private String phone;
+	@Column(nullable = false)
+	private String phone;
 
-    @Column(nullable = false)
-    private String country;
+	@Column(nullable = false)
+	private String country;
 
-    @Column(nullable = false)
-    private String city;
+	@Column(nullable = false)
+	private String city;
 
-    @Column(nullable = false)
-    private String district;
+	@Column(nullable = false)
+	private String district;
 
-    @Column(name = "street_address", nullable = false)
-    private String streetAddress;
+	@Column(name = "street_address", nullable = false)
+	private String streetAddress;
 
-    @Column(name = "postal_code", nullable = false)
-    private String postalCode;
+	@Column(name = "postal_code", nullable = false)
+	private String postalCode;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+	@Column(name = "created_at", updatable = false)
+	private ZonedDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-    
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = updatedAt = LocalDateTime.now();
-    }
+	@Column(name = "updated_at")
+	private ZonedDateTime updatedAt;
+	
+	private static final ZoneId ZONE_TAIPEI = ZoneId.of("Asia/Taipei");
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+	@PrePersist
+	protected void onCreate() {
+		createdAt = updatedAt = ZonedDateTime.now(ZONE_TAIPEI);
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedAt = ZonedDateTime.now(ZONE_TAIPEI);
+	}
 
 	public Long getId() {
 		return id;
@@ -131,21 +133,20 @@ public class OrderAddress {
 		this.postalCode = postalCode;
 	}
 
-	public LocalDateTime getCreatedAt() {
+	public ZonedDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt(ZonedDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public LocalDateTime getUpdatedAt() {
+	public ZonedDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
+	public void setUpdatedAt(ZonedDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-    
-    
+
 }

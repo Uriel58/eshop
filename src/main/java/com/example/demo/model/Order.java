@@ -30,7 +30,7 @@ public class Order {
     
     @Column(name = "required_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private ZonedDateTime requiredDate = ZonedDateTime.now(ZoneId.of("Asia/Taipei"));;
+    private ZonedDateTime requiredDate = ZonedDateTime.now(ZoneId.of("Asia/Taipei"));
     
     
     
