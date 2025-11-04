@@ -1,6 +1,4 @@
 
-├── pom.xml
-├── src
 │   ├── main
 │   │   ├── java
 │   │   │   └── com
@@ -9,14 +7,17 @@
 │   │   │               ├── config
 │   │   │               │   ├── AppConfig.java
 │   │   │               │   ├── HibernateConfig.java
+│   │   │               │   ├── ShippingConfig.java
 │   │   │               │   └── WebMvcConfig.java
 │   │   │               ├── controller
 │   │   │               │   ├── CartController.java
 │   │   │               │   ├── CustomerController.java
 │   │   │               │   ├── HomeController.java
+│   │   │               │   ├── LoginBaseController.java
 │   │   │               │   ├── LoginController.java
 │   │   │               │   ├── OrderController.java
 │   │   │               │   ├── OrderDetailController.java
+│   │   │               │   ├── PasswordResetTokenController.java
 │   │   │               │   ├── ProductController.java
 │   │   │               │   └── UserController.java
 │   │   │               ├── dao
@@ -29,22 +30,29 @@
 │   │   │               │   │   ├── CustomerDAOImpl.java
 │   │   │               │   │   ├── OrderDAOImpl.java
 │   │   │               │   │   ├── OrderDetailDAOImpl.java
+│   │   │               │   │   ├── PasswordResetTokenDAOImpl.java
 │   │   │               │   │   ├── ProductDAOImpl.java
 │   │   │               │   │   └── UserDAOImpl.java
 │   │   │               │   ├── OrderDAO.java
 │   │   │               │   ├── OrderDetailDAO.java
+│   │   │               │   ├── PasswordResetTokenDAO.java
 │   │   │               │   ├── ProductDAO.java
 │   │   │               │   └── UserDAO.java
+│   │   │               ├── MainApplication.java
 │   │   │               ├── model
 │   │   │               │   ├── CartDetail.java
 │   │   │               │   ├── Cart.java
+│   │   │               │   ├── Category.java
 │   │   │               │   ├── Customer.java
+│   │   │               │   ├── OrderAddress.java
 │   │   │               │   ├── OrderDetail.java
 │   │   │               │   ├── OrderDetailPK.java
 │   │   │               │   ├── Order.java
 │   │   │               │   ├── PasswordResetToken.java
 │   │   │               │   ├── Product.java
 │   │   │               │   └── User.java
+│   │   │               ├── scheduler
+│   │   │               │   └── PasswordResetTokenScheduler.java
 │   │   │               └── service
 │   │   │                   ├── CartDetailService.java
 │   │   │                   ├── CartService.java
@@ -55,17 +63,14 @@
 │   │   │                   │   ├── CustomerServiceImpl.java
 │   │   │                   │   ├── OrderDetailServiceImpl.java
 │   │   │                   │   ├── OrderServiceImpl.java
+│   │   │                   │   ├── PasswordResetTokenServiceImpl.java
 │   │   │                   │   ├── ProductServiceImpl.java
 │   │   │                   │   └── UserServiceImpl.java
 │   │   │                   ├── OrderDetailService.java
 │   │   │                   ├── OrderService.java
+│   │   │                   ├── PasswordResetTokenService.java
 │   │   │                   ├── ProductService.java
 │   │   │                   └── UserService.java
-│   │   ├── resources
-│   │   │   ├── application.properties
-│   │   │   ├── logback.xml
-│   │   │   ├── messages_en.properties
-│   │   │   └── messages_zh_TW.properties
 │   │   └── webapp
 │   │       ├── META-INF
 │   │       │   └── MANIFEST.MF
@@ -80,10 +85,9 @@
 │   │           │   ├── add-product.html
 │   │           │   ├── add-user.html
 │   │           │   ├── cartdetails.html
-│   │           │   ├── cart-list.html
-│   │           │   ├── customerCart.html
 │   │           │   ├── customers.html
 │   │           │   ├── edit-customer.html
+│   │           │   ├── edit-orderdetail.html
 │   │           │   ├── edit-order.html
 │   │           │   ├── edit-product.html
 │   │           │   ├── edit-user.html
@@ -101,198 +105,11 @@
 │               └── example
 │                   └── demo
 │                       └── test
+│                           ├── CartDetailServiceTest.java
+│                           ├── CartServiceTest.java
+│                           ├── CustomerServiceTest.java
+│                           ├── OrderDetailServiceTest.java
+│                           ├── OrderServiceTest.java
+│                           ├── ProductServiceTest.java
 │                           └── UserServiceTest.java
-└── target
-    ├── classes
-    │   ├── application.properties
-    │   ├── com
-    │   │   └── example
-    │   │       └── demo
-    │   │           ├── config
-    │   │           │   ├── AppConfig.class
-    │   │           │   ├── HibernateConfig.class
-    │   │           │   └── WebMvcConfig.class
-    │   │           ├── controller
-    │   │           │   ├── CartController.class
-    │   │           │   ├── CustomerController.class
-    │   │           │   ├── HomeController.class
-    │   │           │   ├── LoginController.class
-    │   │           │   ├── OrderController.class
-    │   │           │   ├── OrderDetailController.class
-    │   │           │   ├── ProductController.class
-    │   │           │   └── UserController.class
-    │   │           ├── dao
-    │   │           │   ├── CartDAO.class
-    │   │           │   ├── CartDetailDAO.class
-    │   │           │   ├── CustomerDAO.class
-    │   │           │   ├── impl
-    │   │           │   │   ├── CartDAOImpl.class
-    │   │           │   │   ├── CartDetailDAOImpl.class
-    │   │           │   │   ├── CustomerDAOImpl.class
-    │   │           │   │   ├── OrderDAOImpl.class
-    │   │           │   │   ├── OrderDetailDAOImpl.class
-    │   │           │   │   ├── ProductDAOImpl.class
-    │   │           │   │   └── UserDAOImpl.class
-    │   │           │   ├── OrderDAO.class
-    │   │           │   ├── OrderDetailDAO.class
-    │   │           │   ├── ProductDAO.class
-    │   │           │   └── UserDAO.class
-    │   │           ├── model
-    │   │           │   ├── Cart.class
-    │   │           │   ├── CartDetail.class
-    │   │           │   ├── Customer.class
-    │   │           │   ├── Order.class
-    │   │           │   ├── OrderDetail.class
-    │   │           │   ├── OrderDetailPK.class
-    │   │           │   ├── PasswordResetToken.class
-    │   │           │   ├── Product.class
-    │   │           │   └── User.class
-    │   │           └── service
-    │   │               ├── CartDetailService.class
-    │   │               ├── CartService.class
-    │   │               ├── CustomerService.class
-    │   │               ├── impl
-    │   │               │   ├── CartDetailServiceImpl.class
-    │   │               │   ├── CartServiceImpl.class
-    │   │               │   ├── CustomerServiceImpl.class
-    │   │               │   ├── OrderDetailServiceImpl.class
-    │   │               │   ├── OrderServiceImpl.class
-    │   │               │   ├── ProductServiceImpl.class
-    │   │               │   └── UserServiceImpl.class
-    │   │               ├── OrderDetailService.class
-    │   │               ├── OrderService.class
-    │   │               ├── ProductService.class
-    │   │               └── UserService.class
-    │   ├── resources
-    │   │   └── images
-    │   │       └── ChatGPT-strawberry_cake.png
-    │   └── WEB-INF
-    │       ├── classes
-    │       │   ├── application.properties
-    │       │   ├── com
-    │       │   │   └── example
-    │       │   │       └── demo
-    │       │   │           ├── config
-    │       │   │           │   ├── AppConfig.class
-    │       │   │           │   ├── HibernateConfig.class
-    │       │   │           │   └── WebMvcConfig.class
-    │       │   │           ├── controller
-    │       │   │           │   ├── CartController.class
-    │       │   │           │   ├── CustomerController.class
-    │       │   │           │   ├── HomeController.class
-    │       │   │           │   ├── LoginController.class
-    │       │   │           │   ├── OrderController.class
-    │       │   │           │   ├── OrderDetailController.class
-    │       │   │           │   ├── ProductController.class
-    │       │   │           │   └── UserController.class
-    │       │   │           ├── dao
-    │       │   │           │   ├── CartDAO.class
-    │       │   │           │   ├── CartDetailDAO.class
-    │       │   │           │   ├── CustomerDAO.class
-    │       │   │           │   ├── impl
-    │       │   │           │   │   ├── CartDAOImpl.class
-    │       │   │           │   │   ├── CartDetailDAOImpl.class
-    │       │   │           │   │   ├── CustomerDAOImpl.class
-    │       │   │           │   │   ├── OrderDAOImpl.class
-    │       │   │           │   │   ├── OrderDetailDAOImpl.class
-    │       │   │           │   │   ├── ProductDAOImpl.class
-    │       │   │           │   │   └── UserDAOImpl.class
-    │       │   │           │   ├── OrderDAO.class
-    │       │   │           │   ├── OrderDetailDAO.class
-    │       │   │           │   ├── ProductDAO.class
-    │       │   │           │   └── UserDAO.class
-    │       │   │           ├── model
-    │       │   │           │   ├── Cart.class
-    │       │   │           │   ├── CartDetail.class
-    │       │   │           │   ├── Customer.class
-    │       │   │           │   ├── Order.class
-    │       │   │           │   ├── OrderDetail.class
-    │       │   │           │   ├── OrderDetailPK.class
-    │       │   │           │   ├── PasswordResetToken.class
-    │       │   │           │   ├── Product.class
-    │       │   │           │   └── User.class
-    │       │   │           └── service
-    │       │   │               ├── CartDetailService.class
-    │       │   │               ├── CartService.class
-    │       │   │               ├── CustomerService.class
-    │       │   │               ├── impl
-    │       │   │               │   ├── CartDetailServiceImpl.class
-    │       │   │               │   ├── CartServiceImpl.class
-    │       │   │               │   ├── CustomerServiceImpl.class
-    │       │   │               │   ├── OrderDetailServiceImpl.class
-    │       │   │               │   ├── OrderServiceImpl.class
-    │       │   │               │   ├── ProductServiceImpl.class
-    │       │   │               │   └── UserServiceImpl.class
-    │       │   │               ├── OrderDetailService.class
-    │       │   │               ├── OrderService.class
-    │       │   │               ├── ProductService.class
-    │       │   │               └── UserService.class
-    │       │   ├── logback.xml
-    │       │   ├── messages_en.properties
-    │       │   └── messages_zh_TW.properties
-    │       ├── lib
-    │       │   ├── antlr-2.7.7.jar
-    │       │   ├── attoparser-2.0.5.RELEASE.jar
-    │       │   ├── byte-buddy-1.12.9.jar
-    │       │   ├── classmate-1.5.1.jar
-    │       │   ├── FastInfoset-1.2.15.jar
-    │       │   ├── hibernate-commons-annotations-5.1.2.Final.jar
-    │       │   ├── hibernate-core-5.6.9.Final.jar
-    │       │   ├── HikariCP-5.0.1.jar
-    │       │   ├── istack-commons-runtime-3.0.7.jar
-    │       │   ├── jandex-2.4.2.Final.jar
-    │       │   ├── javassist-3.20.0-GA.jar
-    │       │   ├── javax.activation-api-1.2.0.jar
-    │       │   ├── javax.persistence-api-2.2.jar
-    │       │   ├── jaxb-api-2.3.1.jar
-    │       │   ├── jaxb-runtime-2.3.1.jar
-    │       │   ├── jboss-logging-3.4.3.Final.jar
-    │       │   ├── jboss-transaction-api_1.2_spec-1.1.1.Final.jar
-    │       │   ├── jstl-1.2.jar
-    │       │   ├── logback-classic-1.2.11.jar
-    │       │   ├── logback-core-1.2.11.jar
-    │       │   ├── mysql-connector-java-8.0.29.jar
-    │       │   ├── ognl-3.1.26.jar
-    │       │   ├── protobuf-java-3.19.4.jar
-    │       │   ├── slf4j-api-1.7.36.jar
-    │       │   ├── spring-aop-5.3.20.jar
-    │       │   ├── spring-beans-5.3.20.jar
-    │       │   ├── spring-context-5.3.20.jar
-    │       │   ├── spring-core-5.3.20.jar
-    │       │   ├── spring-expression-5.3.20.jar
-    │       │   ├── spring-jcl-5.3.20.jar
-    │       │   ├── spring-jdbc-5.3.20.jar
-    │       │   ├── spring-orm-5.3.20.jar
-    │       │   ├── spring-tx-5.3.20.jar
-    │       │   ├── spring-web-5.3.20.jar
-    │       │   ├── spring-webmvc-5.3.20.jar
-    │       │   ├── stax-ex-1.8.jar
-    │       │   ├── thymeleaf-3.0.15.RELEASE.jar
-    │       │   ├── thymeleaf-spring5-3.0.15.RELEASE.jar
-    │       │   ├── txw2-2.3.1.jar
-    │       │   └── unbescape-1.1.6.RELEASE.jar
-    │       ├── views
-    │       │   ├── add-customer.html
-    │       │   ├── add-orderdetail.html
-    │       │   ├── add-order.html
-    │       │   ├── add-product.html
-    │       │   ├── add-user.html
-    │       │   ├── cartdetails.html
-    │       │   ├── cart-list.html
-    │       │   ├── customerCart.html
-    │       │   ├── customers.html
-    │       │   ├── edit-customer.html
-    │       │   ├── edit-order.html
-    │       │   ├── edit-product.html
-    │       │   ├── edit-user.html
-    │       │   ├── home.html
-    │       │   ├── login.html
-    │       │   ├── orderdetails.html
-    │       │   ├── orders.html
-    │       │   ├── products_details.html
-    │       │   ├── products.html
-    │       │   └── users.html
-    │       └── web.xml
 
-
-80 directories, 260 files

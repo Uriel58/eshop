@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.config.ShippingConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -30,6 +31,8 @@ public class CartController extends LoginBaseController {
 	private ProductService productService;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private ShippingConfig shippingConfig;
 
 	// 顯示所有購物車
 	@GetMapping("/cart-list")
@@ -78,7 +81,7 @@ public class CartController extends LoginBaseController {
 	// 增加商品詳細頁（含登入檢查）
 	@PostMapping("/create-and-add-product")
 	public String createCartAndAddProduct(@RequestParam(required = false) Long customerId, // 允许为空，如果为空则从会话中获取
-			@RequestParam Long productId, @RequestParam int quantity, @RequestParam double price,
+			@RequestParam Long productId, @RequestParam int quantity, @RequestParam double price,@RequestParam(required = false) String deliveryMethod,
 			HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
 		// 如果没有传递 customerId，尝试从会话中获取
@@ -124,7 +127,24 @@ public class CartController extends LoginBaseController {
 		CartDetail existingDetail = cart.getCartDetails().stream()
 				.filter(d -> d.getProduct().getProdNum().equals(productId)).findFirst().orElse(null);
 
-		BigDecimal shippingFee = BigDecimal.valueOf(12);
+		/*BigDecimal shippingFee = BigDecimal.ZERO;
+	    if ("HOME_DELIVERY".equals(deliveryMethod)) {
+	        shippingFee = BigDecimal.valueOf(24);
+	    } else if ("POSTAL".equals(deliveryMethod)) {
+	        shippingFee = BigDecimal.valueOf(12);
+	    } else if ("STORE_DELIVERY".equals(deliveryMethod)) {
+	        shippingFee = BigDecimal.valueOf(20);
+	    }*/
+		BigDecimal shippingFee = BigDecimal.ZERO;
+		if ("PICK_UP".equals(deliveryMethod)) {
+		    shippingFee = shippingConfig.getPickUp();
+		} else if ("HOME_DELIVERY".equals(deliveryMethod)) {
+		    shippingFee = shippingConfig.getHomeDelivery();
+		} else if ("POSTAL".equals(deliveryMethod)) {
+		    shippingFee = shippingConfig.getPostal();
+		} else if ("STORE_DELIVERY".equals(deliveryMethod)) {
+		    shippingFee = shippingConfig.getStoreDelivery();
+		}
 		BigDecimal productTotal = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));
 
 		if (existingDetail != null) {

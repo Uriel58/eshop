@@ -79,13 +79,25 @@
 											th:value="${detail.cartQty}" class="form-control" min="1">
 										<input type="hidden" th:name="productId"
 											th:value="${detail.product.prodNum}" />
+										<!-- ✅ 新增 hidden input 存運送方式 -->
+										<input type="hidden" name="deliveryMethod"
+											id="selectedDelivery" th:value="*{deliveryMethod}"  />
 										<button type="submit" class="btn btn-primary mt-2">更新數量</button>
 									</form>
 								</td>
-								<td
-									th:text="${#numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT')} + ' 元'">運費</td>
-								<td
-									th:text="${#numbers.formatDecimal(detail.cartTotal, 0, 'COMMA', 2, 'POINT')} + ' 元'">總價</td>
+								<!-- ✅ 運費欄位 -->
+								
+								<td class="shipping-fee" th:if="${deliveryMethod}">
+									<span th:text="${#numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT')} + ' 元'">運費</span>
+									</td>
+								<td class="shipping-fee" th:unless="${deliveryMethod}">
+									<span>0元</span>
+								</td>
+									
+
+								<!-- ✅ 小計加上 class=item-total -->
+								<td class="item-total"
+									th:text="${#numbers.formatDecimal(detail.cartTotal, 0, 'COMMA', 2, 'POINT')} + ' 元'" th:attr="data-base=${detail.cartTotal}">總價</td>
 								<td>
 									<!-- 刪除商品 --> <a
 									th:href="@{/cart/{cartId}/remove-product/{productId}(cartId=${cart.id}, productId=${detail.product.prodNum})}"
@@ -97,12 +109,13 @@
 				</div>
 
 				<!-- 顯示購物車總計 -->
-				<div class="d-flex justify-content-between align-items-center mt-4">
+				<div id="cart-total-container"
+					class="d-flex justify-content-between align-items-center mt-4">
 					<h3 class="cartTotal" th:if="${total != null and total > 0}">
-						總價: <span
+						總價: <span id="cart-total-value"
 							th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')} + ' 元'"></span>
 					</h3>
-					<h3 class="cartTotal" th:unless="${total != null and total > 0}">
+					<h3  class="cartTotal" th:unless="${total != null and total > 0}">
 						總價: <span>0.00元</span>
 					</h3>
 				</div>
@@ -146,20 +159,67 @@
 						</div>
 						<div class="mb-3">
 							<label>Delivery Method</label><br /> <input type="radio"
-								th:field="*{deliveryMethod}" value="PICK_UP" /> 自取(PICK_UP) <input
-								type="radio" th:field="*{deliveryMethod}" value="HOME_DELIVERY" />
-							宅配到府 (HOME_DELIVERY) <input type="radio" th:field="*{deliveryMethod}"
-								value="STORE_DELIVERY" /> 超商取貨 (STORE_DELIVERY) <input type="radio"
-								th:field="*{deliveryMethod}" value="POSTAL" /> 郵寄 (POSTAL)
+								th:field="*{deliveryMethod}" th:checked="${order.deliveryMethod == 'PICK_UP'}" value="PICK_UP" /> 自取(PICK_UP) <input
+								type="radio" th:field="*{deliveryMethod}" th:checked="${order.deliveryMethod == 'HOME_DELIVERY'}" value="HOME_DELIVERY" />
+							宅配到府 (HOME_DELIVERY) <input type="radio"
+								th:field="*{deliveryMethod}"  th:checked="${order.deliveryMethod == 'STORE_DELIVERY'}" value="STORE_DELIVERY" /> 超商取貨
+							(STORE_DELIVERY) <input type="radio" th:field="*{deliveryMethod}"
+								 th:checked="${order.deliveryMethod == 'POSTAL'}" value="POSTAL" /> 郵寄 (POSTAL)
 						</div>
-							<button type="submit" class="btn btn-success">結帳</button>
-						</form>
-					</div>
-					<!-- 返回購物車列表 -->
-					<div class="mt-4">
-						<a th:href="@{/}" class="btn btn-secondary">返回商品列表</a>
-					</div>
+						<button type="submit" class="btn btn-success">結帳</button>
+				</form>
+			</div>
+			<!-- 返回購物車列表 -->
+			<div class="mt-4">
+				<a th:href="@{/}" class="btn btn-secondary">返回商品列表</a>
 			</div>
 		</div>
+	</div>
+	<!-- ✅ JS：動態更新運費與總價 -->
+	<script>
+	document.addEventListener("DOMContentLoaded", function () {
+	    const deliveryRadios = document.querySelectorAll("input[name='deliveryMethod']");
+	    const shippingFeeCells = document.querySelectorAll(".shipping-fee");
+	    const totalSpan = document.getElementById("cart-total-value");
+	    const hiddenDeliveryInputs = document.querySelectorAll("input#selectedDelivery");
+
+	    // 取得原始總價
+	    let baseTotal = 0;
+	    document.querySelectorAll(".item-total").forEach(cell => {
+	        baseTotal += parseFloat(cell.dataset.base) || 0;
+	    });
+
+	    function updateTotal(fee) {
+	        totalSpan.textContent = (baseTotal + fee).toFixed(2) + " 元";
+	    }
+
+	    deliveryRadios.forEach(radio => {
+	        radio.addEventListener("change", function () {
+	            let fee = 0;
+	            switch(this.value) {
+	                case "HOME_DELIVERY": fee = 24; break;
+	                case "POSTAL": fee = 12; break;
+	                case "STORE_DELIVERY": fee = 6; break;
+	                default: fee = 0; break;
+	            }
+
+	            // 更新運費
+	            shippingFeeCells.forEach(cell => cell.textContent = fee + " 元");
+
+	            // 更新 hidden input
+	            hiddenDeliveryInputs.forEach(input => input.value = radio.value);
+
+	            // 更新總價
+	            updateTotal(fee);
+	        });
+	    });
+
+	    // 預設選中運送方式時初始化
+	    const selectedRadio = document.querySelector("input[name='deliveryMethod']:checked");
+	    if(selectedRadio) selectedRadio.dispatchEvent(new Event('change'));
+	});
+
+</script>
+
 </body>
 </html>
