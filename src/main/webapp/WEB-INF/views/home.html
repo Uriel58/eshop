@@ -34,14 +34,6 @@
 </style>
 </head>
 <body>
-	<!-- <button th:text="#{button.save}">Save</button> -->
-
-	<!-- <h1 th:if="${name}">
-		<span th:text="#{home.message} + ${name}"></span>
-	</h1>
-	<h1 th:unless="${name}">
-		<span th:text="#{home.message} + #{home.visitor}"></span>
-	</h1>-->
 	<div class="d-flex justify-content-between align-items-center">
 		<!-- 左側：歡迎訊息 -->
 		<div>
@@ -60,7 +52,17 @@
 				carts...</a>
 		</div>
 	</div>
-
+	<!-- 管理員按鈕 users != null and <div th:if="${users.identifyName != customer}"> -->
+	<div th:if="${users != null and users.identifyName != 'customer'}">
+		<a th:href="@{/users}" class="btn btn-primary mb-3"
+			th:text="#{a.user_list}">User List</a> <a th:href="@{/customers}"
+			class="btn btn-primary mb-3" th:text="#{a.customer_list}">Customer
+			List</a> <a th:href="@{/orders}" class="btn btn-primary mb-3"
+			th:text="#{a.order_list}">Order List</a> <a th:href="@{/products}"
+			class="btn btn-primary mb-3" th:text="#{a.products}">products</a> <a
+			th:href="@{/categories}" class="btn btn-primary mb-3">Category
+			List</a>
+	</div>
 	<div class="container mt-4 text-center">
 		<hr>
 		<!-- 語言按鈕 -->

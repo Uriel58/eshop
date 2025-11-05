@@ -67,14 +67,15 @@ public class Product {
 
 	@Column(name = "prod_stock_qty")
 	private Integer prodStockQty; // 產品庫存
-
+	
+	
 	// Constructors
 	public Product() {
 	}
 
 	public Product(String prodName, String prodType, String prodLine, BigDecimal prodPrice, String prodInfo,
 			String prodKeywords, String prodBarcode, ZonedDateTime createdTime, String prodTags, String prodImages,
-			Integer prodStockQty, List<OrderDetail> orderDetails, List<CartDetail> cartDetails) {
+			Integer prodStockQty, List<OrderDetail> orderDetails, List<CartDetail> cartDetails,Category category) {
 		this.prodName = prodName;
 		this.prodType = prodType;
 		this.prodLine = prodLine;
@@ -88,6 +89,7 @@ public class Product {
 		this.prodStockQty = prodStockQty;
 		this.orderDetails = new ArrayList<>();
 		this.cartDetails = new ArrayList<>();
+		this.category = category;
 	}
 
 	// 自動注入現在時間，在新增時會呼叫此方法
@@ -95,6 +97,18 @@ public class Product {
 	protected void onCreate() {
 		// 固定使用台北時區，確保跨伺服器一致
 		this.createdTime = ZonedDateTime.now(ZoneId.of("Asia/Taipei"));
+		if (this.prodBarcode == null || this.prodBarcode.isEmpty()) {
+	        this.prodBarcode = generateBarcode();
+	    }
+	}
+
+	private String generateBarcode() {
+	    // 生成 13 位隨機數字條碼
+	    StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < 13; i++) {
+	        sb.append((int) (Math.random() * 10));
+	    }
+	    return sb.toString();
 	}
 
 	// Getters and Setters
@@ -231,12 +245,19 @@ public class Product {
 		cartDetails.remove(cartadddetail);
 		cartadddetail.setProduct(null);
 	}
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 
 	@Override
 	public String toString() {
 		return "Product{" + "prodNum=" + prodNum + ", prodName= " + prodName + ", prodType= " + prodType
 				+ ", prodLine= " + prodLine + ", prodPrice= " + prodPrice + ", prodStockQty= " + prodStockQty
 				+ ", createdTime= " + createdTime + ", orderDetails= " + orderDetails.size() + ", cartDetails= "
-				+ cartDetails.size() + '}';
+				+ cartDetails.size() + ", category= " + category +'}';
 	}
 }

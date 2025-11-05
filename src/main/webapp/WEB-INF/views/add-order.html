@@ -48,12 +48,23 @@
                 <input type="text" th:field="*{orderStatus}" class="form-control" required>
             </div>
             <div class="col-md-4 mb-3">
-                <label>Payment Method</label>
-                <input type="text" th:field="*{paymentMethod}" class="form-control" required>
+                <label>Payment Method</label><select th:field="*{paymentMethod}"
+					class="form-control">
+					<option value="">-- Select --</option>
+					<option value="CASH">現金</option>
+					<option value="CREDIT_CARD">刷卡</option>
+					<option value="E_PAYMENT">電子支付</option>
+				</select>
             </div>
             <div class="col-md-4 mb-3">
-                <label>Delivery Method</label>
-                <input type="text" th:field="*{deliveryMethod}" class="form-control" required>
+                <label>Delivery Method</label><select th:field="*{deliveryMethod}"
+					class="form-control">
+					<option value="">-- Select --</option>
+					<option value="PICK_UP">自取(PICK_UP)</option>
+					<option value="HOME_DELIVERY">宅配到府 (HOME_DELIVERY)</option>
+					<option value="STORE_DELIVERY">超商取貨</option>
+					<option value="POSTAL">郵寄 (POSTAL)</option>
+				</select>
             </div>
             <div class="col-md-4 mb-3">
                 <label>Order Barcode</label>

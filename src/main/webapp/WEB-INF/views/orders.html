@@ -10,7 +10,7 @@
 <body>
 	<!-- 
 	    * Order有ord_num(訂單編號),ord_date(創建訂單日期,自動),required_date(更新訂單日期,自動),county(購買地區),
-	    * order_status(訂單狀態),payment_method(付款方式),order_barcode(訂單條碼,自動)
+	    * order_status(訂單狀態),payment_method(付款方式),delivery_method(運送方式),order_barcode(訂單條碼,自動)
 	-->
 	<div class="container mt-4">
 		<h1 th:if="${name}">
@@ -40,7 +40,7 @@
 			<a th:href="@{/customers}" class="btn btn-primary mb-3"th:text="#{a.customer_list}">Customer List</a>
     		<a th:href="@{/users}" class="btn btn-primary mb-3"th:text="#{a.user_list}">User List</a>
     		<a th:href="@{/products}" class="btn btn-primary mb-3"th:text="#{a.products}">products</a> 
-		
+			<a th:href="@{/categories}" class="btn btn-primary mb-3">Category List</a>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -51,6 +51,7 @@
 					<th>Customer Number</th>
 					<th>Status</th>
 					<th>Payment Method</th>
+					<th>Delivery Method</th>
 					<th>Order Barcode</th>
 					<th>Function</th>
 				</tr>
@@ -68,6 +69,7 @@
 					<td th:text="${order.customer.customerId}"></td>
 					<td th:text="${order.orderStatus}"></td>
 					<td th:text="${order.paymentMethod}"></td>
+					<td th:text="${order.deliveryMethod}"></td>
 					<td th:text="${order.orderBarcode}"></td>
 					<td>
 						<a th:href="@{/orders/edit/{orderId}(orderId=${order.ordNum})}"

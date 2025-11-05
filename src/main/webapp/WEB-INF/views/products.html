@@ -9,51 +9,62 @@
 </head>
 <body>
 	<div class="container mt-4">
-
+	<!-- 
+	 * Product有prod_num,prod_name,prod_type(大類),prod_line(大類的細分),prod_price,
+	 * prod_info(產品資訊),prod_keywords,prod_barcode(條碼）,created_time,
+	 * prod_tags,prod_images,prod_stock_qty 
+	 * 連接到OrderDetail,CartDeail
+	 -->
 		<!-- 登入者名稱 -->
 		<h1 th:text="${name != null} ? ${'Hello！ ' + name} : 'Hello！ visitor'"></h1>
 
 		<a th:href="@{/}" class="btn btn-outline-secondary mt-3">Back</a>
 		<!-- 登出按鈕 -->
-			<div th:if="${name}">
-				<a th:href="@{/logout}" class="btn btn-danger me-2"
-					th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
-					class="btn btn-warning" th:text="#{a.register}">Register</a>
-			</div>
-			<!-- 登入按鈕 -->
-			<div th:unless="${name}">
-				<a th:href="@{/login}" class="btn btn-success me-2"
-					th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
-					class="btn btn-warning" th:text="#{a.register}">Register</a>
-			</div>
+		<div th:if="${name}">
+			<a th:href="@{/logout}" class="btn btn-danger me-2"
+				th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
+				class="btn btn-warning" th:text="#{a.register}">Register</a>
+		</div>
+		<!-- 登入按鈕 -->
+		<div th:unless="${name}">
+			<a th:href="@{/login}" class="btn btn-success me-2"
+				th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
+				class="btn btn-warning" th:text="#{a.register}">Register</a>
+		</div>
 		<h1>Product List</h1>
 
 		<!-- 新增商品按鈕 -->
 		<a th:href="@{/products/add}" class="btn btn-primary mb-3">Add New
-			Product</a>
-			<a th:href="@{/customers}" class="btn btn-primary mb-3"th:text="#{a.customer_list}">Customer List</a>
-    		<a th:href="@{/users}" class="btn btn-primary mb-3"th:text="#{a.user_list}">User List</a>
-    		<a th:href="@{/orders}" class="btn btn-primary mb-3"th:text="#{a.order_list}">Order List</a>
+			Product</a> <a th:href="@{/customers}" class="btn btn-primary mb-3"
+			th:text="#{a.customer_list}">Customer List</a> <a th:href="@{/users}"
+			class="btn btn-primary mb-3" th:text="#{a.user_list}">User List</a> <a
+			th:href="@{/orders}" class="btn btn-primary mb-3"
+			th:text="#{a.order_list}">Order List</a> <a th:href="@{/categories}"
+			class="btn btn-primary mb-3">Category List</a>
 		<table class="table table-striped">
 			<thead>
 				<tr>
+					<th>Product Num</th>
 					<th>Product Tag</th>
 					<th>Product Image</th>
-					<th>Product Type</th>
 					<!---類別--->
+					<th>Product Type</th>
 					<th>Product Line</th>
 					<!---細項--->
 					<th>Product Name</th>
 					<th>Product Information</th>
 					<th>Product Created Time</th>
 					<th>Product Price</th>
+					<th>Product Keywords</th>
 					<th>Product Stock Quantity</th>
+					<th>Product Barcode</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- prodTags,prodImages,prodType,prodLine,prodName,prodInfo,createdTime,prodPrice,prodStockQty -->
 				<tr th:each="product : ${products}">
+					<td th:text="${product.prodNum}"></td>
 					<td th:text="${product.prodTags}"></td>
 					<td><img class="product-image"
 						th:src="@{'/resources/images/' + ${product.prodImages}}"
@@ -66,7 +77,9 @@
 					<td><span
 						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">0元</span>
 					</td>
+					<td th:text="${product.prodKeywords}"></td>
 					<td th:text="${product.prodStockQty}"></td>
+					<td th:text="${product.prodBarcode}"></td>
 					<td><a
 						th:href="@{/products/edit/{prodNum}(prodNum=${product.prodNum})}"
 						class="btn btn-warning btn-sm">Edit</a> <a

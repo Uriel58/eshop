@@ -39,12 +39,13 @@ public class User {
 	public User() {
 	}
 
-	public User(String name, String email, String password, String identifyName,List<PasswordResetToken> passwordResetTokens) {
+	public User(String name, String email, String password, String identifyName,List<PasswordResetToken> passwordResetTokens,Customer customer) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.identifyName = identifyName;
 		this.passwordResetTokens = passwordResetTokens;
+		this.customer = customer;
 	}
 
 	// Getters and Setters
@@ -105,6 +106,6 @@ public class User {
 	
 	@Override
 	public String toString() {
-		return "User{id=" + id + ", name=" + name + ", email=" + email + ", identifyName=" + identifyName + '}';
-	}
+		return "User{id=" + id + ", name=" + name + ", email=" + email + '}';
+	}///", identifyName=" + identifyName + ", passwordResetTokens=" + passwordResetTokens,", customer=" + customer + +不要加會觸發 Lazy 加載！
 }

@@ -1,10 +1,10 @@
+
 package com.example.demo.model;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 
-import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "password_reset_tokens")
 public class PasswordResetToken {
@@ -34,10 +34,7 @@ public class PasswordResetToken {
 	@PrePersist
     protected void onCreate() {
         ZonedDateTime now = ZonedDateTime.now(ZONE_TAIPEI);
-        createdAt = expiryDate = now;
-        if (expiryDate == null) {
-        	expiryDate = now;
-        }
+        createdAt = now;
     }
     @PreUpdate
     protected void onUpdate() {

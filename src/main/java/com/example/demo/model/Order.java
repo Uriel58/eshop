@@ -14,7 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Order {
 	/**
 	    * Order有ord_num(訂單編號),ord_date(創建訂單日期,自動),required_date(更新訂單日期,自動),county(購買地區),customerId（顧客編號),
-	    * order_status(訂單狀態),payment_method(付款方式),order_barcode(訂單條碼,自動)
+	    * order_status(訂單狀態),payment_method(付款方式),delivery_method(運送方式),order_barcode(訂單條碼,自動)
 	    * 連接到OrderDetail,Customer
 	*/
     @Id
@@ -44,13 +44,13 @@ public class Order {
     private String county;
 
     @Column(name = "order_status", length = 20)
-    private String orderStatus;
+    private String orderStatus;///可用enum
 
     @Column(name = "payment_method", length = 30)
-    private String paymentMethod;
+    private String paymentMethod;///可用enum
 
     @Column(name = "delivery_method", length = 30)
-    private String deliveryMethod;
+    private String deliveryMethod;///可用enum
 
     @Column(name = "order_barcode", length = 100, unique = true)
     private String orderBarcode; // ✅ 自動生成條碼

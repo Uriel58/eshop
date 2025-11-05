@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Cart;
+import com.example.demo.model.User;
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +22,10 @@ public class HomeController extends LoginBaseController{
 	private ProductService productService;
 	
 	@Autowired
-	private CartService cartService; // ✅ 確保有注入
+	private CartService cartService;
+	
+	@Autowired
+	private UserService userService;
 
 	private static final int PAGE_SIZE = 12; // 每頁10筆
 
@@ -34,6 +39,11 @@ public class HomeController extends LoginBaseController{
 		model.addAttribute("name", name);
 		model.addAttribute("id", id);
 		
+		// 取得 User 物件並放進 model，用來偵測user身份
+	    if (id != null) {
+	        User user = userService.getUserById(id);
+	        model.addAttribute("users", user); 
+	    }
 		// 取得當前用戶的購物車
 	    Cart cart = null;
 	    if (customerId != null) {
