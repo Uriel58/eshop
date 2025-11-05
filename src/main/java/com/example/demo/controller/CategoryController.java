@@ -12,7 +12,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/categories")
-public class CategoryController {
+public class CategoryController extends LoginBaseController {
 
     @Autowired
     private CategoryService categoryService;
