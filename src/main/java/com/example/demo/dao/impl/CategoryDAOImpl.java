@@ -19,7 +19,7 @@ public class CategoryDAOImpl implements CategoryDAO {
     private Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
-
+    
     @Override
     public void save(Category category) {
         getCurrentSession().save(category);
@@ -43,5 +43,24 @@ public class CategoryDAOImpl implements CategoryDAO {
     @Override
     public List<Category> findAll() {
         return getCurrentSession().createQuery("from Category", Category.class).getResultList();
+    }
+    
+ // 實現根據 prodType 查詢 prodLine
+    @Override
+    public List<String> findProdLinesByProdType(String prodType) {
+        return getCurrentSession() 
+                .createQuery("SELECT DISTINCT c.prodLine FROM Category c WHERE c.prodType = :prodType", String.class)
+                .setParameter("prodType", prodType)
+                .list();
+    }
+
+    // 實現根據 prodType 和 prodLine 查詢 description
+    @Override
+    public List<String> findDescriptionsByProdTypeAndProdLine(String prodType, String prodLine) {
+        return getCurrentSession() 
+                .createQuery("SELECT DISTINCT c.description FROM Category c WHERE c.prodType = :prodType AND c.prodLine = :prodLine", String.class)
+                .setParameter("prodType", prodType)
+                .setParameter("prodLine", prodLine)
+                .list();
     }
 }

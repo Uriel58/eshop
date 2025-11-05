@@ -13,58 +13,70 @@ import java.util.List;
 @Transactional
 public class CartDAOImpl implements CartDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-    private Session getSession() {
-        return sessionFactory.getCurrentSession();
-    }
+	private Session getSession() {
+		return sessionFactory.getCurrentSession();
+	}
 
-    @Override
-    public Cart findById(Long id) {
-        return getSession().get(Cart.class, id);
-    }
+	@Override
+	public Cart findById(Long id) {
+		return getSession().get(Cart.class, id);
+	}
 
-    @Override
-    public List<Cart> findAll() {
-        return getSession().createQuery("from Cart", Cart.class).list();
-    }
+	@Override
+	public List<Cart> findAll() {
+		return getSession().createQuery("from Cart", Cart.class).list();
+	}
 
-    @Override
-    public void save(Cart cart) {
-        getSession().save(cart);
-    }
+	@Override
+	public void save(Cart cart) {
+		getSession().save(cart);
+	}
 
-    @Override
-    public void update(Cart cart) {
-        getSession().update(cart);
-    }
+	@Override
+	public void update(Cart cart) {
+		getSession().update(cart);
+	}
 
+	@Override
+	public void delete(Long id) {
+		Cart cart = findById(id);
+		if (cart != null) {
+			getSession().delete(cart);
+		}
+	}
+
+	@Override
+	public List<Cart> findByCustomerId(Long customerId) {
+		return getSession().createQuery("FROM Cart c WHERE c.customer.customerId = :customerId", Cart.class)
+				.setParameter("customerId", customerId).list();
+	}
+	/*
+	 * @Override public Cart findByCustomerIdWithDetails(Long customerId) { return
+	 * getSession() .createQuery( "SELECT c FROM Cart c " +
+	 * "JOIN FETCH c.cartDetails cd " + "JOIN FETCH cd.product " +
+	 * "WHERE c.customer.customerId = :customerId", Cart.class )
+	 * .setParameter("customerId", customerId) .uniqueResult(); // 因為一個顧客通常只有一個 Cart
+	 * }
+	 */
+	// 根據 prodType 查詢 prodLine
+	@Override
+	public List<String> findProdLinesByProdType(String prodType) {
+		return getSession()
+				.createQuery("SELECT DISTINCT c.prodLine FROM Category c WHERE c.prodType = :prodType", String.class)
+				.setParameter("prodType", prodType).list();
+	}
+	
+	// 根據 prodType 和 prodLine 查詢 description
     @Override
-    public void delete(Long id) {
-        Cart cart = findById(id);
-        if (cart != null) {
-            getSession().delete(cart);
-        }
-    }
-    @Override
-    public List<Cart> findByCustomerId(Long customerId) {
+    public List<String> findDescriptionsByProdTypeAndProdLine(String prodType, String prodLine) {
         return getSession()
-                .createQuery("FROM Cart c WHERE c.customer.customerId = :customerId", Cart.class)
-                .setParameter("customerId", customerId)
+                .createQuery("SELECT DISTINCT c.description FROM Category c WHERE c.prodType = :prodType AND c.prodLine = :prodLine", String.class)
+                .setParameter("prodType", prodType)
+                .setParameter("prodLine", prodLine)
                 .list();
     }
-    /*@Override
-    public Cart findByCustomerIdWithDetails(Long customerId) {
-        return getSession()
-                .createQuery(
-                    "SELECT c FROM Cart c " +
-                    "JOIN FETCH c.cartDetails cd " +
-                    "JOIN FETCH cd.product " +
-                    "WHERE c.customer.customerId = :customerId", 
-                    Cart.class
-                )
-                .setParameter("customerId", customerId)
-                .uniqueResult(); // 因為一個顧客通常只有一個 Cart
-    }*/
+	
 }

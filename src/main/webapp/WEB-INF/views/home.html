@@ -45,8 +45,8 @@
 			</h1>
 			<!-- 管理員按鈕 -->
 			<div th:if="${users != null and users.identifyName != 'customer'}">
-				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch
-					Admin Page</a>
+				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch Admin
+					Page</a>
 			</div>
 		</div>
 
@@ -81,6 +81,39 @@
 			<!-- 註冊按鈕 -->
 
 		</div>
+		<form th:action="@{/categories}" method="get">
+			<div class="row mb-3">
+				<div class="col">
+					<label for="prodType">Product Type</label> <select id="prodType"
+						name="prodType" class="form-control" th:field="*{prodType}"
+						required>
+						<option value="">Select Product Type</option>
+						<option th:each="category : ${categories}"
+							th:value="${category.prodType}" th:text="${category.prodType}"></option>
+					</select>
+				</div>
+
+				<div class="col">
+					<label for="prodLine">Product Line</label> <select id="prodLine"
+						name="prodLine" class="form-control" th:field="*{prodLine}"
+						required>
+						<option value="">Select Product Line</option>
+						<!-- Prod Lines will be populated dynamically -->
+					</select>
+				</div>
+
+				<div class="col">
+					<label for="description">Description</label> <select
+						id="description" name="description" class="form-control"
+						th:field="*{description}" required>
+						<option value="">Select Description</option>
+						<!-- Descriptions will be populated dynamically -->
+					</select>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Search</button>
+		</form>
 		<hr>
 
 		<!-- 商品列表，顯示商品圖片名字價格，點進去可以跳轉商品詳細頁面 -->
@@ -127,5 +160,39 @@
 			</ul>
 		</nav>
 	</div>
+<script>
+    $(document).ready(function() {
+        // When Product Type changes, populate the Product Lines dynamically
+        $('#prodType').change(function() {
+            var prodType = $(this).val();
+            if (prodType) {
+                $.get("/categories/getProdLines?prodType=" + prodType, function(data) {
+                    $('#prodLine').empty().append('<option value="">Select Product Line</option>');
+                    $.each(data.prodLines, function(i, prodLine) {
+                        $('#prodLine').append('<option value="' + prodLine + '">' + prodLine + '</option>');
+                    });
+
+                    // Reset description dropdown when prodType changes
+                    $('#description').empty().append('<option value="">Select Description</option>');
+                });
+            }
+        });
+
+        // When Product Line changes, populate the Descriptions dynamically
+        $('#prodLine').change(function() {
+            var prodType = $('#prodType').val();
+            var prodLine = $(this).val();
+            if (prodType && prodLine) {
+                $.get("/categories/getDescriptions?prodType=" + prodType + "&prodLine=" + prodLine, function(data) {
+                    $('#description').empty().append('<option value="">Select Description</option>');
+                    $.each(data.descriptions, function(i, description) {
+                        $('#description').append('<option value="' + description + '">' + description + '</option>');
+                    });
+                });
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
