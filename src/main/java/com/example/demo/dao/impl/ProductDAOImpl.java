@@ -70,7 +70,7 @@ public class ProductDAOImpl implements ProductDAO {
                 .setParameter("prodNum", prodNum)
                 .uniqueResult();
     }
-    
+    ///category
     @Override
     public List<Product> findAllWithCategory() {
         String hql = "SELECT p FROM Product p LEFT JOIN FETCH p.category";

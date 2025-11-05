@@ -45,7 +45,7 @@ public class UserController extends LoginBaseController{
     public String saveUser(@ModelAttribute User user) {
     	
         userService.saveUser(user);
-        return "redirect:/users";
+        return "redirect:/";
     }
     
     @GetMapping("/delete/{id}")

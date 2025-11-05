@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
+import com.example.demo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,9 @@ public class ProductController extends LoginBaseController{
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private CategoryService categoryService;
 
     // 顯示所有商品
     @GetMapping
@@ -53,19 +57,15 @@ public class ProductController extends LoginBaseController{
     // 顯示新增表單
     @GetMapping("/add")
     public String showAddForm(Model model) {
+    	model.addAttribute("categories", categoryService.getAllCategories()); // ✅ 加上這行
         model.addAttribute("product", new Product());
         return "add-product"; // 對應 templates/add-product.html
     }
 
     // 顯示編輯表單
-    /*@GetMapping("/edit/{prodNum}")
-    public String showEditForm(@PathVariable("prodNum") Long prodNum, Model model) {
-        Product product = productService.getProductById(prodNum);
-        model.addAttribute("product", product);
-        return "edit-product"; // 對應 templates/edit-product.html
-    }*/
     @GetMapping("/edit/{prodNum}")
     public String showEditForm(@PathVariable("prodNum") Long prodNum, Model model) {
+    	model.addAttribute("categories", categoryService.getAllCategories()); // ✅ 加上這行
         Product product = productService.getProductById(prodNum);
         if (product.getCreatedTime() != null) {
             product.setCreatedTime(product.getCreatedTime().withZoneSameInstant(ZoneId.of("Asia/Taipei")));
@@ -82,25 +82,11 @@ public class ProductController extends LoginBaseController{
         return "redirect:/products";
     }
 
-    // ✅ 更新商品（已加入 LocalDateTime → ZonedDateTime 轉換）
-    /*@PostMapping("/update/{prodNum}")
-    public String updateProduct(
-            @PathVariable("prodNum") Long prodNum,
-            @ModelAttribute Product product,
-            @RequestParam("createdTime")
-            @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime createdTime) {
-
-        // 將 LocalDateTime 轉為台北時區的 ZonedDateTime
-        product.setCreatedTime(createdTime.atZone(ZoneId.of("Asia/Taipei")));
-
-        productService.updateProduct(prodNum, product);
-        return "redirect:/products";
-    }*/
     @PostMapping("/update/{prodNum}")
     public String updateProduct(
         @PathVariable("prodNum") Long prodNum,
         @ModelAttribute Product product) {
-
+    	
         // 不需要從前端取 createdTime，保持原來的值
         Product existing = productService.getProductById(prodNum);
         if (existing != null) {
