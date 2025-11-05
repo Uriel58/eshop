@@ -9,10 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import org.hibernate.StaleStateException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
 public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
+	
+	 private static final Logger log = LoggerFactory.getLogger(PasswordResetTokenServiceImpl.class);
 
     @Autowired
     private PasswordResetTokenDAO tokenDAO;
@@ -53,7 +59,15 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
         ZonedDateTime now = ZonedDateTime.now();
         for (PasswordResetToken token : allTokens) {
             if (token.getExpiryDate().isBefore(now)) {
-                tokenDAO.delete(token);
+                try {
+                    tokenDAO.delete(token);
+                } catch (EmptyResultDataAccessException | StaleStateException e) {
+                    // 記錄 log 但不視為錯誤
+                    log.warn("Token already deleted or stale: {}", token.getId());
+                } catch (Exception e) {
+                    // 捕捉其他未預期錯誤，以免中斷排程
+                    log.error("Unexpected error deleting token: {}", token.getId(), e);
+                }
             }
         }
     }
