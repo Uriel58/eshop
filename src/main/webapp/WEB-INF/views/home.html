@@ -43,6 +43,11 @@
 			<h1 th:unless="${name}">
 				<span th:text="#{home.message} + #{home.visitor}"></span>
 			</h1>
+			<!-- 管理員按鈕 -->
+			<div th:if="${users != null and users.identifyName != 'customer'}">
+				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch
+					Admin Page</a>
+			</div>
 		</div>
 
 		<!-- 右側：購物車按鈕 -->
@@ -52,17 +57,7 @@
 				carts...</a>
 		</div>
 	</div>
-	<!-- 管理員按鈕 users != null and <div th:if="${users.identifyName != customer}"> -->
-	<div th:if="${users != null and users.identifyName != 'customer'}">
-		<a th:href="@{/users}" class="btn btn-primary mb-3"
-			th:text="#{a.user_list}">User List</a> <a th:href="@{/customers}"
-			class="btn btn-primary mb-3" th:text="#{a.customer_list}">Customer
-			List</a> <a th:href="@{/orders}" class="btn btn-primary mb-3"
-			th:text="#{a.order_list}">Order List</a> <a th:href="@{/products}"
-			class="btn btn-primary mb-3" th:text="#{a.products}">products</a> <a
-			th:href="@{/categories}" class="btn btn-primary mb-3">Category
-			List</a>
-	</div>
+
 	<div class="container mt-4 text-center">
 		<hr>
 		<!-- 語言按鈕 -->

@@ -64,7 +64,7 @@
 					<td th:text="${customer.age}"></td>
 					<td th:text="${customer.gender}"></td>
 					<!-- 添加 User Id -->
-					<td th:text="${customer.user}"></td>
+					<td th:text="${customer.user.id}"></td>
 
 					<td><a
 						th:href="@{/customers/edit/{id}(id=${customer.customerId})}"

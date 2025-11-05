@@ -4,6 +4,7 @@ import com.example.demo.model.Order;
 import com.example.demo.model.OrderDetail;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.OrderDetailService;
+import com.example.demo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,10 @@ public class OrderController extends LoginBaseController{
 
     @Autowired
     private OrderDetailService orderDetailService;
+    
+    @Autowired
+    private CustomerService customerService;
+
 
     @GetMapping
     public String getAllOrders(Model model) {
@@ -36,6 +41,7 @@ public class OrderController extends LoginBaseController{
     @GetMapping("/add")
     public String createOrderForm(Model model) {
         model.addAttribute("order", new Order());
+        model.addAttribute("customers", customerService.getAllCustomers());
         return "add-order";  // 创建新订单的表单页面
     }
 
@@ -54,6 +60,7 @@ public class OrderController extends LoginBaseController{
             return "redirect:/orders";
         }
         model.addAttribute("order", order);
+        model.addAttribute("customers", customerService.getAllCustomers());
         return "edit-order";  // 编辑订单的表单页面
     }
     

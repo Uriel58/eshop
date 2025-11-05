@@ -83,10 +83,12 @@
 
 			<div class="mb-3">
 				<label>User</label> <select th:field="*{user.id}"
-					class="form-control">
-					<option th:each="user : ${users}" th:value="${user}"
-						th:text="${user.name}"
-						th:selected="${user.id == customer.user.id}"></option>
+					class="form-control" required>
+					<option value="">-- 請選擇使用者 --</option>
+					<option th:each="u : ${users}" th:value="${u.id}"
+						th:text="${u.name + ' (' + u.email + ')'}"
+						th:selected="${customer.user != null and u.id == customer.user.id}">
+					</option>
 				</select>
 			</div>
 

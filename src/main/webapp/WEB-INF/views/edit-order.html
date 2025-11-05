@@ -57,8 +57,14 @@
 					</select>
 				</div>
 				<div class="col-md-4 mb-3">
-					<label>Customer Number</label> <input type="text"
-						th:field="*{customer.customerId}" class="form-control" required>
+					<label>Customer</label> <select th:field="*{customer.customerId}"
+						class="form-control" required>
+						<option value="">-- 請選擇顧客 --</option>
+						<option th:each="c : ${customers}" th:value="${c.customerId}"
+							th:text="${c.name + ' (' + c.email + ')'}"
+							th:selected="${c.customerId == order.customer.customerId}">
+						</option>
+					</select>
 				</div>
 				<div class="col-md-4 mb-3">
 					<label>Order Status</label> <input type="text"

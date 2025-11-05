@@ -136,7 +136,7 @@ public class ProductController extends LoginBaseController{
     }
     @GetMapping("/details/{id}")
     public String getProductDetail(@PathVariable Long id, Model model) {
-    	Product product = productService.getProductById(id);
+    	Product product = productService.getProductByIdWithCategory(id);
         model.addAttribute("product", product);
 
         // 直接從 session 取得登入者，繼承 BaseController，無需重複編寫

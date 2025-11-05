@@ -12,4 +12,7 @@ public interface ProductDAO {
     // ✅ 加上這行 ↓↓↓，PuductServiceImpl.java的findByKeyword(String keyword)
     List<Product> findByKeyword(String keyword);
     Product findByProdNum(Long prodNum);  // ⬅️ 加在這裡
+    //抓取category
+    List<Product> findAllWithCategory();
+    Product findByIdWithCategory(Long prodNum);
 }

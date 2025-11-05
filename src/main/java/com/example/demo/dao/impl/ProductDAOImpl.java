@@ -21,7 +21,10 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public List<Product> findAll() {
-        return getCurrentSession().createQuery("FROM Product", Product.class).list();
+        String hql = "FROM Product p LEFT JOIN FETCH p.category";
+        return getCurrentSession()
+                .createQuery(hql, Product.class)
+                .list();
     }
 
     @Override
@@ -51,7 +54,6 @@ public class ProductDAOImpl implements ProductDAO {
                 .uniqueResult();
     }
 
-    // ✅ ✅ ✅ 新增這個方法來解決報錯
     @Override
     public List<Product> findByKeyword(String keyword) {
         String hql = "FROM Product WHERE prodName LIKE :kw OR prodInfo LIKE :kw OR prodTags LIKE :kw";
@@ -63,6 +65,23 @@ public class ProductDAOImpl implements ProductDAO {
     @Override
     public Product findByProdNum(Long prodNum) {
         String hql = "FROM Product WHERE prodNum = :prodNum";
+        return getCurrentSession()
+                .createQuery(hql, Product.class)
+                .setParameter("prodNum", prodNum)
+                .uniqueResult();
+    }
+    
+    @Override
+    public List<Product> findAllWithCategory() {
+        String hql = "SELECT p FROM Product p LEFT JOIN FETCH p.category";
+        return getCurrentSession()
+                .createQuery(hql, Product.class)
+                .list();
+    }
+
+    @Override
+    public Product findByIdWithCategory(Long prodNum) {
+        String hql = "SELECT p FROM Product p LEFT JOIN FETCH p.category WHERE p.prodNum = :prodNum";
         return getCurrentSession()
                 .createQuery(hql, Product.class)
                 .setParameter("prodNum", prodNum)

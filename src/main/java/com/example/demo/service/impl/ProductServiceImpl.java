@@ -78,5 +78,10 @@ public class ProductServiceImpl implements ProductService {
     public Product findByProdNum(Long prodNum) {
         return productDAO.findByProdNum(prodNum);
     }
+    // 抓取Category
+    @Override
+    public Product getProductByIdWithCategory(Long prodNum) {
+        return productDAO.findByIdWithCategory(prodNum);
+    }
 
 }

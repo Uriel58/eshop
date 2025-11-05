@@ -49,15 +49,15 @@
 				</p>
 				<p>
 					<span class="product-detail-label">類別：</span> <span
-						th:text="${product.prodType}"></span>
+						th:text="${product.category.prodType}"></span>
 				</p>
 				<p>
 					<span class="product-detail-label">子分類：</span> <span
-						th:text="${product.prodLine}"></span>
+						th:text="${product.category.prodLine}"></span>
 				</p>
 				<p>
-					<span class="product-detail-label">類別：</span> <span
-						th:text="${product.prodType}"></span>
+					<span class="product-detail-label">細項</span> <span
+						th:text="${product.category.description}"></span>
 				</p>
 				<p>
 					<span class="product-detail-label">價格：</span> <span

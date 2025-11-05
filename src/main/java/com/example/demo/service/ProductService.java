@@ -15,4 +15,6 @@ public interface ProductService {
     List<Product> findByKeyword(String keyword);
     
     Product findByProdNum(Long prodNum);
+    
+    Product getProductByIdWithCategory(Long prodNum);
 }

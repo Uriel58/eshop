@@ -106,6 +106,6 @@ public class User {
 	
 	@Override
 	public String toString() {
-		return "User{id=" + id + ", name=" + name + ", email=" + email + '}';
-	}///", identifyName=" + identifyName + ", passwordResetTokens=" + passwordResetTokens,", customer=" + customer + +不要加會觸發 Lazy 加載！
+		return "User{id=" + id + ", name=" + name + ", email=" + email + ", identifyName=" + identifyName + '}';
+	}///", passwordResetTokens=" + passwordResetTokens,", customer=" + customer + +不要加會觸發 Lazy 加載！
 }

@@ -82,10 +82,14 @@
 			</div>
 			
 			<div class="mb-3">
-            <label for="user" class="form-label">User</label>
-            <select th:field="*{user.id}" class="form-control">
-                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
-            </select>
+            <label>User</label> <select th:field="*{user.id}"
+					class="form-control" required>
+					<option value="">-- 請選擇使用者 --</option>
+					<option th:each="u : ${users}" th:value="${u.id}"
+						th:text="${u.name + ' (' + u.email + ')'}"
+						th:selected="${customer.user != null and u.id == customer.user.id}">
+					</option>
+				</select>
         </div>
 			
 			<button type="submit" class="btn btn-success">Save</button>
