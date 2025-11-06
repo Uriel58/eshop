@@ -19,6 +19,8 @@ public class CustomerDAOImpl implements CustomerDAO {
     private Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
+    
+   
 
     @Override
     public List<Customer> findAll() {
@@ -59,5 +61,10 @@ public class CustomerDAOImpl implements CustomerDAO {
                 .createQuery(hql, Customer.class)
                 .setParameter("userId", userId)
                 .uniqueResult();
+    }
+    
+    @Override
+    public void update(Customer customer) {
+    	getCurrentSession().update(customer);
     }
 }

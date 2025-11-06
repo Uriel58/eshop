@@ -17,9 +17,6 @@ public interface CustomerDAO {
 	
 	// 新增這個方法
 	Customer findByUserId(Long userId);
-	/*
-	 * // interface: CustomerDAO List<Customer> findByKeyword(String keyword);
-	 * List<Customer> findByAgeRange(int minAge, int maxAge); List<Customer>
-	 * findByGender(String gender);
-	 */
+	//更新user+customer
+	void update(Customer customer);
 }

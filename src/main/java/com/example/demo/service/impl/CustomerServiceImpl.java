@@ -2,6 +2,8 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dao.CustomerDAO;
 import com.example.demo.model.Customer;
+import com.example.demo.dao.UserDAO;
+import com.example.demo.model.User;
 import com.example.demo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CustomerDAO customerDAO;
 
+	@Autowired
+	private UserDAO userDAO;
+	
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -55,6 +60,15 @@ public class CustomerServiceImpl implements CustomerService {
 		existingCustomer.setAge(updatedCustomer.getAge());
 		existingCustomer.setGender(updatedCustomer.getGender());
 		customerDAO.save(existingCustomer);
+		
+		if (updatedCustomer.getUser() != null && updatedCustomer.getUser().getId() != null) {
+	        User user = userDAO.findById(updatedCustomer.getUser().getId())
+	                           .orElse(null);
+	        existingCustomer.setUser(user);
+	    }
+
+	    // ✅ 儲存變更
+	    customerDAO.update(existingCustomer);
 	}
 
 	@Override

@@ -12,79 +12,71 @@ import java.util.List;
 @Repository
 public class ProductDAOImpl implements ProductDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-    private Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
+	private Session getCurrentSession() {
+		return sessionFactory.getCurrentSession();
+	}
 
-    @Override
-    public List<Product> findAll() {
-        String hql = "FROM Product p LEFT JOIN FETCH p.category";
-        return getCurrentSession()
-                .createQuery(hql, Product.class)
-                .list();
-    }
+	@Override
+	public List<Product> findAll() {
+		String hql = "FROM Product p LEFT JOIN FETCH p.category";
+		return getCurrentSession().createQuery(hql, Product.class).list();
+	}
 
-    @Override
-    public Product findById(Long prodNum) {
-        return getCurrentSession().get(Product.class, prodNum);
-    }
+	@Override
+	public Product findById(Long prodNum) {
+		return getCurrentSession().get(Product.class, prodNum);
+	}
 
-    @Override
-    public void save(Product product) {
-        getCurrentSession().saveOrUpdate(product);
-    }
+	@Override
+	public void save(Product product) {
+		getCurrentSession().saveOrUpdate(product);
+	}
 
-    @Override
-    public void delete(Long prodNum) {
-        Product product = getCurrentSession().get(Product.class, prodNum);
-        if (product != null) {
-            getCurrentSession().delete(product);
-        }
-    }
+	@Override
+	public void delete(Long prodNum) {
+		Product product = getCurrentSession().get(Product.class, prodNum);
+		if (product != null) {
+			getCurrentSession().delete(product);
+		}
+	}
 
-    @Override
-    public Product findByBarcode(String barcode) {
-        String hql = "FROM Product WHERE prodBarcode = :barcode";//barcode查找
-        return getCurrentSession()
-                .createQuery(hql, Product.class)
-                .setParameter("barcode", barcode)
-                .uniqueResult();
-    }
+	@Override
+	public Product findByBarcode(String barcode) {
+		String hql = "FROM Product WHERE prodBarcode = :barcode";// barcode查找
+		return getCurrentSession().createQuery(hql, Product.class).setParameter("barcode", barcode).uniqueResult();
+	}
 
-    @Override
-    public List<Product> findByKeyword(String keyword) {
-        String hql = "FROM Product WHERE prodName LIKE :kw OR prodInfo LIKE :kw OR prodTags LIKE :kw";
-        return getCurrentSession()
-                .createQuery(hql, Product.class)
-                .setParameter("kw", "%" + keyword + "%")
-                .list();
-    }
-    @Override
-    public Product findByProdNum(Long prodNum) {
-        String hql = "FROM Product WHERE prodNum = :prodNum";
-        return getCurrentSession()
-                .createQuery(hql, Product.class)
-                .setParameter("prodNum", prodNum)
-                .uniqueResult();
-    }
-    ///category
-    @Override
-    public List<Product> findAllWithCategory() {
-        String hql = "SELECT p FROM Product p LEFT JOIN FETCH p.category";
-        return getCurrentSession()
-                .createQuery(hql, Product.class)
-                .list();
-    }
+	@Override
+	public List<Product> findByKeyword(String keyword) {
+		String hql = "FROM Product WHERE prodName LIKE :kw OR prodInfo LIKE :kw OR prodTags LIKE :kw";
+		return getCurrentSession().createQuery(hql, Product.class).setParameter("kw", "%" + keyword + "%").list();
+	}
 
-    @Override
-    public Product findByIdWithCategory(Long prodNum) {
-        String hql = "SELECT p FROM Product p LEFT JOIN FETCH p.category WHERE p.prodNum = :prodNum";
-        return getCurrentSession()
-                .createQuery(hql, Product.class)
-                .setParameter("prodNum", prodNum)
-                .uniqueResult();
-    }
+	@Override
+	public Product findByProdNum(Long prodNum) {
+		String hql = "FROM Product WHERE prodNum = :prodNum";
+		return getCurrentSession().createQuery(hql, Product.class).setParameter("prodNum", prodNum).uniqueResult();
+	}
+
+	/// category
+	@Override
+	public List<Product> findAllWithCategory() {
+		String hql = "SELECT p FROM Product p LEFT JOIN FETCH p.category";
+		return getCurrentSession().createQuery(hql, Product.class).list();
+	}
+
+	@Override
+	public Product findByIdWithCategory(Long prodNum) {
+		String hql = "SELECT p FROM Product p LEFT JOIN FETCH p.category WHERE p.prodNum = :prodNum";
+		return getCurrentSession().createQuery(hql, Product.class).setParameter("prodNum", prodNum).uniqueResult();
+	}
+
+	// 更新category+product
+	@Override
+	public void update(Product product) {
+		getCurrentSession().update(product);
+	}
 }

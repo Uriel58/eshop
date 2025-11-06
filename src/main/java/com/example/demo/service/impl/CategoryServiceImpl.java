@@ -45,15 +45,19 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryDAO.findAll();
 	}
 
-	// 根據 prodType 查詢 prodLine
+	// 篩選
 	@Override
-	public List<String> getProdLinesByProdType(String prodType) {
-		return categoryDAO.findProdLinesByProdType(prodType);
-	}
+    public List<String> getAllProdTypes() {
+        return categoryDAO.findAllProdTypes();
+    }
 
-	// 實現根據 prodType 和 prodLine 查詢 description
-	@Override
-	public List<String> getDescriptionsByProdTypeAndProdLine(String prodType, String prodLine) {
-		return categoryDAO.findDescriptionsByProdTypeAndProdLine(prodType, prodLine);
-	}
+    @Override
+    public List<String> getProdLinesByProdType(String prodType) {
+        return categoryDAO.findProdLinesByProdType(prodType);
+    }
+
+    @Override
+    public List<String> getDescriptionsByProdTypeAndProdLine(String prodType, String prodLine) {
+        return categoryDAO.findDescriptionsByProdTypeAndProdLine(prodType, prodLine);
+    }
 }

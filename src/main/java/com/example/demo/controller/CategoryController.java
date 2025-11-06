@@ -54,20 +54,4 @@ public class CategoryController extends LoginBaseController {
 		categoryService.deleteCategory(id);
 		return "redirect:/categories";
 	}
-
-	// 篩選商品
-	/*@GetMapping("/getProdLines")
-	public String getProdLinesByProdType(@RequestParam("prodType") String prodType, Model model) {
-		List<String> prodLines = categoryService.getProdLinesByProdType(prodType);
-		model.addAttribute("prodLines", prodLines);
-		return "home"; // 返回的可能是局部視圖或其他頁面
-	}
-
-	@GetMapping("/getDescriptions")
-	public String getDescriptionsByProdTypeAndProdLine(@RequestParam("prodType") String prodType,
-			@RequestParam("prodLine") String prodLine, Model model) {
-		List<String> descriptions = categoryService.getDescriptionsByProdTypeAndProdLine(prodType, prodLine);
-		model.addAttribute("descriptions", descriptions);
-		return "home"; // 返回的可能是局部視圖或其他頁面
-	}*/
 }

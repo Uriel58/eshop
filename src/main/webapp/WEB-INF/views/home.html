@@ -45,8 +45,8 @@
 			</h1>
 			<!-- 管理員按鈕 -->
 			<div th:if="${users != null and users.identifyName != 'customer'}">
-				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch
-					Admin Page</a>
+				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch Admin
+					Page</a>
 			</div>
 		</div>
 
@@ -82,50 +82,112 @@
 
 		</div>
 		<hr>
-
-		<!-- 商品列表，顯示商品圖片名字價格，點進去可以跳轉商品詳細頁面 -->
-		<div class="row">
-			<div class="col-md-3" th:each="product : ${products}">
-				<a th:href="@{/products/details/{id}(id=${product.prodNum})}"
-					style="text-decoration: none; color: inherit;">
-					<div class="product-card">
-						<img class="product-image"
-							th:src="@{'/resources/images/' + ${product.prodImages}}"
-							style="width: 100px; height: auto;" />
-						<!-- alt="Product Image" -->
-						<h5 th:text="${product.prodName}">商品名稱</h5>
-						<p class="price"
-							th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">價格</p>
-					</div>
-				</a>
-			</div>
+		<!-- 第1層：prodType -->
+		<div>
+			<label>產品類型：</label> <select id="prodTypeSelect">
+				<option value="">-- 請選擇 --</option>
+				<option th:each="type : ${prodTypes}" th:value="${type}"
+					th:text="${type}"></option>
+			</select>
 		</div>
 
-		<!-- 分頁按鈕 -->
-		<nav aria-label="Page navigation example">
-			<ul class="pagination justify-content-center">
+		<!-- 第2層：prodLine（初始隱藏） -->
+		<div id="prodLineDiv" style="display: none; margin-top: 10px;">
+			<label>產品線：</label> <select id="prodLineSelect">
+				<option value="">-- 請選擇 --</option>
+			</select>
+		</div>
 
-				<!-- 上一頁 -->
-				<li class="page-item"
-					th:classappend="${currentPage == 0} ? 'disabled'"><a
-					class="page-link" th:href="@{'/?page=' + (${currentPage} - 1)}">上一頁</a>
-				</li>
-
-				<!-- 數字頁碼 -->
-				<li class="page-item"
-					th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-					th:classappend="${i == currentPage} ? 'active'"><a
-					class="page-link" th:href="@{'/?page=' + ${i}}" th:text="${i + 1}"></a>
-				</li>
-
-				<!-- 下一頁 -->
-				<li class="page-item"
-					th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-					<a class="page-link" th:href="@{'/?page=' + (${currentPage} + 1)}">下一頁</a>
-				</li>
-
-			</ul>
-		</nav>
+		<!-- 第3層：description（初始隱藏） -->
+		<div id="descriptionDiv" style="display: none; margin-top: 10px;">
+			<label>產品描述：</label> <select id="descriptionSelect">
+				<option value="">-- 請選擇 --</option>
+			</select>
+		</div>
 	</div>
+	<!-- 商品列表，顯示商品圖片名字價格，點進去可以跳轉商品詳細頁面 -->
+	<div class="row">
+		<div class="col-md-3" th:each="product : ${products}">
+			<a th:href="@{/products/details/{id}(id=${product.prodNum})}"
+				style="text-decoration: none; color: inherit;">
+				<div class="product-card">
+					<img class="product-image"
+						th:src="@{'/resources/images/' + ${product.prodImages}}"
+						style="width: 100px; height: auto;" />
+					<!-- alt="Product Image" -->
+					<h5 th:text="${product.prodName}">商品名稱</h5>
+					<p class="price"
+						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">價格</p>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	<!-- 分頁按鈕 -->
+	<nav aria-label="Page navigation example">
+		<ul class="pagination justify-content-center">
+
+			<!-- 上一頁 -->
+			<li class="page-item"
+				th:classappend="${currentPage == 0} ? 'disabled'"><a
+				class="page-link" th:href="@{'/?page=' + (${currentPage} - 1)}">上一頁</a>
+			</li>
+
+			<!-- 數字頁碼 -->
+			<li class="page-item"
+				th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+				th:classappend="${i == currentPage} ? 'active'"><a
+				class="page-link" th:href="@{'/?page=' + ${i}}" th:text="${i + 1}"></a>
+			</li>
+
+			<!-- 下一頁 -->
+			<li class="page-item"
+				th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+				<a class="page-link" th:href="@{'/?page=' + (${currentPage} + 1)}">下一頁</a>
+			</li>
+
+		</ul>
+	</nav>
+	</div>
+	<script>
+$(document).ready(function () {
+
+    // 選 prodType → 載入 prodLine
+    $("#prodTypeSelect").change(function () {
+        let prodType = $(this).val();
+        if (prodType) {
+            $.get("/categories/getProdLines", { prodType: prodType }, function (data) {
+                let $prodLine = $("#prodLineSelect");
+                $prodLine.empty().append('<option value="">-- 請選擇 --</option>');
+                $.each(data, function (i, line) {
+                    $prodLine.append('<option value="' + line + '">' + line + '</option>');
+                });
+                $("#prodLineDiv").show();
+                $("#descriptionDiv").hide();
+            });
+        } else {
+            $("#prodLineDiv, #descriptionDiv").hide();
+        }
+    });
+
+    // 選 prodLine → 載入 description
+    $("#prodLineSelect").change(function () {
+        let prodType = $("#prodTypeSelect").val();
+        let prodLine = $(this).val();
+        if (prodLine) {
+            $.get("/categories/getDescriptions", { prodType: prodType, prodLine: prodLine }, function (data) {
+                let $desc = $("#descriptionSelect");
+                $desc.empty().append('<option value="">-- 請選擇 --</option>');
+                $.each(data, function (i, d) {
+                    $desc.append('<option value="' + d + '">' + d + '</option>');
+                });
+                $("#descriptionDiv").show();
+            });
+        } else {
+            $("#descriptionDiv").hide();
+        }
+    });
+});
+</script>
 </body>
 </html>

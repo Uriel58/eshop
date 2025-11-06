@@ -15,4 +15,6 @@ public interface ProductDAO {
     //抓取category
     List<Product> findAllWithCategory();
     Product findByIdWithCategory(Long prodNum);
+    //更新category+product
+    void update(Product product);
 }

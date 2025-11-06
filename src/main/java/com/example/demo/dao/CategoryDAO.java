@@ -14,9 +14,8 @@ public interface CategoryDAO {
 
 	List<Category> findAll();
 
-	// 根據 prodType 查詢 prodLine
-	List<String> findProdLinesByProdType(String prodType);
-
-	// 根據 prodType 和 prodLine 查詢 description
-	List<String> findDescriptionsByProdTypeAndProdLine(String prodType, String prodLine);
+	// 篩選
+	List<String> findAllProdTypes();
+    List<String> findProdLinesByProdType(String prodType);
+    List<String> findDescriptionsByProdTypeAndProdLine(String prodType, String prodLine);
 }
