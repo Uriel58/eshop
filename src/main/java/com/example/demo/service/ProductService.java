@@ -15,6 +15,6 @@ public interface ProductService {
     List<Product> findByKeyword(String keyword);
     
     Product findByProdNum(Long prodNum);
-    
+    //產品包含篩選
     Product getProductByIdWithCategory(Long prodNum);
 }

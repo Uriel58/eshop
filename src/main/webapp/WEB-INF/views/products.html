@@ -70,9 +70,9 @@
 					<td><img class="product-image"
 						th:src="@{'/resources/images/' + ${product.prodImages}}"
 						style="width: 100px; height: auto;" /></td>
-					<td th:text="${product.prodType}"></td>
-					<td th:text="${product.prodLine}"></td>
-					<td th:text="${product.category}"></td>
+					<td th:text="${product.category.prodType}"></td>
+					<td th:text="${product.category.prodLine}"></td>
+					<td th:text="${product.category.description}"></td>
 					<td th:text="${product.prodName}"></td>
 					<td th:text="${product.prodInfo}"></td>
 					<td th:text="${product.createdTime}"></td>

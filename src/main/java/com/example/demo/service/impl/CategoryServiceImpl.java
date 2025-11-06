@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dao.CategoryDAO;
 import com.example.demo.model.Category;
+import com.example.demo.model.Product;
 import com.example.demo.service.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<String> getDescriptionsByProdTypeAndProdLine(String prodType, String prodLine) {
         return categoryDAO.findDescriptionsByProdTypeAndProdLine(prodType, prodLine);
+    }
+    
+    @Override
+    public List<Product> getProductsByFilter(String prodType, String prodLine, String description) {
+        return categoryDAO.findProductsByCategoryFilter(prodType, prodLine, description);
     }
 }

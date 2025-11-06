@@ -2,6 +2,7 @@ package com.example.demo.dao.impl;
 
 import com.example.demo.dao.CategoryDAO;
 import com.example.demo.model.Category;
+import com.example.demo.model.Product;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -63,5 +64,19 @@ public class CategoryDAOImpl implements CategoryDAO {
 		return getCurrentSession().createQuery(
 				"SELECT DISTINCT c.description FROM Category c WHERE c.prodType = :prodType AND c.prodLine = :prodLine",
 				String.class).setParameter("prodType", prodType).setParameter("prodLine", prodLine).list();
+	}
+	
+	 @Override
+	    public List<Product> findProductsByCategoryFilter(String prodType, String prodLine, String description) {
+	        String hql = "SELECT p FROM Product p " +
+	                     "WHERE p.category.prodType = :prodType " +
+	                     "AND p.category.prodLine = :prodLine " +
+	                     "AND p.category.description = :description";
+	        return getCurrentSession().createQuery(hql, Product.class)
+	                .setParameter("prodType", prodType)
+	                .setParameter("prodLine", prodLine)
+	                .setParameter("description", description)
+	                .getResultList();
+	    
 	}
 }

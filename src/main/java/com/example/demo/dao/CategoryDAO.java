@@ -1,6 +1,8 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.Category;
+import com.example.demo.model.Product;
+
 import java.util.List;
 
 public interface CategoryDAO {
@@ -18,4 +20,5 @@ public interface CategoryDAO {
 	List<String> findAllProdTypes();
     List<String> findProdLinesByProdType(String prodType);
     List<String> findDescriptionsByProdTypeAndProdLine(String prodType, String prodLine);
+    List<Product> findProductsByCategoryFilter(String prodType, String prodLine, String description);
 }

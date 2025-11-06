@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Category;
+import com.example.demo.model.Product;
 import java.util.List;
 
 public interface CategoryService {
@@ -18,5 +19,5 @@ public interface CategoryService {
 	List<String> getAllProdTypes();
     List<String> getProdLinesByProdType(String prodType);
     List<String> getDescriptionsByProdTypeAndProdLine(String prodType, String prodLine);
-
+    List<Product> getProductsByFilter(String prodType, String prodLine, String description);
 }

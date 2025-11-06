@@ -21,9 +21,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductDAO productDAO;
-	
+
 	@Autowired
-    private CategoryDAO categoryDAO; 
+	private CategoryDAO categoryDAO;
 
 	@Override
 	public List<Product> getAllProducts() {
@@ -50,8 +50,6 @@ public class ProductServiceImpl implements ProductService {
 
 		// 更新欄位
 		existingProduct.setProdName(updatedProduct.getProdName());
-		existingProduct.setProdType(updatedProduct.getProdType());
-		existingProduct.setProdLine(updatedProduct.getProdLine());
 		existingProduct.setProdPrice(updatedProduct.getProdPrice());
 		existingProduct.setProdInfo(updatedProduct.getProdInfo());
 		existingProduct.setProdKeywords(updatedProduct.getProdKeywords());
@@ -61,15 +59,22 @@ public class ProductServiceImpl implements ProductService {
 		existingProduct.setProdImages(updatedProduct.getProdImages());
 		existingProduct.setProdStockQty(updatedProduct.getProdStockQty());
 
-		 // ✅ 修正後的 Category 更新邏輯
-	    if (updatedProduct.getCategory() != null && updatedProduct.getCategory().getId() != null) {
-	        Category category = categoryDAO.findById(updatedProduct.getCategory().getId());
-	        existingProduct.setCategory(category);
-	    }
+		// ✅ 修正後的 Category 更新邏輯
+		if (updatedProduct.getCategory() != null && updatedProduct.getCategory().getId() != null) {
+			Category category = categoryDAO.findById(updatedProduct.getCategory().getId());
+			/*
+			 * category.setProdType(updatedProduct.getCategory().getProdType());
+			 * category.setProdLine(updatedProduct.getCategory().getProdLine());
+			 * category.setDescription(updatedProduct.getCategory().getDescription());
+			 * categoryDAO.update(category);
+			 */
+			existingProduct.setCategory(category);
+		}
 
-	    // 更新回資料庫
-	    productDAO.update(existingProduct);
+		// 更新回資料庫
+		productDAO.update(existingProduct);
 	}
+
 	@Override
 	public void deleteProduct(Long prodNum) {
 		productDAO.delete(prodNum);
@@ -95,5 +100,4 @@ public class ProductServiceImpl implements ProductService {
 	public Product getProductByIdWithCategory(Long prodNum) {
 		return productDAO.findByIdWithCategory(prodNum);
 	}
-
 }

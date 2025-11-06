@@ -35,12 +35,6 @@ public class Product {
 	@Column(name = "prod_name", nullable = false)
 	private String prodName; // 產品名稱
 
-	@Column(name = "prod_type", nullable = false)
-	private String prodType; // 大類
-
-	@Column(name = "prod_line")
-	private String prodLine; // 細分類別
-
 	@Column(name = "prod_price", nullable = false)
 	private BigDecimal prodPrice; // 價格
 
@@ -77,8 +71,6 @@ public class Product {
 			String prodKeywords, String prodBarcode, ZonedDateTime createdTime, String prodTags, String prodImages,
 			Integer prodStockQty, List<OrderDetail> orderDetails, List<CartDetail> cartDetails,Category category) {
 		this.prodName = prodName;
-		this.prodType = prodType;
-		this.prodLine = prodLine;
 		this.prodPrice = prodPrice;
 		this.prodInfo = prodInfo;
 		this.prodKeywords = prodKeywords;
@@ -126,22 +118,6 @@ public class Product {
 
 	public void setProdName(String prodName) {
 		this.prodName = prodName;
-	}
-
-	public String getProdType() {
-		return prodType;
-	}
-
-	public void setProdType(String prodType) {
-		this.prodType = prodType;
-	}
-
-	public String getProdLine() {
-		return prodLine;
-	}
-
-	public void setProdLine(String prodLine) {
-		this.prodLine = prodLine;
 	}
 
 	public BigDecimal getProdPrice() {
@@ -255,8 +231,8 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "Product{" + "prodNum=" + prodNum + ", prodName= " + prodName + ", prodType= " + prodType
-				+ ", prodLine= " + prodLine + ", prodPrice= " + prodPrice + ", prodStockQty= " + prodStockQty
+		return "Product{" + "prodNum=" + prodNum + ", prodName= " + prodName 
+				+  ", prodPrice= " + prodPrice + ", prodStockQty= " + prodStockQty
 				+ ", createdTime= " + createdTime + ", orderDetails= " + orderDetails.size() + ", cartDetails= "
 				+ cartDetails.size() + ", category= " + category +'}';
 	}
