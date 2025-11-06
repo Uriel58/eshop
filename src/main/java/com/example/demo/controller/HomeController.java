@@ -16,6 +16,7 @@ import com.example.demo.service.CartService;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Collections;
 
 @Controller
 public class HomeController extends LoginBaseController {
@@ -93,7 +94,8 @@ public class HomeController extends LoginBaseController {
 	@GetMapping("/select-product/getProdLines")
 	@ResponseBody
 	public List<String> getProdLines(@RequestParam("prodType") String prodType) {
-		return categoryService.getProdLinesByProdType(prodType);
+		List<String> prodLines = categoryService.getProdLinesByProdType(prodType);
+        return prodLines != null ? prodLines : Collections.emptyList();
 	}
 
 	// --- AJAX API: 取得描述 ---
@@ -101,7 +103,8 @@ public class HomeController extends LoginBaseController {
 	@ResponseBody
 	public List<String> getDescriptions(@RequestParam("prodType") String prodType,
 			@RequestParam("prodLine") String prodLine) {
-		return categoryService.getDescriptionsByProdTypeAndProdLine(prodType, prodLine);
+		List<String> descs = categoryService.getDescriptionsByProdTypeAndProdLine(prodType, prodLine);
+        return descs != null ? descs : Collections.emptyList();
 	}
 
 	// --- AJAX API: 篩選產品 ---
@@ -109,6 +112,7 @@ public class HomeController extends LoginBaseController {
 	@ResponseBody
 	public List<Product> filterProducts(@RequestParam(required = false) String prodType,
 			@RequestParam(required = false) String prodLine, @RequestParam(required = false) String description) {
-		return categoryService.getProductsByFilter(prodType, prodLine, description);
+		List<Product> products = categoryService.getProductsByFilter(prodType, prodLine, description);
+	    return products != null ? products : Collections.emptyList();
 	}
 }

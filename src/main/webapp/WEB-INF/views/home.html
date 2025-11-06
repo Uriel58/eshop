@@ -150,90 +150,76 @@
 	</nav>
 	<script>
 	$(document).ready(function () {
-
-	    // 選 prodType → 載入 prodLine
-	    $("#prodTypeSelect").change(function () {
-	        let prodType = $(this).val();
-	        if (prodType) {
-	            $.get("/select-product/getProdLines", { prodType: prodType }, function (data) {
-	                let $prodLine = $("#prodLineSelect");
-	                $prodLine.empty().append('<option value="">-- 請選擇 --</option>');
-	                $.each(data, function (i, line) {
-	                    $prodLine.append('<option value="' + line + '">' + line + '</option>');
-	                });
-	                $("#prodLineDiv").show();
-	                $("#descriptionDiv").hide();
-
-	                // 篩選產品
-	                $.get("/products/filter", { prodType: prodType }, function(products){
-	                    updateProducts(products);
-	                });
-	            });
-	        } else {
-	            $("#prodLineDiv, #descriptionDiv").hide();
-	            $.get("/products/filter", function(products){
-	                updateProducts(products);
-	            });
-	        }
-	    });
-
-	    // 選 prodLine → 載入 description
-	    $("#prodLineSelect").change(function () {
-	        let prodType = $("#prodTypeSelect").val();
-	        let prodLine = $(this).val();
-	        if (prodLine) {
-	            $.get("/select-product/getDescriptions", { prodType: prodType, prodLine: prodLine }, function (data) {
-	                let $desc = $("#descriptionSelect");
-	                $desc.empty().append('<option value="">-- 請選擇 --</option>');
-	                $.each(data, function (i, d) {
-	                    $desc.append('<option value="' + d + '">' + d + '</option>');
-	                });
-	                $("#descriptionDiv").show();
-
-	                // 篩選產品
-	                $.get("/products/filter", { prodType: prodType, prodLine: prodLine }, function(products){
-	                    updateProducts(products);
-	                });
-	            });
-	        } else {
-	            $("#descriptionDiv").hide();
-	            $.get("/products/filter", { prodType: prodType }, function(products){
-	                updateProducts(products);
-	            });
-	        }
-	    });
-
-	    // 選 description → 篩選產品
-	    $("#descriptionSelect").change(function () {
-	        let prodType = $("#prodTypeSelect").val();
-	        let prodLine = $("#prodLineSelect").val();
-	        let description = $(this).val();
-
-	        $.get("/products/filter", { prodType: prodType, prodLine: prodLine, description: description }, function(products){
-	            updateProducts(products);
-	        });
-	    });
-
-	    // 更新產品列表
 	    function updateProducts(products) {
 	        let $container = $(".row");
 	        $container.empty();
 	        $.each(products, function(i, product){
 	            let html = `
 	            <div class="col-md-3">
-	                <a href="/products/details/${product.prodNum}" style="text-decoration: none; color: inherit;">
+	                <a href="/home/products/details/${product.prodNum}" style="text-decoration: none; color: inherit;">
 	                    <div class="product-card">
-	                        <img class="product-image" src="/resources/images/${product.prodImages}" style="width: 100px; height: auto;" />
+	                        <img class="product-image" src="/resources/images/${product.prodImages}" />
 	                        <h5>${product.prodName}</h5>
 	                        <p class="price">${product.prodPrice.toLocaleString()} 元</p>
 	                    </div>
 	                </a>
-	            </div>
-	            `;
+	            </div>`;
 	            $container.append(html);
 	        });
 	    }
 
+	    $("#prodTypeSelect").change(function () {
+	        let prodType = $(this).val();
+	        if (prodType) {
+	            $.get("/home/select-product/getProdLines", { prodType }, function(data){
+	                let $prodLine = $("#prodLineSelect");
+	                $prodLine.empty().append('<option value="">--請選擇--</option>');
+	                $.each(data, function(i, line){ $prodLine.append('<option>'+line+'</option>'); });
+	                $("#prodLineDiv").show();
+	                $("#descriptionDiv").hide();
+	            });
+
+	            $.get("/home/products/filter", { prodType }, function(products){
+	                updateProducts(products);
+	            });
+	        } else {
+	            $("#prodLineDiv, #descriptionDiv").hide();
+	            $.get("/home/products/filter", function(products){
+	                updateProducts(products);
+	            });
+	        }
+	    });
+
+	    $("#prodLineSelect").change(function () {
+	        let prodType = $("#prodTypeSelect").val();
+	        let prodLine = $(this).val();
+	        if (prodLine) {
+	            $.get("/home/select-product/getDescriptions", { prodType, prodLine }, function(data){
+	                let $desc = $("#descriptionSelect");
+	                $desc.empty().append('<option value="">--請選擇--</option>');
+	                $.each(data, function(i,d){ $desc.append('<option>'+d+'</option>'); });
+	                $("#descriptionDiv").show();
+	            });
+
+	            $.get("/home/products/filter", { prodType, prodLine }, function(products){
+	                updateProducts(products);
+	            });
+	        } else {
+	            $("#descriptionDiv").hide();
+	            $.get("/home/products/filter", { prodType }, function(products){
+	                updateProducts(products);
+	            });
+	        }
+	    });
+
+	    $("#descriptionSelect").change(function () {
+	        let prodType = $("#prodTypeSelect").val();
+	        let prodLine = $("#prodLineSelect").val();
+	        let description = $(this).val();
+	        $.get("/home/products/filter", { prodType, prodLine, description }, function(products){
+	            updateProducts(products);
+	        });
+	    });
 	});
 </script>
 </body>

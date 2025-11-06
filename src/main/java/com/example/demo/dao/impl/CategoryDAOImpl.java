@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.hibernate.query.Query;
 
 @Repository
 public class CategoryDAOImpl implements CategoryDAO {
@@ -65,18 +66,28 @@ public class CategoryDAOImpl implements CategoryDAO {
 				"SELECT DISTINCT c.description FROM Category c WHERE c.prodType = :prodType AND c.prodLine = :prodLine",
 				String.class).setParameter("prodType", prodType).setParameter("prodLine", prodLine).list();
 	}
-	
-	 @Override
-	    public List<Product> findProductsByCategoryFilter(String prodType, String prodLine, String description) {
-	        String hql = "SELECT p FROM Product p " +
-	                     "WHERE p.category.prodType = :prodType " +
-	                     "AND p.category.prodLine = :prodLine " +
-	                     "AND p.category.description = :description";
-	        return getCurrentSession().createQuery(hql, Product.class)
-	                .setParameter("prodType", prodType)
-	                .setParameter("prodLine", prodLine)
-	                .setParameter("description", description)
-	                .getResultList();
-	    
-	}
+
+	@Override
+    public List<Product> findProductsByCategoryFilter(String prodType, String prodLine, String description) {
+        Session session = getCurrentSession();
+        String hql = "SELECT p FROM Product p JOIN p.category c WHERE 1=1";
+
+        if (prodType != null && !prodType.isEmpty()) {
+            hql += " AND c.prodType = :prodType";
+        }
+        if (prodLine != null && !prodLine.isEmpty()) {
+            hql += " AND c.prodLine = :prodLine";
+        }
+        if (description != null && !description.isEmpty()) {
+            hql += " AND c.description = :description";
+        }
+
+        Query<Product> query = session.createQuery(hql, Product.class);
+
+        if (prodType != null && !prodType.isEmpty()) query.setParameter("prodType", prodType);
+        if (prodLine != null && !prodLine.isEmpty()) query.setParameter("prodLine", prodLine);
+        if (description != null && !description.isEmpty()) query.setParameter("description", description);
+
+        return query.getResultList();
+    }
 }
