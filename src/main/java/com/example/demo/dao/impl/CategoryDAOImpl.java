@@ -50,44 +50,41 @@ public class CategoryDAOImpl implements CategoryDAO {
 	// 篩選
 	@Override
 	public List<String> findAllProdTypes() {
-		return getCurrentSession().createQuery("SELECT DISTINCT c.prodType FROM Category c", String.class).list();
+		String hql = "SELECT DISTINCT c.prodType FROM Category c ORDER BY c.prodType";
+		return getCurrentSession().createQuery(hql, String.class).list();
 	}
 
 	@Override
 	public List<String> findProdLinesByProdType(String prodType) {
-		return getCurrentSession()
-				.createQuery("SELECT DISTINCT c.prodLine FROM Category c WHERE c.prodType = :prodType", String.class)
-				.setParameter("prodType", prodType).list();
+		String hql = "SELECT DISTINCT c.prodLine FROM Category c WHERE c.prodType=:prodType ORDER BY c.prodLine";
+		return getCurrentSession().createQuery(hql, String.class).setParameter("prodType", prodType).list();
 	}
 
 	@Override
 	public List<String> findDescriptionsByProdTypeAndProdLine(String prodType, String prodLine) {
-		return getCurrentSession().createQuery(
-				"SELECT DISTINCT c.description FROM Category c WHERE c.prodType = :prodType AND c.prodLine = :prodLine",
-				String.class).setParameter("prodType", prodType).setParameter("prodLine", prodLine).list();
+		String hql = "SELECT DISTINCT c.description FROM Category c WHERE c.prodType=:prodType AND c.prodLine=:prodLine ORDER BY c.description";
+		return getCurrentSession().createQuery(hql, String.class).setParameter("prodType", prodType)
+				.setParameter("prodLine", prodLine).list();
 	}
 
 	@Override
-    public List<Product> findProductsByCategoryFilter(String prodType, String prodLine, String description) {
-        Session session = getCurrentSession();
-        String hql = "SELECT p FROM Product p JOIN p.category c WHERE 1=1";
+	public List<Product> findProductsByCategoryFilter(String prodType, String prodLine, String description) {
+		StringBuilder hql = new StringBuilder("FROM Product p WHERE 1=1");
+		if (prodType != null && !prodType.isEmpty())
+		    hql.append(" AND p.category.prodType = :prodType");
+		if (prodLine != null && !prodLine.isEmpty())
+		    hql.append(" AND p.category.prodLine = :prodLine");
+		if (description != null && !description.isEmpty())
+		    hql.append(" AND p.category.description = :description");
 
-        if (prodType != null && !prodType.isEmpty()) {
-            hql += " AND c.prodType = :prodType";
-        }
-        if (prodLine != null && !prodLine.isEmpty()) {
-            hql += " AND c.prodLine = :prodLine";
-        }
-        if (description != null && !description.isEmpty()) {
-            hql += " AND c.description = :description";
-        }
+		Query<Product> query = getCurrentSession().createQuery(hql.toString(), Product.class);
+		if (prodType != null && !prodType.isEmpty())
+		    query.setParameter("prodType", prodType);
+		if (prodLine != null && !prodLine.isEmpty())
+		    query.setParameter("prodLine", prodLine);
+		if (description != null && !description.isEmpty())
+		    query.setParameter("description", description);
 
-        Query<Product> query = session.createQuery(hql, Product.class);
-
-        if (prodType != null && !prodType.isEmpty()) query.setParameter("prodType", prodType);
-        if (prodLine != null && !prodLine.isEmpty()) query.setParameter("prodLine", prodLine);
-        if (description != null && !description.isEmpty()) query.setParameter("description", description);
-
-        return query.getResultList();
-    }
+		return query.list();
+	}
 }
