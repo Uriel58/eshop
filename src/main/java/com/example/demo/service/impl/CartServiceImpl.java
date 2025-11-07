@@ -150,7 +150,7 @@ public class CartServiceImpl implements CartService {
 		for (CartDetail detail : cart.getCartDetails()) {
 			if (detail.getProduct().getProdNum().equals(productId)) {
 				// ✅ 直接設定數量（不是加法）
-				//detail.setCartQty(quantity);
+				detail.setCartQty(quantity);
 				detail.setCartTotal(detail.getProdPrice().multiply(BigDecimal.valueOf(quantity)).add(detail.getShippingFee()));
 				found = true;
 				break;
