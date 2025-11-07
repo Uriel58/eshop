@@ -23,6 +23,8 @@ public class UserController extends LoginBaseController{
     
     @GetMapping("/add")
     public String showAddForm(Model model) {
+    	User user = new User();  
+    	user.setIdentifyName("customer");  // 先設置值
         model.addAttribute("user", new User());
         return "add-user";
     }
