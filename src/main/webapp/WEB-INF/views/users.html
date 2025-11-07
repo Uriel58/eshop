@@ -14,13 +14,13 @@
     	<h1 th:text="${name != null} ? ${'Hello！ '+ name} : 'Hello！ visitor'"></h1>
 		
 		<a th:href="@{/}" class="btn btn-outline-secondary mt-3">Back</a>
-		<!-- 登出按鈕 -->
+		<!-- 登出+註冊按鈕 -->
 			<div th:if="${name}">
 				<a th:href="@{/logout}" class="btn btn-danger me-2"
 					th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
 					class="btn btn-warning" th:text="#{a.register}">Register</a>
 			</div>
-			<!-- 登入按鈕 -->
+			<!-- 登入+註冊按鈕 -->
 			<div th:unless="${name}">
 				<a th:href="@{/login}" class="btn btn-success me-2"
 					th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"

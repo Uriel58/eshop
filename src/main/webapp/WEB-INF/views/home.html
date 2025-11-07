@@ -66,22 +66,21 @@
 				th:href="@{/?lang=zh_TW}" class="btn btn-primary">繁體中文</a>
 
 			<hr>
-			<!-- 登出按鈕 -->
+			<!-- 登出+註冊按鈕 -->
 			<div th:if="${name}">
 				<a th:href="@{/logout}" class="btn btn-danger me-2"
 					th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
 					class="btn btn-warning" th:text="#{a.register}">Register</a>
 			</div>
-			<!-- 登入按鈕 -->
+			<!-- 登入+註冊按鈕 -->
 			<div th:unless="${name}">
 				<a th:href="@{/login}" class="btn btn-success me-2"
 					th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
 					class="btn btn-warning" th:text="#{a.register}">Register</a>
 			</div>
-			<!-- 註冊按鈕 -->
-
 		</div>
 		<hr>
+		<!-- 篩選區域 -->
 		<!-- 第1層：prodType -->
 		<div>
 			<label>產品類型：</label> <select id="prodTypeSelect">
