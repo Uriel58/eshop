@@ -1,108 +1,147 @@
+.
+├── 1.txt
+├── bin
+│   ├── 1.txt
+│   ├── pom.xml
+│   ├── src
+│   │   ├── main
+│   │   │   ├── java
+│   │   │   │   └── com
+│   │   │   │       └── example
+│   │   │   │           └── demo
+│   │   │   │               ├── config
+│   │   │   │               │   ├── AppConfig.class
+│   │   │   │               │   ├── HibernateConfig.class
+│   │   │   │               │   ├── ShippingConfig.class
+│   │   │   │               │   └── WebMvcConfig.class
+│   │   │   │               ├── controller
+│   │   │   │               │   ├── AdminController.class
+│   │   │   │               │   ├── CartController.class
+│   │   │   │               │   ├── CategoryController.class
+│   │   │   │               │   ├── CustomerController.class
+│   │   │   │               │   ├── HomeController.class
+│   │   │   │               │   ├── LoginBaseController.class
+│   │   │   │               │   ├── LoginController.class
+│   │   │   │               │   ├── OrderController.class
+│   │   │   │               │   ├── OrderDetailController.class
+│   │   │   │               │   ├── PasswordResetPageController.class
+│   │   │   │               │   ├── PasswordResetTokenController.class
+│   │   │   │               │   ├── ProductController.class
+│   │   │   │               │   └── UserController.class
+│   │   │   │               ├── dao
+│   │   │   │               │   ├── CartDAO.class
+│   │   │   │               │   ├── CartDetailDAO.class
+│   │   │   │               │   ├── CategoryDAO.class
+│   │   │   │               │   ├── CustomerDAO.class
+│   │   │   │               │   ├── impl
+│   │   │   │               │   │   ├── CartDAOImpl.class
+│   │   │   │               │   │   ├── CartDetailDAOImpl.class
+│   │   │   │               │   │   ├── CategoryDAOImpl.class
+│   │   │   │               │   │   ├── CustomerDAOImpl.class
+│   │   │   │               │   │   ├── OrderDAOImpl.class
+│   │   │   │               │   │   ├── OrderDetailDAOImpl.class
+│   │   │   │               │   │   ├── PasswordResetTokenDAOImpl.class
+│   │   │   │               │   │   ├── ProductDAOImpl.class
+│   │   │   │               │   │   └── UserDAOImpl.class
+│   │   │   │               │   ├── OrderDAO.class
+│   │   │   │               │   ├── OrderDetailDAO.class
+│   │   │   │               │   ├── PasswordResetTokenDAO.class
+│   │   │   │               │   ├── ProductDAO.class
+│   │   │   │               │   └── UserDAO.class
+│   │   │   │               ├── MainApplication.class
+│   │   │   │               ├── model
+│   │   │   │               │   ├── Cart.class
+│   │   │   │               │   ├── CartDetail.class
+│   │   │   │               │   ├── Category.class
+│   │   │   │               │   ├── Customer.class
+│   │   │   │               │   ├── OrderAddress.class
+│   │   │   │               │   ├── Order.class
+│   │   │   │               │   ├── OrderDetail.class
+│   │   │   │               │   ├── OrderDetailPK.class
+│   │   │   │               │   ├── PasswordResetToken.class
+│   │   │   │               │   ├── Product.class
+│   │   │   │               │   └── User.class
+│   │   │   │               ├── scheduler
+│   │   │   │               │   └── PasswordResetTokenScheduler.class
+│   │   │   │               └── service
+│   │   │   │                   ├── CartDetailService.class
+│   │   │   │                   ├── CartService.class
+│   │   │   │                   ├── CategoryService.class
+│   │   │   │                   ├── CustomerService.class
+│   │   │   │                   ├── impl
+│   │   │   │                   │   ├── CartDetailServiceImpl.class
+│   │   │   │                   │   ├── CartServiceImpl.class
+│   │   │   │                   │   ├── CategoryServiceImpl.class
+│   │   │   │                   │   ├── CustomerServiceImpl.class
+│   │   │   │                   │   ├── OrderDetailServiceImpl.class
+│   │   │   │                   │   ├── OrderServiceImpl.class
+│   │   │   │                   │   ├── PasswordResetTokenServiceImpl.class
+│   │   │   │                   │   ├── ProductServiceImpl.class
+│   │   │   │                   │   └── UserServiceImpl.class
+│   │   │   │                   ├── OrderDetailService.class
+│   │   │   │                   ├── OrderService.class
+│   │   │   │                   ├── PasswordResetTokenService.class
+│   │   │   │                   ├── ProductService.class
+│   │   │   │                   └── UserService.class
+│   │   │   ├── resources
+│   │   │   │   ├── application.properties
+│   │   │   │   ├── logback.xml
+│   │   │   │   ├── messages_en.properties
+│   │   │   │   └── messages_zh_TW.properties
+│   │   │   └── webapp
+│   │   │       ├── META-INF
+│   │   │       │   └── MANIFEST.MF
+│   │   │       ├── resources
+│   │   │       │   └── images
+│   │   │       │       └── ChatGPT-strawberry_cake.png
+│   │   │       └── WEB-INF
+│   │   │           ├── views
+│   │   │           │   ├── add-category.html
+│   │   │           │   ├── add-customer.html
+│   │   │           │   ├── add-orderdetail.html
+│   │   │           │   ├── add-order.html
+│   │   │           │   ├── add-product.html
+│   │   │           │   ├── add-user.html
+│   │   │           │   ├── admin_controller.html
+│   │   │           │   ├── cartdetails.html
+│   │   │           │   ├── categories.html
+│   │   │           │   ├── customers.html
+│   │   │           │   ├── edit-category.html
+│   │   │           │   ├── edit-customer.html
+│   │   │           │   ├── edit-orderdetail.html
+│   │   │           │   ├── edit-order.html
+│   │   │           │   ├── edit-product.html
+│   │   │           │   ├── edit-user.html
+│   │   │           │   ├── home.html
+│   │   │           │   ├── login.html
+│   │   │           │   ├── orderdetails.html
+│   │   │           │   ├── orders.html
+│   │   │           │   ├── password-reset.html
+│   │   │           │   ├── products_details.html
+│   │   │           │   ├── products.html
+│   │   │           │   └── users.html
+│   │   │           └── web.xml
+│   │   └── test
+│   │       └── java
+│   │           └── com
+│   │               └── example
+│   │                   └── demo
+│   │                       └── test
+│   │                           ├── CartDetailServiceTest.class
+│   │                           ├── CartServiceTest.class
+│   │                           ├── CategoryServiceTest.class
+│   │                           ├── CustomerServiceTest.class
+│   │                           ├── OrderDetailServiceTest.class
+│   │                           ├── OrderServiceTest.class
+│   │                           ├── PasswordResetTokenServiceTest.class
+│   │                           ├── ProductServiceTest.class
+│   │                           └── UserServiceTest.class
+│   └── target
+│       ├── classes
+│       └── m2e-wtp
+│           └── web-resources
+│               └── META-INF
+│                   └── maven
+│                       └── echop
+│                           └── echop
 
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── example
-│   │   │           └── demo
-│   │   │               ├── config
-│   │   │               │   ├── AppConfig.java
-│   │   │               │   ├── HibernateConfig.java
-│   │   │               │   ├── ShippingConfig.java
-│   │   │               │   └── WebMvcConfig.java
-│   │   │               ├── controller
-│   │   │               │   ├── CartController.java
-│   │   │               │   ├── CustomerController.java
-│   │   │               │   ├── HomeController.java
-│   │   │               │   ├── LoginBaseController.java
-│   │   │               │   ├── LoginController.java
-│   │   │               │   ├── OrderController.java
-│   │   │               │   ├── OrderDetailController.java
-│   │   │               │   ├── PasswordResetPageController.java
-│   │   │               │   ├── PasswordResetTokenController.java
-│   │   │               │   ├── ProductController.java
-│   │   │               │   └── UserController.java
-│   │   │               ├── dao
-│   │   │               │   ├── CartDAO.java
-│   │   │               │   ├── CartDetailDAO.java
-│   │   │               │   ├── CustomerDAO.java
-│   │   │               │   ├── impl
-│   │   │               │   │   ├── CartDAOImpl.java
-│   │   │               │   │   ├── CartDetailDAOImpl.java
-│   │   │               │   │   ├── CustomerDAOImpl.java
-│   │   │               │   │   ├── OrderDAOImpl.java
-│   │   │               │   │   ├── OrderDetailDAOImpl.java
-│   │   │               │   │   ├── PasswordResetTokenDAOImpl.java
-│   │   │               │   │   ├── ProductDAOImpl.java
-│   │   │               │   │   └── UserDAOImpl.java
-│   │   │               │   ├── OrderDAO.java
-│   │   │               │   ├── OrderDetailDAO.java
-│   │   │               │   ├── PasswordResetTokenDAO.java
-│   │   │               │   ├── ProductDAO.java
-│   │   │               │   └── UserDAO.java
-│   │   │               ├── MainApplication.java
-│   │   │               ├── model
-│   │   │               │   ├── CartDetail.java
-│   │   │               │   ├── Cart.java
-│   │   │               │   ├── Category.java
-│   │   │               │   ├── Customer.java
-│   │   │               │   ├── OrderAddress.java
-│   │   │               │   ├── OrderDetail.java
-│   │   │               │   ├── OrderDetailPK.java
-│   │   │               │   ├── Order.java
-│   │   │               │   ├── PasswordResetToken.java
-│   │   │               │   ├── Product.java
-│   │   │               │   └── User.java
-│   │   │               ├── scheduler
-│   │   │               │   └── PasswordResetTokenScheduler.java
-│   │   │               └── service
-│   │   │                   ├── CartDetailService.java
-│   │   │                   ├── CartService.java
-│   │   │                   ├── CustomerService.java
-│   │   │                   ├── impl
-│   │   │                   │   ├── CartDetailServiceImpl.java
-│   │   │                   │   ├── CartServiceImpl.java
-│   │   │                   │   ├── CustomerServiceImpl.java
-│   │   │                   │   ├── OrderDetailServiceImpl.java
-│   │   │                   │   ├── OrderServiceImpl.java
-│   │   │                   │   ├── PasswordResetTokenServiceImpl.java
-│   │   │                   │   ├── ProductServiceImpl.java
-│   │   │                   │   └── UserServiceImpl.java
-│   │   │                   ├── OrderDetailService.java
-│   │   │                   ├── OrderService.java
-│   │   │                   ├── PasswordResetTokenService.java
-│   │   │                   ├── ProductService.java
-│   │   │                   └── UserService.java
-│   │   ├── resources
-│   │   │   ├── application.properties
-│   │   │   ├── logback.xml
-│   │   │   ├── messages_en.properties
-│   │   │   └── messages_zh_TW.properties
-│   │   └── webapp
-│   │       ├── META-INF
-│   │       │   └── MANIFEST.MF
-│   │       ├── resources
-│   │       │   └── images
-│   │       │       └── ChatGPT-strawberry_cake.png
-│   │       └── WEB-INF
-│   │           ├── views
-│   │           │   ├── add-customer.html
-│   │           │   ├── add-orderdetail.html
-│   │           │   ├── add-order.html
-│   │           │   ├── add-product.html
-│   │           │   ├── add-user.html
-│   │           │   ├── cartdetails.html
-│   │           │   ├── customers.html
-│   │           │   ├── edit-customer.html
-│   │           │   ├── edit-orderdetail.html
-│   │           │   ├── edit-order.html
-│   │           │   ├── edit-product.html
-│   │           │   ├── edit-user.html
-│   │           │   ├── home.html
-│   │           │   ├── login.html
-│   │           │   ├── orderdetails.html
-│   │           │   ├── orders.html
-│   │           │   ├── password-reset.html
-│   │           │   ├── products_details.html
-│   │           │   ├── products.html
-│   │           │   └── users.html

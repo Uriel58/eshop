@@ -44,7 +44,13 @@ public class PasswordResetTokenDAOImpl implements PasswordResetTokenDAO {
 
     @Override
     public void delete(PasswordResetToken token) {
-        sessionFactory.getCurrentSession().delete(token);
+        var session = sessionFactory.getCurrentSession();
+        if (!session.contains(token)) {
+        	token = (PasswordResetToken) session.merge(token); // merge 讓 Hibernate 管理 detached entity
+        }else {
+            System.out.println("⚠️ Token not found, skip delete: " + token.getId());
+        }
+        session.delete(token);
     }
     
  // ✅ 新增這個方法，解決錯誤

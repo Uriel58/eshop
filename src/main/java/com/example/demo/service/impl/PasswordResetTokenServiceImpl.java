@@ -57,15 +57,15 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
     public void deleteExpiredTokens() {
         List<PasswordResetToken> allTokens = tokenDAO.findAll();
         ZonedDateTime now = ZonedDateTime.now();
+
         for (PasswordResetToken token : allTokens) {
             if (token.getExpiryDate().isBefore(now)) {
                 try {
-                    tokenDAO.delete(token);
-                } catch (EmptyResultDataAccessException | StaleStateException e) {
-                    // 記錄 log 但不視為錯誤
-                    log.warn("Token already deleted or stale: {}", token.getId());
+                    tokenDAO.delete(token); // DAO 已經做 merge 保護
+                    log.info("Deleted expired token: {}", token.getId());
+                } catch (StaleStateException e) {
+                    log.warn("Token {} already deleted, skipping.", token.getId());
                 } catch (Exception e) {
-                    // 捕捉其他未預期錯誤，以免中斷排程
                     log.error("Unexpected error deleting token: {}", token.getId(), e);
                 }
             }
