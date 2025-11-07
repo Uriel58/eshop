@@ -12,7 +12,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class OrderAddress {
-
+	/**
+	 * OrderAddress 有 id,recipientName(收件人姓名),phone(收件人電話號碼),country(國家),city(城市),district(區／縣／行政區)
+	 * streetAddress(街道與門牌號等詳細地址),postalCode(郵遞區號),createdAt(建立時間),updatedAt(最後更新時間)
+	 * 連到Order
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "address_id")

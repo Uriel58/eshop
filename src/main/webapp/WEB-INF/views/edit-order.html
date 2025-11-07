@@ -67,8 +67,14 @@
 					</select>
 				</div>
 				<div class="col-md-4 mb-3">
-					<label>Order Status</label> <input type="text"
-						th:field="*{orderStatus}" class="form-control" required>
+					<label>Order Status</label> <select th:field="*{orderStatus}"
+						class="form-control" required>
+						<option value="">-- 請選擇狀態 --</option>
+						<option value="PENDING">PENDING - 未處理</option>
+						<option value="PAID">PAID - 已完成付款，等待出貨或處理</option>
+						<option value="CANCELLED">CANCELLED - 訂單被取消</option>
+						<option value="COMPLETED">COMPLETED - 訂單完成，交易結束</option>
+					</select>
 				</div>
 				<div class="col-md-4 mb-3">
 					<label>Payment Method</label> <select th:field="*{paymentMethod}"
