@@ -15,10 +15,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.example.demo.config.WebMvcConfig;
 import com.example.demo.model.Category;
 import com.example.demo.service.CategoryService;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { WebMvcConfig.class })
 @WebAppConfiguration
+@Transactional
 public class CategoryServiceTest {
 
     @Autowired
