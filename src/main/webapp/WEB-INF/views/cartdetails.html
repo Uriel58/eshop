@@ -41,11 +41,6 @@
 <body>
 	<div class="container mt-4">
 		<h2>Cart Details</h2>
-		<!--
-		* 不顯示ord_date,required_date,customer_id,ord_num,
-		* 需要有ord_num,county,delivery_method,order_barcode,order_status,
-		* payment_method,fare,ord_price,ord_qty,prodNum,ord_price
-		 -->
 		<!-- 顯示購物車明細 -->
 		<div class="row">
 			<div class="col-md-12">
@@ -72,36 +67,34 @@
 								<td
 									th:text="${#numbers.formatDecimal(detail.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">價格</td>
 								<td>
-									<form
-										th:action="@{/cart/{cartId}/update-product(cartId=${cart.id})}"
-										method="post">
-										<input type="number" th:name="quantity"
-											th:value="${detail.cartQty}" class="form-control" min="1">
-										<input type="hidden" th:name="productId"
-											th:value="${detail.product.prodNum}" />
-										<!-- ✅ 新增 hidden input 存運送方式 -->
-										<input type="hidden" name="deliveryMethod"
-											id="selectedDelivery" th:value="*{deliveryMethod}"  />
-										<button type="submit" class="btn btn-primary mt-2">更新數量</button>
-									</form>
+									<div class="d-flex align-items-center gap-2">
+										<input type="number" 
+											th:id="'qty-' + ${detail.product.prodNum}"
+											th:value="${detail.cartQty}" 
+											class="form-control qty-input" 
+											min="1"
+											style="width: 80px;"
+											th:data-product-id="${detail.product.prodNum}">
+										<button type="button" 
+											class="btn btn-primary btn-sm update-qty-btn"
+											th:data-cart-id="${cart.id}"
+											th:data-product-id="${detail.product.prodNum}">更新</button>
+									</div>
 								</td>
 								<!-- ✅ 運費欄位 -->
-								
-								<td class="shipping-fee" th:if="${deliveryMethod}">
-									<span th:text="${#numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT')} + ' 元'">運費</span>
-									</td>
-								<td class="shipping-fee" th:unless="${deliveryMethod}">
-									<span>0元</span>
+								<td class="shipping-fee" 
+									th:attr="data-fee=${detail.shippingFee != null ? detail.shippingFee : 0}">
+									<span th:text="${detail.shippingFee != null ? #numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT') + ' 元' : '0 元'}">運費</span>
 								</td>
-									
 
-								<!-- ✅ 小計加上 class=item-total -->
+								<!-- ✅ 小計 = 商品價格 × 數量 (不含運費) -->
 								<td class="item-total"
-									th:text="${#numbers.formatDecimal(detail.cartTotal, 0, 'COMMA', 2, 'POINT')} + ' 元'" th:attr="data-base=${detail.cartTotal}">總價</td>
+									th:text="${#numbers.formatDecimal(detail.cartTotal, 0, 'COMMA', 2, 'POINT')} + ' 元'"
+									th:attr="data-base=${detail.prodPrice * detail.cartQty}">總價</td>
 								<td>
-									<!-- 刪除商品 --> <a
-									th:href="@{/cart/{cartId}/remove-product/{productId}(cartId=${cart.id}, productId=${detail.product.prodNum})}"
-									class="btn btn-danger">刪除</a>
+									<!-- 刪除商品 --> 
+									<a th:href="@{/cart/{cartId}/remove-product/{productId}(cartId=${cart.id}, productId=${detail.product.prodNum})}"
+										class="btn btn-danger btn-sm">刪除</a>
 								</td>
 							</tr>
 						</tbody>
@@ -115,16 +108,16 @@
 						總價: <span id="cart-total-value"
 							th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')} + ' 元'"></span>
 					</h3>
-					<h3  class="cartTotal" th:unless="${total != null and total > 0}">
-						總價: <span>0.00元</span>
+					<h3 class="cartTotal" th:unless="${total != null and total > 0}">
+						總價: <span id="cart-total-value">0.00 元</span>
 					</h3>
 				</div>
 				<form th:action="@{/cart/{cartId}/checkout(cartId=${cart.id})}"
-					method="post" th:object="${order}">
+					method="post" th:object="${order}" id="checkoutForm">
 					<div class="mb-3">
 						<div class="mb-3">
 							<label>County</label> <select th:field="*{county}"
-								class="form-control">
+								class="form-control" id="countySelect">
 								<option value="">-- Select --</option>
 								<option value="台北市">台北市</option>
 								<option value="新北市">新北市</option>
@@ -151,75 +144,175 @@
 							</select>
 						</div>
 						<div class="mb-3">
-							<label>Payment Method</label><br /> <input type="radio"
-								th:field="*{paymentMethod}" value="CASH" /> 現金 <input
-								type="radio" th:field="*{paymentMethod}" value="CREDIT_CARD" />
-							刷卡 <input type="radio" th:field="*{paymentMethod}"
-								value="E_PAYMENT" /> 電子支付
+							<label>Payment Method</label><br /> 
+							<input type="radio" th:field="*{paymentMethod}" value="CASH" id="payCash" /> 現金 
+							<input type="radio" th:field="*{paymentMethod}" value="CREDIT_CARD" id="payCredit" /> 刷卡 
+							<input type="radio" th:field="*{paymentMethod}" value="E_PAYMENT" id="payEPay" /> 電子支付
 						</div>
 						<div class="mb-3">
-							<label>Delivery Method</label><br /> <input type="radio"
-								th:field="*{deliveryMethod}" th:checked="${order.deliveryMethod == 'PICK_UP'}" value="PICK_UP" /> 自取(PICK_UP) <input
-								type="radio" th:field="*{deliveryMethod}" th:checked="${order.deliveryMethod == 'HOME_DELIVERY'}" value="HOME_DELIVERY" />
-							宅配到府 (HOME_DELIVERY) <input type="radio"
-								th:field="*{deliveryMethod}"  th:checked="${order.deliveryMethod == 'STORE_DELIVERY'}" value="STORE_DELIVERY" /> 超商取貨
-							(STORE_DELIVERY) <input type="radio" th:field="*{deliveryMethod}"
-								 th:checked="${order.deliveryMethod == 'POSTAL'}" value="POSTAL" /> 郵寄 (POSTAL)
+							<label>Delivery Method</label><br /> 
+							<input type="radio" th:field="*{deliveryMethod}"
+								th:checked="${order.deliveryMethod == 'PICK_UP'}"
+								value="PICK_UP" id="deliveryPickUp" /> 自取(PICK_UP) 
+							<input type="radio" th:field="*{deliveryMethod}"
+								th:checked="${order.deliveryMethod == 'HOME_DELIVERY'}"
+								value="HOME_DELIVERY" id="deliveryHome" /> 宅配到府 (HOME_DELIVERY) 
+							<input type="radio" th:field="*{deliveryMethod}"
+								th:checked="${order.deliveryMethod == 'STORE_DELIVERY'}"
+								value="STORE_DELIVERY" id="deliveryStore" /> 超商取貨 (STORE_DELIVERY) 
+							<input type="radio" th:field="*{deliveryMethod}"
+								th:checked="${order.deliveryMethod == 'POSTAL'}" 
+								value="POSTAL" id="deliveryPostal" /> 郵寄 (POSTAL)
 						</div>
 						<button type="submit" class="btn btn-success">結帳</button>
+					</div>
 				</form>
-			</div>
-			<!-- 返回購物車列表 -->
-			<div class="mt-4">
-				<a th:href="@{/}" class="btn btn-secondary">返回商品列表</a>
+
+				<!-- 返回購物車列表 -->
+				<div class="mt-4">
+					<a th:href="@{/}" class="btn btn-secondary">返回商品列表</a>
+				</div>
 			</div>
 		</div>
 	</div>
-	<!-- ✅ JS：動態更新運費與總價 -->
+	<!-- ✅ JS：動態更新運費與總價 + 保存表單狀態 -->
 	<script>
 	document.addEventListener("DOMContentLoaded", function () {
 	    const deliveryRadios = document.querySelectorAll("input[name='deliveryMethod']");
 	    const shippingFeeCells = document.querySelectorAll(".shipping-fee");
+	    const itemTotalCells = document.querySelectorAll(".item-total");
 	    const totalSpan = document.getElementById("cart-total-value");
-	    const hiddenDeliveryInputs = document.querySelectorAll("input#selectedDelivery");
+	    const countySelect = document.getElementById("countySelect");
+	    const paymentRadios = document.querySelectorAll("input[name='paymentMethod']");
 
-	    // 取得原始總價
-	    let baseTotal = 0;
-	    document.querySelectorAll(".item-total").forEach(cell => {
-	        baseTotal += parseFloat(cell.dataset.base) || 0;
-	    });
+	    // 運費設定
+	    const shippingFees = {
+	        "PICK_UP": 0,
+	        "HOME_DELIVERY": 24,
+	        "POSTAL": 12,
+	        "STORE_DELIVERY": 6
+	    };
 
-	    function updateTotal(fee) {
-	        totalSpan.textContent = (baseTotal + fee).toFixed(2) + " 元";
+	    // ===== 表單狀態保存與恢復 =====
+	    function saveFormState() {
+	        const selectedDelivery = document.querySelector("input[name='deliveryMethod']:checked");
+	        const selectedPayment = document.querySelector("input[name='paymentMethod']:checked");
+	        
+	        localStorage.setItem('cartCounty', countySelect.value);
+	        localStorage.setItem('cartDelivery', selectedDelivery ? selectedDelivery.value : '');
+	        localStorage.setItem('cartPayment', selectedPayment ? selectedPayment.value : '');
 	    }
 
+	    function restoreFormState() {
+	        const savedCounty = localStorage.getItem('cartCounty');
+	        const savedDelivery = localStorage.getItem('cartDelivery');
+	        const savedPayment = localStorage.getItem('cartPayment');
+
+	        if (savedCounty) countySelect.value = savedCounty;
+	        
+	        if (savedDelivery) {
+	            const deliveryRadio = document.querySelector(`input[name='deliveryMethod'][value='${savedDelivery}']`);
+	            if (deliveryRadio) {
+	                deliveryRadio.checked = true;
+	                updateTotal(savedDelivery);
+	            }
+	        }
+	        
+	        if (savedPayment) {
+	            const paymentRadio = document.querySelector(`input[name='paymentMethod'][value='${savedPayment}']`);
+	            if (paymentRadio) paymentRadio.checked = true;
+	        }
+	    }
+
+	    // 監聽表單變更並保存
+	    countySelect.addEventListener('change', saveFormState);
+	    paymentRadios.forEach(radio => radio.addEventListener('change', saveFormState));
+	    deliveryRadios.forEach(radio => radio.addEventListener('change', saveFormState));
+
+	    // ===== 運費與總價計算 =====
+	    function updateTotal(selectedMethod) {
+	        const fee = shippingFees[selectedMethod] || 0;
+	        let grandTotal = 0;
+
+	        // 更新每個商品的運費顯示
+	        shippingFeeCells.forEach(cell => {
+	            cell.querySelector('span').textContent = fee.toFixed(2) + " 元";
+	            cell.setAttribute('data-fee', fee);
+	        });
+
+	        // 計算總價：每個商品小計 + 對應運費
+	        itemTotalCells.forEach((cell, index) => {
+	            const basePrice = parseFloat(cell.getAttribute('data-base')) || 0;
+	            const itemTotal = basePrice + fee;
+	            cell.textContent = itemTotal.toFixed(2) + " 元";
+	            grandTotal += itemTotal;
+	        });
+
+	        // 更新總價顯示
+	        totalSpan.textContent = grandTotal.toFixed(2) + " 元";
+	    }
+
+	    // 監聽運送方式變更
 	    deliveryRadios.forEach(radio => {
 	        radio.addEventListener("change", function () {
-	            let fee = 0;
-	            switch(this.value) {
-	                case "HOME_DELIVERY": fee = 24; break;
-	                case "POSTAL": fee = 12; break;
-	                case "STORE_DELIVERY": fee = 6; break;
-	                default: fee = 0; break;
-	            }
-
-	            // 更新運費
-	            shippingFeeCells.forEach(cell => cell.textContent = fee + " 元");
-
-	            // 更新 hidden input
-	            hiddenDeliveryInputs.forEach(input => input.value = radio.value);
-
-	            // 更新總價
-	            updateTotal(fee);
+	            updateTotal(this.value);
+	            saveFormState();
 	        });
 	    });
 
-	    // 預設選中運送方式時初始化
+	    // ===== 更新數量 =====
+	    const updateButtons = document.querySelectorAll('.update-qty-btn');
+	    updateButtons.forEach(btn => {
+	        btn.addEventListener('click', function() {
+	            const cartId = this.dataset.cartId;
+	            const productId = this.dataset.productId;
+	            const qtyInput = document.getElementById('qty-' + productId);
+	            const quantity = qtyInput.value;
+
+	            // 保存表單狀態
+	            saveFormState();
+
+	            // 使用傳統表單提交（因為後端是 POST 方法）
+	            const form = document.createElement('form');
+	            form.method = 'POST';
+	            // ✅ 使用相對路徑，會自動包含 context path
+	            form.action = window.location.pathname.replace(/\/cartdetails$/, '/update-product');
+
+	            const qtyField = document.createElement('input');
+	            qtyField.type = 'hidden';
+	            qtyField.name = 'quantity';
+	            qtyField.value = quantity;
+
+	            const prodField = document.createElement('input');
+	            prodField.type = 'hidden';
+	            prodField.name = 'productId';
+	            prodField.value = productId;
+
+	            form.appendChild(qtyField);
+	            form.appendChild(prodField);
+	            document.body.appendChild(form);
+	            form.submit();
+	        });
+	    });
+
+	    // ===== 結帳時清除保存的狀態 =====
+	    document.getElementById('checkoutForm').addEventListener('submit', function() {
+	        localStorage.removeItem('cartCounty');
+	        localStorage.removeItem('cartDelivery');
+	        localStorage.removeItem('cartPayment');
+	    });
+
+	    // ===== 頁面載入時恢復狀態 =====
+	    restoreFormState();
+
+	    // 如果沒有保存的運送方式，使用預設值
 	    const selectedRadio = document.querySelector("input[name='deliveryMethod']:checked");
-	    if(selectedRadio) selectedRadio.dispatchEvent(new Event('change'));
+	    if (selectedRadio) {
+	        updateTotal(selectedRadio.value);
+	    } else {
+	        updateTotal("PICK_UP");
+	    }
 	});
-
-</script>
-
+	</script>
 </body>
 </html>
