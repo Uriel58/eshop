@@ -32,7 +32,7 @@ public class HomeController extends LoginBaseController {
     @Autowired
     private CategoryService categoryService;
 
-    private static final int PAGE_SIZE = 12; // 每頁 12 筆
+    private static final int PAGE_SIZE = 8; // 每頁 12 筆
 
     @GetMapping({ "/", "/home" })
     public String home(HttpSession session,

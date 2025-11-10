@@ -129,7 +129,7 @@
 			<!-- 上一頁 -->
 			<li class="page-item"
 				th:classappend="${currentPage == 0} ? 'disabled'"><a
-				class="page-link" th:href="@{'/?page=' + (${currentPage} - 1)}">上一頁</a>
+				class="page-link" th:href="@{/(page=${currentPage - 1})}"> 上一頁 </a>
 			</li>
 
 			<!-- 數字頁碼 -->
@@ -142,7 +142,8 @@
 			<!-- 下一頁 -->
 			<li class="page-item"
 				th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-				<a class="page-link" th:href="@{'/?page=' + (${currentPage} + 1)}">下一頁</a>
+				<a class="page-link" th:href="@{/(page=${currentPage + 1})}">
+					下一頁 </a>
 			</li>
 
 		</ul>
