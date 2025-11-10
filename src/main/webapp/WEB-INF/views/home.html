@@ -92,14 +92,14 @@
 
 		<!-- 第2層：prodLine（初始隱藏） -->
 		<div id="prodLineDiv" style="display: none; margin-top: 10px;">
-			<label>產品線：</label> <select id="prodLineSelect">
+			<label>產品類別：</label> <select id="prodLineSelect">
 				<option value="">-- 請選擇 --</option>
 			</select>
 		</div>
 
 		<!-- 第3層：description（初始隱藏） -->
 		<div id="descriptionDiv" style="display: none; margin-top: 10px;">
-			<label>產品描述：</label> <select id="descriptionSelect">
+			<label>產品細項：</label> <select id="descriptionSelect">
 				<option value="">-- 請選擇 --</option>
 			</select>
 		</div>
@@ -147,79 +147,106 @@
 
 		</ul>
 	</nav>
-	<script>
-	$(document).ready(function () {
-	    function updateProducts(products) {
-	        let $container = $(".row");
-	        $container.empty();
-	        $.each(products, function(i, product){
-	            let html = `
-	            <div class="col-md-3">
-	                <a href="/home/products/details/${product.prodNum}" style="text-decoration: none; color: inherit;">
-	                    <div class="product-card">
-	                        <img class="product-image" src="/resources/images/${product.prodImages}" />
-	                        <h5>${product.prodName}</h5>
-	                        <p class="price">${product.prodPrice.toLocaleString()} 元</p>
-	                    </div>
-	                </a>
-	            </div>`;
-	            $container.append(html);
-	        });
-	    }
+	<script th:inline="javascript">
+document.addEventListener('DOMContentLoaded', () => {
 
-	    $("#prodTypeSelect").change(function () {
-	        let prodType = $(this).val();
-	        if (prodType) {
-	            $.get("/home/select-product/getProdLines", { prodType }, function(data){
-	                let $prodLine = $("#prodLineSelect");
-	                $prodLine.empty().append('<option value="">--請選擇--</option>');
-	                $.each(data, function(i, line){ $prodLine.append('<option>'+line+'</option>'); });
-	                $("#prodLineDiv").show();
-	                $("#descriptionDiv").hide();
-	            });
+    const ctx = /*[[@{/}]]*/ ''; // 動態取得 contextPath，例如 /echop/
 
-	            $.get("/home/products/filter", { prodType }, function(products){
-	                updateProducts(products);
-	            });
-	        } else {
-	            $("#prodLineDiv, #descriptionDiv").hide();
-	            $.get("/home/products/filter", function(products){
-	                updateProducts(products);
-	            });
-	        }
-	    });
+    const prodTypeSelect = document.getElementById('prodTypeSelect');
+    const prodLineSelect = document.getElementById('prodLineSelect');
+    const descriptionSelect = document.getElementById('descriptionSelect');
+    const prodLineDiv = document.getElementById('prodLineDiv');
+    const descriptionDiv = document.getElementById('descriptionDiv');
+    const productContainer = document.querySelector('.row');
 
-	    $("#prodLineSelect").change(function () {
-	        let prodType = $("#prodTypeSelect").val();
-	        let prodLine = $(this).val();
-	        if (prodLine) {
-	            $.get("/home/select-product/getDescriptions", { prodType, prodLine }, function(data){
-	                let $desc = $("#descriptionSelect");
-	                $desc.empty().append('<option value="">--請選擇--</option>');
-	                $.each(data, function(i,d){ $desc.append('<option>'+d+'</option>'); });
-	                $("#descriptionDiv").show();
-	            });
+    function updateProducts(products) {
+        productContainer.innerHTML = '';
+        products.forEach(product => {
+            const html = `
+                <div class="col-md-3">
+                    <a href="${ctx}products/details/${product.prodNum}" style="text-decoration: none; color: inherit;">
+                        <div class="product-card">
+                            <img class="product-image" src="${ctx}resources/images/${product.prodImages}" />
+                            <h5>${product.prodName}</h5>
+                            <p class="price">${Number(product.prodPrice).toLocaleString()} 元</p>
+                        </div>
+                    </a>
+                </div>`;
+            productContainer.insertAdjacentHTML('beforeend', html);
+        });
+    }
 
-	            $.get("/home/products/filter", { prodType, prodLine }, function(products){
-	                updateProducts(products);
-	            });
-	        } else {
-	            $("#descriptionDiv").hide();
-	            $.get("/home/products/filter", { prodType }, function(products){
-	                updateProducts(products);
-	            });
-	        }
-	    });
+    async function fetchJSON(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('HTTP error ' + response.status);
+        return await response.json();
+    }
 
-	    $("#descriptionSelect").change(function () {
-	        let prodType = $("#prodTypeSelect").val();
-	        let prodLine = $("#prodLineSelect").val();
-	        let description = $(this).val();
-	        $.get("/home/products/filter", { prodType, prodLine, description }, function(products){
-	            updateProducts(products);
-	        });
-	    });
-	});
+    // 第1層：選擇產品類型
+    prodTypeSelect.addEventListener('change', async () => {
+        const prodType = prodTypeSelect.value;
+
+        if (prodType) {
+            // 請求產品線
+            const prodLines = await fetchJSON(`${ctx}api/Select/getProdLines?prodType=${encodeURIComponent(prodType)}`);
+            prodLineSelect.innerHTML = '<option value="">--請選擇--</option>';
+            prodLines.forEach(line => {
+                const opt = document.createElement('option');
+                opt.textContent = line;
+                opt.value = line;
+                prodLineSelect.appendChild(opt);
+            });
+            prodLineDiv.style.display = 'block';
+            descriptionDiv.style.display = 'none';
+
+            // 更新商品
+            const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}`);
+            updateProducts(products);
+        } else {
+            prodLineDiv.style.display = 'none';
+            descriptionDiv.style.display = 'none';
+            const products = await fetchJSON(`${ctx}api/Select/filter`);
+            updateProducts(products);
+        }
+    });
+
+    // 第2層：選擇產品線
+    prodLineSelect.addEventListener('change', async () => {
+        const prodType = prodTypeSelect.value;
+        const prodLine = prodLineSelect.value;
+
+        if (prodLine) {
+            // 請求描述
+            const descriptions = await fetchJSON(`${ctx}api/Select/getDescriptions?prodType=${encodeURIComponent(prodType)}&prodLine=${encodeURIComponent(prodLine)}`);
+            descriptionSelect.innerHTML = '<option value="">--請選擇--</option>';
+            descriptions.forEach(desc => {
+                const opt = document.createElement('option');
+                opt.textContent = desc;
+                opt.value = desc;
+                descriptionSelect.appendChild(opt);
+            });
+            descriptionDiv.style.display = 'block';
+
+            // 更新商品
+            const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}&prodLine=${encodeURIComponent(prodLine)}`);
+            updateProducts(products);
+        } else {
+            descriptionDiv.style.display = 'none';
+            const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}`);
+            updateProducts(products);
+        }
+    });
+
+    // 第3層：選擇描述
+    descriptionSelect.addEventListener('change', async () => {
+        const prodType = prodTypeSelect.value;
+        const prodLine = prodLineSelect.value;
+        const description = descriptionSelect.value;
+        const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}&prodLine=${encodeURIComponent(prodLine)}&description=${encodeURIComponent(description)}`);
+        updateProducts(products);
+    });
+});
 </script>
+
 </body>
 </html>
