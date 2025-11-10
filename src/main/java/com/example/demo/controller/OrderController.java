@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderDetail;
+import com.example.demo.model.User;
 import com.example.demo.service.OrderService;
+import com.example.demo.service.UserService;
 import com.example.demo.service.OrderDetailService;
 import com.example.demo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/orders")
@@ -26,14 +29,25 @@ public class OrderController extends LoginBaseController{
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private UserService userService;
 
     @GetMapping
-    public String getAllOrders(Model model) {
+    public String getAllOrders(HttpSession session,Model model) {
+    	
+    	// 檢查是否登入
+        Long userId = (Long) session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        // 檢查是否為 customer (customer 不能進入)
+        User user = userService.getUserById(userId);
+        if (user == null || "customer".equals(user.getIdentifyName())) {
+            return "redirect:/"; // 導向首頁或顯示無權限頁面
+        }
+        
         List<Order> orders = orderService.getAllOrders();
-        // ✅ 強制載入 orderDetails
-        /*for (Order order : orders) {
-            order.getOrderDetails().size(); // 觸發 Hibernate 載入
-        }*/
         model.addAttribute("orders", orders);
         return "orders";  // 对应的 html 页面
     }

@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Category;
+import com.example.demo.model.User;
 import com.example.demo.service.CategoryService;
+import com.example.demo.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,15 +12,31 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/categories")
 public class CategoryController extends LoginBaseController {
 
 	@Autowired
 	private CategoryService categoryService;
-
+	
+	@Autowired
+    private UserService userService;
+	
 	@GetMapping
-	public String listCategories(Model model) {
+	public String listCategories(HttpSession session,Model model) {
+		// 檢查是否登入
+        Long userId = (Long) session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        // 檢查是否為 customer (customer 不能進入)
+        User user = userService.getUserById(userId);
+        if (user == null || "customer".equals(user.getIdentifyName())) {
+            return "redirect:/"; // 導向首頁或顯示無權限頁面
+        }
 		List<Category> categories = categoryService.getAllCategories();
 		model.addAttribute("categories", categories);
 		return "categories"; // 對應 views/categories.html

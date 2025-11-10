@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Product;
+import com.example.demo.model.User;
 import com.example.demo.service.ProductService;
+import com.example.demo.service.UserService;
 import com.example.demo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,17 +23,26 @@ public class ProductController extends LoginBaseController{
     
     @Autowired
     private CategoryService categoryService;
-
+    
+    @Autowired
+    private UserService userService;
     // 顯示所有商品
     @GetMapping
     public String listProducts(HttpSession session,Model model) {
+    	
+    	// 檢查是否登入
+        Long userId = (Long) session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        // 檢查是否為 customer (customer 不能進入)
+        User user = userService.getUserById(userId);
+        if (user == null || "customer".equals(user.getIdentifyName())) {
+            return "redirect:/"; // 導向首頁或顯示無權限頁面
+        }
     	Long id = (Long) session.getAttribute("id");
         String name = (String) session.getAttribute("name");
-
-        // 如果沒登入，導回登入頁
-        /*if (id == null) {
-            return "redirect:/login";
-        }*/
 
         model.addAttribute("name", name);
         model.addAttribute("id", id);

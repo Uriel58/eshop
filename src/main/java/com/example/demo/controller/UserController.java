@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +19,18 @@ public class UserController extends LoginBaseController{
     private UserService userService;
     
     @GetMapping
-    public String listUsers(Model model) {
+    public String listUsers(HttpSession session,Model model) {
+    	// 檢查是否登入
+        Long userId = (Long) session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        // 檢查是否為 customer (customer 不能進入)
+        User user = userService.getUserById(userId);
+        if (user == null || "customer".equals(user.getIdentifyName())) {
+            return "redirect:/"; // 導向首頁或顯示無權限頁面
+        }
         model.addAttribute("users", userService.getAllUsers());
         return "users";
     }
@@ -25,7 +39,7 @@ public class UserController extends LoginBaseController{
     public String showAddForm(Model model) {
     	User user = new User();  
     	user.setIdentifyName("customer");  // 先設置值
-        model.addAttribute("user", new User());
+    	model.addAttribute("user", user); 
         return "add-user";
     }
     

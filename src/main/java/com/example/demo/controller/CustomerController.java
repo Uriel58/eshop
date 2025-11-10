@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Customer;
 import com.example.demo.service.CustomerService;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +25,18 @@ public class CustomerController extends LoginBaseController{
     
     // 顯示所有客戶
     @GetMapping
-    public String listCustomers(Model model) {
+    public String listCustomers(HttpSession session,Model model) {
+    	// 檢查是否登入
+        Long userId = (Long) session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        // 檢查是否為 customer (customer 不能進入)
+        User user = userService.getUserById(userId);
+        if (user == null || "customer".equals(user.getIdentifyName())) {
+            return "redirect:/"; // 導向首頁或顯示無權限頁面
+        }
         model.addAttribute("customers", customerService.getAllCustomers());
         model.addAttribute("users", userService.getAllUsers()); // 确保将 users 传递到模板
         return "customers"; // 对应 /WEB-INF/views/customers.html

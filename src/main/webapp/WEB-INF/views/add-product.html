@@ -23,7 +23,7 @@
 					class="form-control" required>
 					<option value="">-- 請選擇分類 --</option>
 					<option th:each="cat : ${categories}" th:value="${cat.id}"
-						th:text="${cat.prodType + ' - ' + cat.prodLine}"
+						th:text="${cat.prodType + ' - ' + cat.prodLine + ' - ' + cat.description}"
 						th:selected="${cat.id == product.category.id}"></option>
 				</select>
 			</div>

@@ -1,15 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.OrderDetail;
+import com.example.demo.model.User;
 import com.example.demo.model.Order;
 import com.example.demo.service.OrderDetailService;
+import com.example.demo.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import javax.servlet.http.HttpSession;
 @Controller
 @SessionAttributes({ "customerId", "name" })
 @RequestMapping("/orderDetails")
@@ -17,10 +20,24 @@ public class OrderDetailController extends LoginBaseController {
 
 	@Autowired
 	private OrderDetailService orderDetailService;
+	
+	@Autowired
+    private UserService userService;
 
 	// 列出指定 Order 的 OrderDetail
 	@GetMapping("/{orderId}")
-	public String getOrderDetails(@PathVariable("orderId") Long orderId, Model model) {
+	public String getOrderDetails(HttpSession session,@PathVariable("orderId") Long orderId, Model model) {
+		// 檢查是否登入
+        Long userId = (Long) session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        // 檢查是否為 customer (customer 不能進入)
+        User user = userService.getUserById(userId);
+        if (user == null || "customer".equals(user.getIdentifyName())) {
+            return "redirect:/"; // 導向首頁或顯示無權限頁面
+        }
 		List<OrderDetail> details = orderDetailService.getOrderDetailsByOrderId(orderId);
 		model.addAttribute("details", details);
 		model.addAttribute("orderId", orderId);// ✅ 一定要有

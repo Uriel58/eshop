@@ -26,14 +26,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserById(Long id) {
 		logger.info("編輯資料，ID={}", id);
-		return userRepository.findById(id)
-	            .orElseThrow(() -> new RuntimeException("User not found"));  // 提取 User 或抛出异常
-		/*Optional<User> optionalUser = userRepository.findById(id);
-		if (optionalUser.isPresent()) {
-	        return optionalUser.get();  // 提取 User 对象
-	    } else {
-	        throw new RuntimeException("User not found");
-	    }*/
+
+		if (id == null) {
+			return null;
+		}
+		return userRepository.findById(id).orElse(null);
+
 	}
 
 	@Override
@@ -46,19 +44,19 @@ public class UserServiceImpl implements UserService {
 		Optional<User> optionalUser = userRepository.findById(id);
 		User existingUser = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
 
-	    existingUser.setName(updatedUser.getName());
-	    existingUser.setEmail(updatedUser.getEmail());
+		existingUser.setName(updatedUser.getName());
+		existingUser.setEmail(updatedUser.getEmail());
 
-	    // ✅ 如果使用者有輸入密碼，才更新密碼（避免覆蓋成 null 或空字串）
-	    if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-	        existingUser.setPassword(updatedUser.getPassword());
-	    }
-	    // ✅ 保留原本的 identifyName（除非有輸入新值）
-	    if (updatedUser.getIdentifyName() != null && !updatedUser.getIdentifyName().isEmpty()) {
-	        existingUser.setIdentifyName(updatedUser.getIdentifyName());
-	    }
+		// ✅ 如果使用者有輸入密碼，才更新密碼（避免覆蓋成 null 或空字串）
+		if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+			existingUser.setPassword(updatedUser.getPassword());
+		}
+		// ✅ 保留原本的 identifyName（除非有輸入新值）
+		if (updatedUser.getIdentifyName() != null && !updatedUser.getIdentifyName().isEmpty()) {
+			existingUser.setIdentifyName(updatedUser.getIdentifyName());
+		}
 
-	    userRepository.save(existingUser);
+		userRepository.save(existingUser);
 	}
 
 	@Override
