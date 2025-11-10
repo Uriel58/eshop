@@ -69,7 +69,10 @@ public class CategoryDAOImpl implements CategoryDAO {
 
 	@Override
 	public List<Product> findProductsByCategoryFilter(String prodType, String prodLine, String description) {
-		StringBuilder hql = new StringBuilder("FROM Product p WHERE 1=1");
+		StringBuilder hql = new StringBuilder("SELECT DISTINCT p\n"
+				+ "FROM Product p\n"
+				+ "JOIN FETCH p.category c\n"
+				+ "WHERE 1=1");
 		if (prodType != null && !prodType.isEmpty())
 		    hql.append(" AND p.category.prodType = :prodType");
 		if (prodLine != null && !prodLine.isEmpty())

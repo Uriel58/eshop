@@ -1,19 +1,15 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ProductDTO;
 import com.example.demo.model.Product;
 import com.example.demo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * 用來處理產品篩選與分類的 REST API 控制器。
- * 修正重點：
- * 1. 改為 @RestController（等同於 @Controller + @ResponseBody）
- * 2. 每個方法加上 produces="application/json" 明確告訴 Spring 以 JSON 回傳
- * 3. 支援 /api/Select/... 路徑
- */
 @RestController
 @RequestMapping("/api/Select")
 public class SelectProductController {
@@ -25,11 +21,18 @@ public class SelectProductController {
      * 根據產品類型、產品線、描述過濾產品
      */
     @GetMapping(value = "/filter", produces = "application/json")
-    public List<Product> filterProducts(
+    @Transactional(readOnly = true)
+    public List<ProductDTO> filterProducts(
             @RequestParam(required = false) String prodType,
             @RequestParam(required = false) String prodLine,
             @RequestParam(required = false) String description) {
-        return categoryService.getProductsByFilter(prodType, prodLine, description);
+        
+        List<Product> products = categoryService.getProductsByFilter(prodType, prodLine, description);
+        
+        // 轉換為 DTO
+        return products.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -55,5 +58,32 @@ public class SelectProductController {
     public List<String> getDescriptions(@RequestParam String prodType,
                                         @RequestParam String prodLine) {
         return categoryService.getDescriptionsByProdTypeAndProdLine(prodType, prodLine);
+    }
+
+    /**
+     * 將 Product Entity 轉換為 ProductDTO
+     */
+    private ProductDTO convertToDTO(Product product) {
+        ProductDTO dto = new ProductDTO();
+        dto.setProdNum(product.getProdNum());
+        dto.setProdName(product.getProdName());
+        dto.setProdPrice(product.getProdPrice());
+        dto.setProdInfo(product.getProdInfo());
+        dto.setProdKeywords(product.getProdKeywords());
+        dto.setProdBarcode(product.getProdBarcode());
+        dto.setCreatedTime(product.getCreatedTime());
+        dto.setProdTags(product.getProdTags());
+        dto.setProdImages(product.getProdImages());
+        dto.setProdStockQty(product.getProdStockQty());
+        
+        // 設定 Category 相關資訊
+        if (product.getCategory() != null) {
+            dto.setCategoryId(product.getCategory().getId());
+            dto.setProdType(product.getCategory().getProdType());
+            dto.setProdLine(product.getCategory().getProdLine());
+            dto.setDescription(product.getCategory().getDescription());
+        }
+        
+        return dto;
     }
 }
