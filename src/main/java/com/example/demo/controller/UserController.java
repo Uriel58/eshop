@@ -29,6 +29,14 @@ public class UserController extends LoginBaseController{
         return "add-user";
     }
     
+    @GetMapping("/add-admin")
+    public String showAddAdminForm(Model model) {
+        User user = new User();
+        user.setIdentifyName("employee");// 設置為 employee
+        model.addAttribute("user", user);
+        return "add-admin";
+    }
+    
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         User user = userService.getUserById(id);
