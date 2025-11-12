@@ -92,10 +92,8 @@
 │   │   │       ├── META-INF
 │   │   │       │   └── MANIFEST.MF
 │   │   │       ├── resources
-│   │   │       │   ├── images
-│   │   │       │   │   └── ChatGPT-strawberry_cake.png
-│   │   │       │   └── js
-│   │   │       │       └── jquery-3.6.0.min.js
+│   │   │       │   └── images
+│   │   │       │       └── ChatGPT-strawberry_cake.png
 │   │   │       └── WEB-INF
 │   │   │           ├── views
 │   │   │           │   ├── add-category.html
@@ -147,6 +145,7 @@
 │                       └── echop
 │                           └── echop
 ├── logs
+│   ├── app.2025-11-07.log
 │   └── app.log
 ├── pom.xml
 
