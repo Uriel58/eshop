@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import java.time.ZonedDateTime;
 
 import javax.persistence.NoResultException;
 import java.util.List;
@@ -47,8 +48,6 @@ public class PasswordResetTokenDAOImpl implements PasswordResetTokenDAO {
         var session = sessionFactory.getCurrentSession();
         if (!session.contains(token)) {
         	token = (PasswordResetToken) session.merge(token); // merge 讓 Hibernate 管理 detached entity
-        }else {
-            System.out.println("⚠️ Token not found, skip delete: " + token.getId());
         }
         session.delete(token);
     }
@@ -58,5 +57,14 @@ public class PasswordResetTokenDAOImpl implements PasswordResetTokenDAO {
     public List<PasswordResetToken> findAll() {
         String hql = "FROM PasswordResetToken";
         return getCurrentSession().createQuery(hql, PasswordResetToken.class).list();
+    }
+    
+    @Override
+    public int deleteExpired(ZonedDateTime now) {
+        String hql = "DELETE FROM PasswordResetToken t WHERE t.expiryDate < :now";
+        return getCurrentSession()
+                .createQuery(hql)
+                .setParameter("now", now)
+                .executeUpdate();
     }
 }

@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.PasswordResetToken;
 import java.util.List;
 
+
 public interface PasswordResetTokenService {
 
     void createToken(PasswordResetToken token);
@@ -15,7 +16,8 @@ public interface PasswordResetTokenService {
 
     void deleteToken(PasswordResetToken token);
     
-    void deleteExpiredTokens(); // 新增刪除過期 token 方法
-
+    
     List<PasswordResetToken> getAllTokens(); // 用於定時任務
+    
+    int deleteExpiredTokens(); // 新增刪除過期 token 方法
 }

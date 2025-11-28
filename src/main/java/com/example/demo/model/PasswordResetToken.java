@@ -36,7 +36,7 @@ public class PasswordResetToken {
         ZonedDateTime now = ZonedDateTime.now(ZONE_TAIPEI);
         createdAt = now;
     }
-    @PreUpdate
+    
     protected void onUpdate() {
     	expiryDate = ZonedDateTime.now(ZONE_TAIPEI);
     }

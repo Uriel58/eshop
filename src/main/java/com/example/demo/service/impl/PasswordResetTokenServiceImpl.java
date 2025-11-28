@@ -6,7 +6,7 @@ import com.example.demo.service.PasswordResetTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.hibernate.StaleStateException;
@@ -26,7 +26,12 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
     public void createToken(PasswordResetToken token) {
         tokenDAO.save(token);
     }
-
+    @Override
+    @Transactional
+    public int deleteExpiredTokens() {
+    	return tokenDAO.deleteExpired(ZonedDateTime.now());
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public PasswordResetToken getByToken(String token) {
@@ -51,25 +56,8 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
         tokenDAO.delete(token);
     }
 
-    @Override
-    @Transactional
-    public void deleteExpiredTokens() {
-        List<PasswordResetToken> allTokens = tokenDAO.findAll();
-        ZonedDateTime now = ZonedDateTime.now();
-
-        for (PasswordResetToken token : allTokens) {
-            if (token.getExpiryDate().isBefore(now)) {
-                try {
-                    tokenDAO.delete(token); // DAO 已經做 merge 保護
-                    log.info("Deleted expired token: {}", token.getId());
-                } catch (StaleStateException e) {
-                    log.warn("Token {} already deleted, skipping.", token.getId());
-                } catch (Exception e) {
-                    log.error("Unexpected error deleting token: {}", token.getId(), e);
-                }
-            }
-        }
-    }
+    
+    
 
     @Override
     @Transactional(readOnly = true)
