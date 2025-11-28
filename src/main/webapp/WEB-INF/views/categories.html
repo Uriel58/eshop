@@ -28,7 +28,7 @@ th, td {
 			<span th:text="#{home.message} + #{home.visitor}"></span>
 		</h1>
 
-		<a th:href="@{/}" class="btn btn-outline-secondary mb-3">Back</a>
+		<a th:href="@{/admin}" class="btn btn-outline-secondary mb-3">Back</a>
 		<!-- 登出+註冊按鈕 -->
 		<div th:if="${name}">
 			<a th:href="@{/logout}" class="btn btn-danger me-2"

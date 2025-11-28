@@ -34,8 +34,9 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public void save(Customer customer) {
-        getCurrentSession().saveOrUpdate(customer);
+    public Customer save(Customer customer) {
+        getCurrentSession().saveOrUpdate(customer); // 比 save 更安全
+        return customer;
     }
 
     @Override

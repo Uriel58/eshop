@@ -6,8 +6,9 @@ import java.util.ArrayList;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
 @Entity
-@Table(name = "customers") // 資料表名稱，注意：和 order 表中的外鍵一致
+@Table(name = "customers")
 public class Customer {
 	/**
 	    * Customer有customer_id(顧客id),name(顧客名稱),email(顧客電子郵件),telephone(顧客電話),
@@ -15,20 +16,18 @@ public class Customer {
 	    * 
 	    * 連到user,Cart
 	*/
- 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id") // 對應資料表欄位
+    @Column(name = "customer_id")
     private Long customerId;
     
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id") // This links to the 'id' field in User table
-    private User user;//關聯user one to one
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
     
-    @OneToMany//
-    (fetch = FetchType.EAGER,mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
-    private List<Cart> carts = new ArrayList<>();//關聯Cart
+    private List<Cart> carts = new ArrayList<>();
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -37,7 +36,7 @@ public class Customer {
     private String email;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
     
     @Column(name = "telephone")
     private String telephone;
@@ -57,22 +56,24 @@ public class Customer {
     // Constructors
     public Customer() {}
 
-    public Customer(User user,String name, String email, String telephone, String address, String keyword, Integer age, String gender,List<Order> orders,List<Cart> carts) {
-    	this.user = user;  // Set the User reference
-    	this.name = name;
+    public Customer(User user, String name, String email, String telephone, String address, 
+                   String keyword, Integer age, String gender, List<Order> orders, List<Cart> carts) {
+        this.user = user;
+        this.name = name;
         this.email = email;
         this.telephone = telephone;
         this.address = address;
         this.keyword = keyword;
         this.age = age;
         this.gender = gender;
-        this.orders = new ArrayList<>(); // 初始化 orders
-		this.carts = new ArrayList<>(); // 初始化 orders
+        this.orders = orders != null ? orders : new ArrayList<>();
+        this.carts = carts != null ? carts : new ArrayList<>();
     }
-    ///自動添加customer到cart
+    
+    // 自動添加 customer 到 cart
     public void addCart(Cart cart) {
-        carts.add(cart);  // 将 Cart 添加到 Customer 的 carts 列表中
-        cart.setCustomer(this); // 將當前的 Customer 設置 Cart 的擁有者
+        carts.add(cart);
+        cart.setCustomer(this);
     }
 
     // Getters and Setters
@@ -100,85 +101,84 @@ public class Customer {
         this.email = email;
     }
 
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
     
-	public String getTelephone() {
-		return telephone;
-	}
+    public List<Cart> getCarts() {
+        return carts;
+    }
 
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+    
+    public User getUser() {
+        return user;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getKeyword() {
-		return keyword;
-	}
-
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
-
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
-	}
-
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	public List<Order> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(List<Order> orders) {
-		this.orders = orders;
-	}
-	
-	public List<Cart> getCarts() {
-		return carts;
-	}
-
-	public void setCarts(List<Cart> carts) {
-		this.carts = carts;
-	}
-	public User getUser() {
-	    return user;
-	}
-
-	public void setUser(User user) {
-	    this.user = user;
-	}
-
-	// toString()
     @Override
     public String toString() {
         return "Customer{" +
                 "customerId=" + customerId +
-                ", name= " + name +
-                ", email= " + email  +
-                ", telephone= " + telephone  +
-                ", address= " + address  +
-                ", keyword= " + keyword +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", address='" + address + '\'' +
+                ", keyword='" + keyword + '\'' +
                 ", age=" + age +
-                ", gender='" + gender +
-                ", user=" + user.getId() +  // （可選）顯示使用者 ID 或其他使用者屬性
-                ", carts=" + carts.size() +  // 防止直接列印大量購物車詳細信息
-                ", orders=" + orders.size() + // 防止直接列印大量訂單詳細信息
+                ", gender='" + gender + '\'' +
+                ", user=" + (user != null ? user.getId() : null) +
+                ", carts=" + (carts != null ? carts.size() : 0) +
+                ", orders=" + (orders != null ? orders.size() : 0) +
                 '}';
     }
 }

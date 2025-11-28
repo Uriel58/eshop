@@ -9,7 +9,7 @@ public interface CustomerDAO {
 
 	Optional<Customer> findById(Long id);//Customer findById(Long customerId);
 
-	void save(Customer customer);
+	Customer save(Customer customer);
 
 	void delete(Long customerId);
 

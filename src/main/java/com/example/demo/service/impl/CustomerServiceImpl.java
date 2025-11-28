@@ -106,7 +106,11 @@ public class CustomerServiceImpl implements CustomerService {
 	public Customer getCustomerByUserId(Long userId) {
 		return customerDAO.findByUserId(userId);
 	}
-	public void save(Customer customer) {
-		customerDAO.save(customer);
-    }
+	@Override
+	@Transactional
+	public Customer save(Customer customer) {
+	    // 處理邏輯...
+	    Customer savedCustomer = customerDAO.save(customer);
+	    return savedCustomer;  // ✅ 返回保存後的對象
+	}
 }

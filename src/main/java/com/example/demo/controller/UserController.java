@@ -72,6 +72,12 @@ public class UserController extends LoginBaseController{
         return "redirect:/";
     }
     
+    @PostMapping("/save-admin")  // 新增專門給 admin 用的 endpoint
+    public String saveAdmin(@ModelAttribute User user) {
+        userService.saveUser(user);
+        return "redirect:/users";
+    }
+    
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);

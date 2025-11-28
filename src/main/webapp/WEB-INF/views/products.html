@@ -18,7 +18,7 @@
 		<!-- 登入者名稱 -->
 		<h1 th:text="${name != null} ? ${'Hello！ ' + name} : 'Hello！ visitor'"></h1>
 
-		<a th:href="@{/}" class="btn btn-outline-secondary mt-3">Back</a>
+		<a th:href="@{/admin}" class="btn btn-outline-secondary mt-3">Back</a>
 		<!-- 登出+註冊按鈕 -->
 		<div th:if="${name}">
 			<a th:href="@{/logout}" class="btn btn-danger me-2"
