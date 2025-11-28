@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<!-- #{} → 表示「從 MessageSource 取值（國際化訊息）」-->
 <title th:text="#{home.title}">Welcome</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
@@ -35,7 +34,6 @@
 </head>
 <body>
 	<div class="d-flex justify-content-between align-items-center">
-		<!-- 左側：歡迎訊息 -->
 		<div>
 			<h1 th:if="${name}">
 				<span th:text="#{home.message} + ${name}"></span>
@@ -43,68 +41,65 @@
 			<h1 th:unless="${name}">
 				<span th:text="#{home.message} + #{home.visitor}"></span>
 			</h1>
-			<!-- 管理員按鈕 -->
 			<div th:if="${users != null and users.identifyName != 'customer'}">
-				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch Admin
-					Page</a>
+				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch Admin Page</a>
 			</div>
 		</div>
 
-		<!-- 右側：購物車按鈕 -->
 		<div th:if="${cart != null}">
 			<a th:href="@{/cart/{cartId}/cartdetails(cartId=${cart.id})}"
-				class="btn btn-outline-secondary mt-3" th:text="#{a.Carts}">Check
-				carts...</a>
+				class="btn btn-outline-secondary mt-3" th:text="#{a.Carts}">Check carts...</a>
 		</div>
 	</div>
 
 	<div class="container mt-4 text-center">
 		<hr>
-		<!-- 語言按鈕 -->
 		<div class="mb-3">
-			<a th:href="@{/?lang=en}" class="btn btn-primary me-2">English</a> <a
-				th:href="@{/?lang=zh_TW}" class="btn btn-primary">繁體中文</a>
+			<a th:href="@{/?lang=en}" class="btn btn-primary me-2">English</a> 
+			<a th:href="@{/?lang=zh_TW}" class="btn btn-primary">繁體中文</a>
 
 			<hr>
-			<!-- 登出+註冊按鈕 -->
 			<div th:if="${name}">
 				<a th:href="@{/logout}" class="btn btn-danger me-2"
-					th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
+					th:text="#{a.logout}">Logout</a> 
+				<a th:href="@{/users/add}"
 					class="btn btn-warning" th:text="#{a.register}">Register</a>
 			</div>
-			<!-- 登入+註冊按鈕 -->
 			<div th:unless="${name}">
 				<a th:href="@{/login}" class="btn btn-success me-2"
-					th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
+					th:text="#{a.login}">Login</a> 
+				<a th:href="@{/users/add}"
 					class="btn btn-warning" th:text="#{a.register}">Register</a>
 			</div>
 		</div>
 		<hr>
 		<!-- 篩選區域 -->
-		<!-- 第1層：prodType -->
 		<div>
-			<label>產品類型：</label> <select id="prodTypeSelect">
+			<label>產品類型：</label> 
+			<select id="prodTypeSelect">
 				<option value="">-- 請選擇 --</option>
 				<option th:each="type : ${prodTypes}" th:value="${type}"
 					th:text="${type}"></option>
 			</select>
+			<button id="clearFilterBtn" class="btn btn-sm btn-secondary ms-2" style="display:none;">清除篩選</button>
 		</div>
 
-		<!-- 第2層：prodLine（初始隱藏） -->
 		<div id="prodLineDiv" style="display: none; margin-top: 10px;">
-			<label>產品類別：</label> <select id="prodLineSelect">
+			<label>產品類別：</label> 
+			<select id="prodLineSelect">
 				<option value="">-- 請選擇 --</option>
 			</select>
 		</div>
 
-		<!-- 第3層：description（初始隱藏） -->
 		<div id="descriptionDiv" style="display: none; margin-top: 10px;">
-			<label>產品細項：</label> <select id="descriptionSelect">
+			<label>產品細項：</label> 
+			<select id="descriptionSelect">
 				<option value="">-- 請選擇 --</option>
 			</select>
 		</div>
 	</div>
-	<!-- 商品列表，顯示商品圖片名字價格，點進去可以跳轉商品詳細頁面 -->
+
+	<!-- 商品列表 -->
 	<div class="row">
 		<div class="col-md-3" th:each="product : ${products}">
 			<a th:href="@{/products/details/{id}(id=${product.prodNum})}"
@@ -113,7 +108,6 @@
 					<img class="product-image"
 						th:src="@{'/resources/images/' + ${product.prodImages}}"
 						style="width: 100px; height: auto;" />
-					<!-- alt="Product Image" -->
 					<h5 th:text="${product.prodName}">商品名稱</h5>
 					<p class="price"
 						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">價格</p>
@@ -124,44 +118,47 @@
 
 	<!-- 分頁按鈕 -->
 	<nav aria-label="Page navigation example">
-		<ul class="pagination justify-content-center">
-
-			<!-- 上一頁 -->
+		<ul class="pagination justify-content-center" id="paginationContainer">
+			<!-- 初始分頁由 Thymeleaf 渲染 -->
 			<li class="page-item"
-				th:classappend="${currentPage == 0} ? 'disabled'"><a
-				class="page-link" th:href="@{/(page=${currentPage - 1})}"> 上一頁 </a>
+				th:classappend="${currentPage == 0} ? 'disabled'">
+				<a class="page-link" th:href="@{/(page=${currentPage - 1})}">上一頁</a>
 			</li>
 
-			<!-- 數字頁碼 -->
 			<li class="page-item"
 				th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-				th:classappend="${i == currentPage} ? 'active'"><a
-				class="page-link" th:href="@{'/?page=' + ${i}}" th:text="${i + 1}"></a>
+				th:classappend="${i == currentPage} ? 'active'">
+				<a class="page-link" th:href="@{'/?page=' + ${i}}" th:text="${i + 1}"></a>
 			</li>
 
-			<!-- 下一頁 -->
 			<li class="page-item"
 				th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-				<a class="page-link" th:href="@{/(page=${currentPage + 1})}">
-					下一頁 </a>
+				<a class="page-link" th:href="@{/(page=${currentPage + 1})}">下一頁</a>
 			</li>
-
 		</ul>
 	</nav>
+
 	<script th:inline="javascript">
 document.addEventListener('DOMContentLoaded', () => {
-
-    const ctx = /*[[@{/}]]*/ ''; // 動態取得 contextPath，例如 /echop/
-
+    const ctx = /*[[@{/}]]*/ '';
     const prodTypeSelect = document.getElementById('prodTypeSelect');
     const prodLineSelect = document.getElementById('prodLineSelect');
     const descriptionSelect = document.getElementById('descriptionSelect');
     const prodLineDiv = document.getElementById('prodLineDiv');
     const descriptionDiv = document.getElementById('descriptionDiv');
     const productContainer = document.querySelector('.row');
+    const paginationContainer = document.getElementById('paginationContainer');
+    const clearFilterBtn = document.getElementById('clearFilterBtn');
+
+    let isFiltering = false;
+    let currentFilterPage = 0;
 
     function updateProducts(products) {
         productContainer.innerHTML = '';
+        if (products.length === 0) {
+            productContainer.innerHTML = '<div class="col-12 text-center"><p>沒有符合條件的商品</p></div>';
+            return;
+        }
         products.forEach(product => {
             const html = `
                 <div class="col-md-3">
@@ -177,18 +174,81 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function updatePagination(currentPage, totalPages) {
+        paginationContainer.innerHTML = '';
+        
+        // 上一頁
+        const prevLi = document.createElement('li');
+        prevLi.className = 'page-item' + (currentPage === 0 ? ' disabled' : '');
+        prevLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">上一頁</a>`;
+        paginationContainer.appendChild(prevLi);
+        
+        // 數字頁碼
+        for (let i = 0; i < totalPages; i++) {
+            const pageLi = document.createElement('li');
+            pageLi.className = 'page-item' + (i === currentPage ? ' active' : '');
+            pageLi.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
+            paginationContainer.appendChild(pageLi);
+        }
+        
+        // 下一頁
+        const nextLi = document.createElement('li');
+        nextLi.className = 'page-item' + (currentPage >= totalPages - 1 ? ' disabled' : '');
+        nextLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">下一頁</a>`;
+        paginationContainer.appendChild(nextLi);
+        
+        // 綁定點擊事件
+        paginationContainer.querySelectorAll('a.page-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = parseInt(link.getAttribute('data-page'));
+                if (page >= 0 && page < totalPages && page !== currentPage) {
+                    if (isFiltering) {
+                        currentFilterPage = page;
+                        loadFilteredProducts(page);
+                    } else {
+                        window.location.href = `${ctx}?page=${page}`;
+                    }
+                }
+            });
+        });
+    }
+
     async function fetchJSON(url) {
         const response = await fetch(url);
         if (!response.ok) throw new Error('HTTP error ' + response.status);
         return await response.json();
     }
 
+    async function loadFilteredProducts(page = 0) {
+        const prodType = prodTypeSelect.value;
+        const prodLine = prodLineSelect.value;
+        const description = descriptionSelect.value;
+        
+        let url = `${ctx}api/Select/filter?page=${page}`;
+        if (prodType) url += `&prodType=${encodeURIComponent(prodType)}`;
+        if (prodLine) url += `&prodLine=${encodeURIComponent(prodLine)}`;
+        if (description) url += `&description=${encodeURIComponent(description)}`;
+        
+        const data = await fetchJSON(url);
+        updateProducts(data.products);
+        updatePagination(data.currentPage, data.totalPages);
+    }
+
+    // 清除篩選按鈕
+    clearFilterBtn.addEventListener('click', () => {
+        window.location.href = ctx;
+    });
+
     // 第1層：選擇產品類型
     prodTypeSelect.addEventListener('change', async () => {
         const prodType = prodTypeSelect.value;
 
         if (prodType) {
-            // 請求產品線
+            isFiltering = true;
+            currentFilterPage = 0;
+            clearFilterBtn.style.display = 'inline-block';
+
             const prodLines = await fetchJSON(`${ctx}api/Select/getProdLines?prodType=${encodeURIComponent(prodType)}`);
             prodLineSelect.innerHTML = '<option value="">--請選擇--</option>';
             prodLines.forEach(line => {
@@ -199,15 +259,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             prodLineDiv.style.display = 'block';
             descriptionDiv.style.display = 'none';
+            descriptionSelect.innerHTML = '<option value="">--請選擇--</option>';
 
-            // 更新商品
-            const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}`);
-            updateProducts(products);
+            await loadFilteredProducts(0);
         } else {
+            isFiltering = false;
+            clearFilterBtn.style.display = 'none';
             prodLineDiv.style.display = 'none';
             descriptionDiv.style.display = 'none';
-            const products = await fetchJSON(`${ctx}api/Select/filter`);
-            updateProducts(products);
+            window.location.href = ctx;
         }
     });
 
@@ -217,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const prodLine = prodLineSelect.value;
 
         if (prodLine) {
-            // 請求描述
+            currentFilterPage = 0;
             const descriptions = await fetchJSON(`${ctx}api/Select/getDescriptions?prodType=${encodeURIComponent(prodType)}&prodLine=${encodeURIComponent(prodLine)}`);
             descriptionSelect.innerHTML = '<option value="">--請選擇--</option>';
             descriptions.forEach(desc => {
@@ -228,23 +288,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             descriptionDiv.style.display = 'block';
 
-            // 更新商品
-            const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}&prodLine=${encodeURIComponent(prodLine)}`);
-            updateProducts(products);
+            await loadFilteredProducts(0);
         } else {
+            currentFilterPage = 0;
             descriptionDiv.style.display = 'none';
-            const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}`);
-            updateProducts(products);
+            descriptionSelect.innerHTML = '<option value="">--請選擇--</option>';
+            await loadFilteredProducts(0);
         }
     });
 
     // 第3層：選擇描述
     descriptionSelect.addEventListener('change', async () => {
-        const prodType = prodTypeSelect.value;
-        const prodLine = prodLineSelect.value;
-        const description = descriptionSelect.value;
-        const products = await fetchJSON(`${ctx}api/Select/filter?prodType=${encodeURIComponent(prodType)}&prodLine=${encodeURIComponent(prodLine)}&description=${encodeURIComponent(description)}`);
-        updateProducts(products);
+        currentFilterPage = 0;
+        await loadFilteredProducts(0);
     });
 });
 </script>
