@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Cart Details</title>
+<title th:text="#{a.shopping_cart}">Shopping Cart</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -40,7 +40,7 @@
 </head>
 <body>
 	<div class="container mt-4">
-		<h2>Cart Details</h2>
+		<h2 th:text="#{a.shopping_cart}">Shopping Cart</h2>
 		<!-- 顯示購物車明細 -->
 		<div class="row">
 			<div class="col-md-12">
@@ -48,24 +48,24 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>商品名稱</th>
-								<th>商品圖片</th>
-								<th>價格</th>
-								<th>數量</th>
-								<th>運費</th>
-								<th>總價</th>
-								<th>操作</th>
+								<th th:text="#{a.product_name}">Product Name</th>
+								<th th:text="#{a.product_images}">Product Images</th>
+								<th th:text="#{a.price}">Price</th>
+								<th th:text="#{a.quantity_of_products}">Quantity of products</th>
+								<th th:text="#{a.fare}">Fare</th>
+								<th th:text="#{a.total_price}">Total Price</th>
+								<th th:text="#{a.operate}">Operate</th>
 							</tr>
 						</thead>
 						<tbody>
 							<!-- 顯示每個商品 -->
 							<tr th:each="detail : ${details}">
-								<td th:text="${detail.product.prodName}">商品名稱</td>
+								<td th:text="${detail.product.prodName}">Product Name</td>
 								<td><img
 									th:src="@{'/resources/images/' + ${detail.product.prodImages}}"
 									class="product-image" alt="Product Image"></td>
 								<td
-									th:text="${#numbers.formatDecimal(detail.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">價格</td>
+									th:text="${#numbers.formatDecimal(detail.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}">Price</td>
 								<td>
 									<div class="d-flex align-items-center gap-2">
 										<input type="number" 
@@ -78,23 +78,23 @@
 										<button type="button" 
 											class="btn btn-primary btn-sm update-qty-btn"
 											th:data-cart-id="${cart.id}"
-											th:data-product-id="${detail.product.prodNum}">更新</button>
+											th:data-product-id="${detail.product.prodNum}" th:text="#{a.update}">update</button>
 									</div>
 								</td>
 								<!-- ✅ 運費欄位 -->
 								<td class="shipping-fee" 
 									th:attr="data-fee=${detail.shippingFee != null ? detail.shippingFee : 0}">
-									<span th:text="${detail.shippingFee != null ? #numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT') + ' 元' : '0 元'}">運費</span>
+									<span th:text="${detail.shippingFee != null ? #numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT')  : '0.00' } + ' ' + #{a.dollar}">運費</span>
 								</td>
 
 								<!-- ✅ 小計 = 商品價格 × 數量 (不含運費) -->
 								<td class="item-total"
-									th:text="${#numbers.formatDecimal(detail.cartTotal, 0, 'COMMA', 2, 'POINT')} + ' 元'"
-									th:attr="data-base=${detail.prodPrice * detail.cartQty}">總價</td>
+									th:text="${#numbers.formatDecimal(detail.cartTotal, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}"
+									th:attr="data-base=${detail.prodPrice * detail.cartQty}">Total Price</td>
 								<td>
 									<!-- 刪除商品 --> 
 									<a th:href="@{/cart/{cartId}/remove-product/{productId}(cartId=${cart.id}, productId=${detail.product.prodNum})}"
-										class="btn btn-danger btn-sm">刪除</a>
+										class="btn btn-danger btn-sm" th:text="#{a.delete}">delete</a>
 								</td>
 							</tr>
 						</tbody>
@@ -105,20 +105,20 @@
 				<div id="cart-total-container"
 					class="d-flex justify-content-between align-items-center mt-4">
 					<h3 class="cartTotal" th:if="${total != null and total > 0}">
-						總價: <span id="cart-total-value"
-							th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')} + ' 元'"></span>
+						<span th:text="#{a.total_price} + ': '">Total Price: </span><span id="cart-total-value"
+							th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}"></span>
 					</h3>
 					<h3 class="cartTotal" th:unless="${total != null and total > 0}">
-						總價: <span id="cart-total-value">0.00 元</span>
+						<span th:text="#{a.total_price} + ': '">Total Price: </span><span id="cart-total-value" th:text="'0.00 ' + #{a.dollar}">0.00 dollar</span>
 					</h3>
 				</div>
 				<form th:action="@{/cart/{cartId}/checkout(cartId=${cart.id})}"
 					method="post" th:object="${order}" id="checkoutForm">
 					<div class="mb-3">
 						<div class="mb-3">
-							<label>County</label> <select th:field="*{county}"
+							<label th:text="#{a.county}">County</label> <select th:field="*{county}"
 								class="form-control" id="countySelect">
-								<option value="">-- Select --</option>
+								<option value=""th:text="#{a.select}">-- Select --</option>
 								<option value="台北市">台北市</option>
 								<option value="新北市">新北市</option>
 								<option value="台中市">台中市</option>
@@ -144,13 +144,13 @@
 							</select>
 						</div>
 						<div class="mb-3">
-							<label>Payment Method</label><br /> 
+							<label th:text="#{a.payment_method}">Payment Method</label><br /> 
 							<input type="radio" th:field="*{paymentMethod}" value="CASH" id="payCash" /> 現金 
 							<input type="radio" th:field="*{paymentMethod}" value="CREDIT_CARD" id="payCredit" /> 刷卡 
 							<input type="radio" th:field="*{paymentMethod}" value="E_PAYMENT" id="payEPay" /> 電子支付
 						</div>
 						<div class="mb-3">
-							<label>Delivery Method</label><br /> 
+							<label th:text="#{a.delivery_method}">Delivery Method</label><br /> 
 							<input type="radio" th:field="*{deliveryMethod}"
 								th:checked="${order.deliveryMethod == 'PICK_UP'}"
 								value="PICK_UP" id="deliveryPickUp" /> 自取(PICK_UP) 
@@ -164,19 +164,19 @@
 								th:checked="${order.deliveryMethod == 'POSTAL'}" 
 								value="POSTAL" id="deliveryPostal" /> 郵寄 (POSTAL)
 						</div>
-						<button type="submit" class="btn btn-success">結帳</button>
+						<button type="submit" class="btn btn-success" th:text="#{a.checkout}">checkout</button>
 					</div>
 				</form>
 
 				<!-- 返回購物車列表 -->
 				<div class="mt-4">
-					<a th:href="@{/}" class="btn btn-secondary">返回商品列表</a>
+					<a th:href="@{/}" class="btn btn-secondary" th:text="#{a.back}">back</a>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- ✅ JS：動態更新運費與總價 + 保存表單狀態 -->
-	<script>
+	<script th:inline="javascript">
 	document.addEventListener("DOMContentLoaded", function () {
 	    const deliveryRadios = document.querySelectorAll("input[name='deliveryMethod']");
 	    const shippingFeeCells = document.querySelectorAll(".shipping-fee");
@@ -184,7 +184,10 @@
 	    const totalSpan = document.getElementById("cart-total-value");
 	    const countySelect = document.getElementById("countySelect");
 	    const paymentRadios = document.querySelectorAll("input[name='paymentMethod']");
-
+	    
+	    // ✅ 使用 Thymeleaf 內聯表達式取得 i18n 文字
+	    const dollar_Text = /*[[#{a.dollar}]]*/ 'dollar';
+	    
 	    // 運費設定
 	    const shippingFees = {
 	        "PICK_UP": 0,
@@ -192,6 +195,11 @@
 	        "POSTAL": 12,
 	        "STORE_DELIVERY": 6
 	    };
+
+	    // ===== 數字格式化函數（加上千分位逗號）=====
+	    function formatNumber(num) {
+	        return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	    }
 
 	    // ===== 表單狀態保存與恢復 =====
 	    function saveFormState() {
@@ -236,7 +244,7 @@
 
 	        // 更新每個商品的運費顯示
 	        shippingFeeCells.forEach(cell => {
-	            cell.querySelector('span').textContent = fee.toFixed(2) + " 元";
+	            cell.querySelector('span').textContent = formatNumber(fee) + " " + dollar_Text;
 	            cell.setAttribute('data-fee', fee);
 	        });
 
@@ -244,12 +252,12 @@
 	        itemTotalCells.forEach((cell, index) => {
 	            const basePrice = parseFloat(cell.getAttribute('data-base')) || 0;
 	            const itemTotal = basePrice + fee;
-	            cell.textContent = itemTotal.toFixed(2) + " 元";
+	            cell.textContent = formatNumber(itemTotal) + " " + dollar_Text;
 	            grandTotal += itemTotal;
 	        });
 
 	        // 更新總價顯示
-	        totalSpan.textContent = grandTotal.toFixed(2) + " 元";
+	        totalSpan.textContent = formatNumber(grandTotal) + " " + dollar_Text;
 	    }
 
 	    // 監聽運送方式變更

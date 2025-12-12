@@ -148,21 +148,21 @@ public class CartController extends LoginBaseController {
 		BigDecimal productTotal = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(quantity));
 
 		if (existingDetail != null) {
-			// 如果已存在，回傳訊息
-			redirectAttributes.addFlashAttribute("cartMessage", "⚠️ 商品已存在於購物車，請前往購物車修改數量！");
+		    // 如果已存在,使用 i18n 鍵值
+		    redirectAttributes.addFlashAttribute("cartMessageKey", "cart.product_already_exists");
 		} else {
-			// 如果不存在，新增 CartDetail
-			CartDetail cartDetail = new CartDetail();
-			cartDetail.setCart(cart);
-			cartDetail.setProduct(product);
-			cartDetail.setProdPrice(BigDecimal.valueOf(price));
-			cartDetail.setCartQty(quantity);
-			cartDetail.setShippingFee(shippingFee);
-			cartDetail.setCartTotal(productTotal.add(shippingFee));
-			cart.addCartDetail(cartDetail);
-			cartService.saveCartDetail(cartDetail);
-			// 重定向并显示成功消息
-			redirectAttributes.addFlashAttribute("cartMessage", "🛒 商品已加入购物车！");
+		    // 如果不存在,新增 CartDetail
+		    CartDetail cartDetail = new CartDetail();
+		    cartDetail.setCart(cart);
+		    cartDetail.setProduct(product);
+		    cartDetail.setProdPrice(BigDecimal.valueOf(price));
+		    cartDetail.setCartQty(quantity);
+		    cartDetail.setShippingFee(shippingFee);
+		    cartDetail.setCartTotal(productTotal.add(shippingFee));
+		    cart.addCartDetail(cartDetail);
+		    cartService.saveCartDetail(cartDetail);
+		    // 使用 i18n 鍵值
+		    redirectAttributes.addFlashAttribute("cartMessageKey", "cart.product_added_success");
 		}
 		return "redirect:/products/details/" + productId;
 	}

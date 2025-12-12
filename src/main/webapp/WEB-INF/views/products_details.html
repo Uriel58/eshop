@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title th:text="'商品詳細 - ' + ${product.prodName}">商品詳細</title>
+<title th:text="#{a.product_details} + ${product.prodName}">Product
+	Details</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -25,13 +26,14 @@
     * 而prod_images需展示大些（右半邊）
 	-->
 	<p th:if="${customer != null}">
-		歡迎，<span th:text="${customer.name}">顧客名稱</span>！
+		<span th:text="#{home.message} + ${customer.name}">Customer
+			Name</span>
 	</p>
 	<p th:if="${customer == null}">
-		歡迎，<span th:text="#{home.visitor}">訪客</span>！
+		<span th:text="#{home.message} + #{home.visitor}">Visitor</span>
 	</p>
 	<div class="container mt-5">
-		<h2 th:text="${product.prodName}">商品名稱</h2>
+		<h2 th:text="${product.prodName}">Product Name</h2>
 		<div class="row mt-4">
 			<!-- 左半：圖片展示 -->
 			<div class="col-md-6">
@@ -44,35 +46,38 @@
 			<!-- 右半：商品資訊 -->
 			<div class="col-md-6 text-center">
 				<p>
-					<span class="product-detail-label">產品標籤：</span> <span
-						th:text="${product.prodTags}"></span>
+					<span class="product-detail-label" th:text="#{a.product_tag} +':'">Product
+						Tag:</span> <span th:text="${product.prodTags}"></span>
 				</p>
 				<p>
-					<span class="product-detail-label">類別：</span> <span
-						th:text="${product.category.prodType}"></span>
+					<span class="product-detail-label" th:text="#{a.prod_Type} +':'">Product
+						Type:</span> <span th:text="${product.category.prodType}"></span>
 				</p>
 				<p>
-					<span class="product-detail-label">子分類：</span> <span
-						th:text="${product.category.prodLine}"></span>
+					<span class="product-detail-label" th:text="#{a.prod_Line} +':'">Product
+						Line:</span> <span th:text="${product.category.prodLine}"></span>
 				</p>
 				<p>
-					<span class="product-detail-label">細項</span> <span
-						th:text="${product.category.description}"></span>
+					<span class="product-detail-label" th:text="#{a.description} +':'">Product
+						Description:</span> <span th:text="${product.category.description}"></span>
 				</p>
 				<p>
-					<span class="product-detail-label">價格：</span> <span
-						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">0
-						元</span>
+					<span class="product-detail-label" th:text="#{a.price} +':'">Price:</span>
+					<span
+						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' '+ #{a.dollar}">0
+						dollar</span>
 				</p>
 				<p>
-					<span class="product-detail-label">庫存數量：</span> <span
-						th:text="${product.prodStockQty}"></span>
+					<span class="product-detail-label"
+						th:text="#{a.inventory_quantity} +':'">Inventory Quantity:</span>
+					<span th:text="${product.prodStockQty}"></span>
 				</p>
 				<p>
-					<span class="product-detail-label">產品資訊：</span>
+					<span class="product-detail-label" th:text="#{a.product_info} +':'">Product
+						Info:</span>
 				</p>
 				<p>
-					<span th:text="${product.prodInfo}">產品描述:</span>
+					<span th:text="${product.prodInfo}"></span>
 				</p>
 			</div>
 		</div>
@@ -81,7 +86,7 @@
 
 		<div class="mt-4">
 			<!-- /*返回按鈕 */-->
-			<a th:href="@{/}" class="btn btn-secondary">回首頁</a>
+			<a th:href="@{/}" class="btn btn-secondary" th:text="#{a.back}">back</a>
 
 			<!-- 自動新增購物車的商品 -->
 			<form th:if="${customer != null}"
@@ -92,16 +97,20 @@
 					name="productId" th:value="${product.prodNum}" /> <input
 					type="hidden" name="quantity" value="1" /> <input type="hidden"
 					name="price" th:value="${product.prodPrice}" />
-				<button type="submit" class="btn btn-primary">加入購物車</button>
+				<button type="submit" class="btn btn-primary"
+					th:text="#{a.add_to_cart}">Add to cart</button>
 			</form>
 
 			<!-- 尚未登入 -->
 			<div th:if="${customer == null}">
-				<p class="text-danger mt-3">請先登入後再加入購物車。</p>
-				<a th:href="@{/login}" class="btn btn-outline-primary mt-2">登入</a>
+				<p class="text-danger mt-3" th:text="#{a.login_to_add_cart}">Please
+					log in before adding items to your cart.</p>
+				<a th:href="@{/login}" class="btn btn-outline-primary mt-2"
+					th:text="#{a.login}">Login</a>
 			</div>
-			<div th:if="${cartMessage}" th:text="${cartMessage}" class="alert"
-				th:classappend="${cartMessage.contains('⚠️')} ? 'alert-warning' : 'alert-success'">
+			<div th:if="${cartMessageKey}" class="alert mt-3"
+				th:classappend="${cartMessageKey == 'cart.product_already_exists'} ? 'alert-warning' : 'alert-success'">
+				<span th:text="#{${cartMessageKey}}">Message</span>
 			</div>
 		</div>
 	</div>

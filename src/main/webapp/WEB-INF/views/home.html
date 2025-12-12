@@ -42,7 +42,7 @@
 				<span th:text="#{home.message} + #{home.visitor}"></span>
 			</h1>
 			<div th:if="${users != null and users.identifyName != 'customer'}">
-				<a th:href="@{/admin}" class="btn btn-primary mb-3">Switch Admin Page</a>
+				<a th:href="@{/admin}" class="btn btn-primary mb-3" th:text="#{a.switch_admin_page}">Switch Admin Page</a>
 			</div>
 		</div>
 
@@ -64,6 +64,7 @@
 					th:text="#{a.logout}">Logout</a> 
 				<a th:href="@{/users/add}"
 					class="btn btn-warning" th:text="#{a.register}">Register</a>
+				<a th:href="@{/password-reset-page}" class="btn btn-success me-2" th:text="#{a.reset_password}">Reset Password</a>
 			</div>
 			<div th:unless="${name}">
 				<a th:href="@{/login}" class="btn btn-success me-2"
@@ -76,26 +77,26 @@
 		<hr>
 		<!-- 篩選區域 -->
 		<div>
-			<label>產品類型：</label> 
+			<label th:text="#{a.prod_Type}">Product Type:</label> 
 			<select id="prodTypeSelect">
-				<option value="">-- 請選擇 --</option>
+				<option value="" th:text="#{a.choose}">-- Please choose --</option>
 				<option th:each="type : ${prodTypes}" th:value="${type}"
 					th:text="${type}"></option>
 			</select>
-			<button id="clearFilterBtn" class="btn btn-sm btn-secondary ms-2" style="display:none;">清除篩選</button>
+			<button id="clearFilterBtn" class="btn btn-sm btn-secondary ms-2" style="display:none;" th:text="#{a.choose_clear}">Choose Clear</button>
 		</div>
 
 		<div id="prodLineDiv" style="display: none; margin-top: 10px;">
-			<label>產品類別：</label> 
+			<label th:text="#{a.prod_Line}">Product Line:</label> 
 			<select id="prodLineSelect">
-				<option value="">-- 請選擇 --</option>
+				<option value="" th:text="#{a.choose}">-- Please choose --</option>
 			</select>
 		</div>
 
 		<div id="descriptionDiv" style="display: none; margin-top: 10px;">
-			<label>產品細項：</label> 
+			<label th:text="#{a.description}">Product Description:</label> 
 			<select id="descriptionSelect">
-				<option value="">-- 請選擇 --</option>
+				<option value="" th:text="#{a.choose}">-- Please choose --</option>
 			</select>
 		</div>
 	</div>
@@ -111,7 +112,8 @@
 						style="width: 100px; height: auto;" />
 					<h5 th:text="${product.prodName}">商品名稱</h5>
 					<p class="price"
-						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">價格</p>
+   						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}">價格</p>
+
 				</div>
 			</a>
 		</div>
@@ -123,7 +125,7 @@
 			<!-- 初始分頁由 Thymeleaf 渲染 -->
 			<li class="page-item"
 				th:classappend="${currentPage == 0} ? 'disabled'">
-				<a class="page-link" th:href="@{/(page=${currentPage - 1})}">上一頁</a>
+				<a class="page-link" th:href="@{/(page=${currentPage - 1})}"  th:text="#{a.previous_page}">Previous page</a>
 			</li>
 
 			<li class="page-item"
@@ -134,13 +136,13 @@
 
 			<li class="page-item"
 				th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-				<a class="page-link" th:href="@{/(page=${currentPage + 1})}">下一頁</a>
+				<a class="page-link" th:href="@{/(page=${currentPage + 1})}"  th:text="#{a.next_page}">Next page</a>
 			</li>
 		</ul>
 	</nav>
 
 	<script th:inline="javascript">
-document.addEventListener('DOMContentLoaded', () => {
+	document.addEventListener('DOMContentLoaded', () => {
     const ctx = /*[[@{/}]]*/ '';
     const prodTypeSelect = document.getElementById('prodTypeSelect');
     const prodLineSelect = document.getElementById('prodLineSelect');
@@ -150,14 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const productContainer = document.querySelector('.row');
     const paginationContainer = document.getElementById('paginationContainer');
     const clearFilterBtn = document.getElementById('clearFilterBtn');
-
+    const no_matching_Text = /*[[#{a.no_matching_products}]]*/ 'No matching products';
+    const dollarText = /*[[#{a.dollar}]]*/ 'dollar';
+    const previous_page = /*[[#{a.previous_page}]]*/ 'Previous page';
+    const next_page = /*[[#{a.next_page}]]*/ 'Next page';
+    const chooseText = /*[[#{a.choose}]]*/ '--Please choose--';
     let isFiltering = false;
     let currentFilterPage = 0;
 
     function updateProducts(products) {
         productContainer.innerHTML = '';
         if (products.length === 0) {
-            productContainer.innerHTML = '<div class="col-12 text-center"><p>沒有符合條件的商品</p></div>';
+            productContainer.innerHTML = '<div class="col-12 text-center"><p>${no_matching_Text}</p></div>';
             return;
         }
         products.forEach(product => {
@@ -167,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="product-card">
                             <img class="product-image" src="${ctx}resources/images/${product.prodImages}" />
                             <h5>${product.prodName}</h5>
-                            <p class="price">${Number(product.prodPrice).toLocaleString()} 元</p>
+                            <p class="price">${Number(product.prodPrice).toLocaleString() + dollarText} </p>
                         </div>
                     </a>
                 </div>`;
@@ -181,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 上一頁
         const prevLi = document.createElement('li');
         prevLi.className = 'page-item' + (currentPage === 0 ? ' disabled' : '');
-        prevLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">上一頁</a>`;
+        prevLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">${previous_page}</a>`;
         paginationContainer.appendChild(prevLi);
         
         // 數字頁碼
@@ -195,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 下一頁
         const nextLi = document.createElement('li');
         nextLi.className = 'page-item' + (currentPage >= totalPages - 1 ? ' disabled' : '');
-        nextLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">下一頁</a>`;
+        nextLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">${next_page}</a>`;
         paginationContainer.appendChild(nextLi);
         
         // 綁定點擊事件
@@ -244,14 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 第1層：選擇產品類型
     prodTypeSelect.addEventListener('change', async () => {
         const prodType = prodTypeSelect.value;
-
+        
         if (prodType) {
             isFiltering = true;
             currentFilterPage = 0;
             clearFilterBtn.style.display = 'inline-block';
 
             const prodLines = await fetchJSON(`${ctx}api/Select/getProdLines?prodType=${encodeURIComponent(prodType)}`);
-            prodLineSelect.innerHTML = '<option value="">--請選擇--</option>';
+            prodLineSelect.innerHTML = `<option value="">${chooseText}</option>`;
             prodLines.forEach(line => {
                 const opt = document.createElement('option');
                 opt.textContent = line;
@@ -260,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             prodLineDiv.style.display = 'block';
             descriptionDiv.style.display = 'none';
-            descriptionSelect.innerHTML = '<option value="">--請選擇--</option>';
+            descriptionSelect.innerHTML = `<option value="">${chooseText}</option>`;
 
             await loadFilteredProducts(0);
         } else {
@@ -276,11 +282,11 @@ document.addEventListener('DOMContentLoaded', () => {
     prodLineSelect.addEventListener('change', async () => {
         const prodType = prodTypeSelect.value;
         const prodLine = prodLineSelect.value;
-
+        
         if (prodLine) {
             currentFilterPage = 0;
             const descriptions = await fetchJSON(`${ctx}api/Select/getDescriptions?prodType=${encodeURIComponent(prodType)}&prodLine=${encodeURIComponent(prodLine)}`);
-            descriptionSelect.innerHTML = '<option value="">--請選擇--</option>';
+            descriptionSelect.innerHTML = `<option value="">${chooseText}</option>`;
             descriptions.forEach(desc => {
                 const opt = document.createElement('option');
                 opt.textContent = desc;
@@ -293,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             currentFilterPage = 0;
             descriptionDiv.style.display = 'none';
-            descriptionSelect.innerHTML = '<option value="">--請選擇--</option>';
+            descriptionSelect.innerHTML = `<option value="">${chooseText}</option>`;
             await loadFilteredProducts(0);
         }
     });
