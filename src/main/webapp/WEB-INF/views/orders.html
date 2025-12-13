@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Orders</title>
+<title th:text="#{a.order_list}">Order List</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -19,50 +19,56 @@
 		<h1 th:unless="${name}">
 			<span th:text="#{home.message} + #{home.visitor}"></span>
 		</h1>
-	
-		<a th:href="@{/admin}" class="btn btn-outline-secondary mb-3">Back</a>
+		<a th:href="@{/orders/?lang=en}"
+			class="btn btn-outline-secondary mb-3">English</a> <a
+			th:href="@{/orders/?lang=zh_TW}"
+			class="btn btn-outline-secondary mb-3">繁體中文</a> <a
+			th:href="@{/admin}" class="btn btn-outline-secondary mb-3"
+			th:text="#{a.back}">back</a>
 		<!-- 登出+註冊按鈕 -->
-			<div th:if="${name}">
-				<a th:href="@{/logout}" class="btn btn-danger me-2"
-					th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
-					class="btn btn-warning" th:text="#{a.register}">Register</a>
-			</div>
-			<!-- 登入+註冊按鈕 -->
-			<div th:unless="${name}">
-				<a th:href="@{/login}" class="btn btn-success me-2"
-					th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
-					class="btn btn-warning" th:text="#{a.register}">Register</a>
-			</div>
-		<h3>Order Information</h3>
-		<a th:href="@{/orders/add}" class="btn btn-primary mb-3">Add New
-			Order</a>
-		
-			<a th:href="@{/customers}" class="btn btn-primary mb-3"th:text="#{a.customer_list}">Customer List</a>
-    		<a th:href="@{/users}" class="btn btn-primary mb-3"th:text="#{a.user_list}">User List</a>
-    		<a th:href="@{/products}" class="btn btn-primary mb-3"th:text="#{a.products}">products</a> 
-			<a th:href="@{/categories}" class="btn btn-primary mb-3">Category List</a>
+		<div th:if="${name}">
+			<a th:href="@{/logout}" class="btn btn-danger me-2"
+				th:text="#{a.logout}">Logout</a> <a th:href="@{/users/add}"
+				class="btn btn-warning" th:text="#{a.register}">Register</a>
+		</div>
+		<!-- 登入+註冊按鈕 -->
+		<div th:unless="${name}">
+			<a th:href="@{/login}" class="btn btn-success me-2"
+				th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
+				class="btn btn-warning" th:text="#{a.register}">Register</a>
+		</div>
+		<h3 th:text="#{a.order_list}">Order List</h3>
+		<a th:href="@{/orders/add}" class="btn btn-primary mb-3"
+			th:text="#{a.add_new_order}">Add New Order</a> <a
+			th:href="@{/customers}" class="btn btn-primary mb-3"
+			th:text="#{a.customer_list}">Customer List</a> <a th:href="@{/users}"
+			class="btn btn-primary mb-3" th:text="#{a.user_list}">User List</a> <a
+			th:href="@{/products}" class="btn btn-primary mb-3"
+			th:text="#{a.product_list}">products</a> <a th:href="@{/categories}"
+			class="btn btn-primary mb-3" th:text="#{a.category_list}">Category
+			List</a>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					<th>Order Number</th>
-					<th>Order Date</th>
-					<th>Update Date</th>
-					<th>County</th>
-					<th>Customer Number</th>
-					<th>Status</th>
-					<th>Payment Method</th>
-					<th>Delivery Method</th>
-					<th>Order Barcode</th>
-					<th>Function</th>
+					<th th:text="#{a.id}">ID</th>
+					<th th:text="#{a.create_time}">Created Time</th>
+					<th th:text="#{a.update_time}">Updated Time</th>
+					<th th:text="#{a.county}">County</th>
+					<th th:text="#{a.customer_number}">Customer Number</th>
+					<th th:text="#{a.status}">Status</th>
+					<th th:text="#{a.payment_method}">Payment Method</th>
+					<th th:text="#{a.delivery_method}">Delivery Method</th>
+					<th th:text="#{a.order_barcode}">Order Barcode</th>
+					<th th:text="#{a.operate}">Operate</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- 遍历所有订单 rowspan="${#lists.size(orderDetails)}"-->
 				<tr th:each="order : ${orders}">
 					<!-- 主订单信息 -->
-					<td>
-						<a th:href="@{/orderDetails/{orderId}(orderId=${order.ordNum})}" th:text="${order.ordNum}"></a>
-					</td>
+					<td><a
+						th:href="@{/orderDetails/{orderId}(orderId=${order.ordNum})}"
+						th:text="${order.ordNum}"></a></td>
 					<td th:text="${order.ordDate}"></td>
 					<td th:text="${order.requiredDate}"></td>
 					<td th:text="${order.county}"></td>
@@ -71,12 +77,12 @@
 					<td th:text="${order.paymentMethod}"></td>
 					<td th:text="${order.deliveryMethod}"></td>
 					<td th:text="${order.orderBarcode}"></td>
-					<td>
-						<a th:href="@{/orders/edit/{orderId}(orderId=${order.ordNum})}"
-						class="btn btn-warning btn-sm"> Edit </a>
-						<a th:href="@{/orders/delete/{orderId}(orderId=${order.ordNum})}"
-						class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to delete this order?');">Delete</a>
-					</td>
+					<td><a
+						th:href="@{/orders/edit/{orderId}(orderId=${order.ordNum})}"
+						class="btn btn-warning btn-sm" th:text="#{a.edit}">edit</a> <a
+						th:href="@{/orders/delete/{orderId}(orderId=${order.ordNum})}"
+						class="btn btn-warning btn-sm"
+						th:onclick="|return confirm('#{a.delete_this_order}')|"th:text="#{a.delete}">delete</a></td>
 				</tr>
 			</tbody>
 		</table>

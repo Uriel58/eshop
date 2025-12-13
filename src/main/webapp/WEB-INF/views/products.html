@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Product Management</title>
+<title th:text="#{a.product_list}">Product List</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -16,9 +16,17 @@
 	 * 連接到OrderDetail,CartDeail
 	 -->
 		<!-- 登入者名稱 -->
-		<h1 th:text="${name != null} ? ${'Hello！ ' + name} : 'Hello！ visitor'"></h1>
-
-		<a th:href="@{/admin}" class="btn btn-outline-secondary mt-3">Back</a>
+		<h1 th:if="${name}">
+			<span th:text="#{home.message} + ${name}"></span>
+		</h1>
+		<h1 th:unless="${name}">
+			<span th:text="#{home.message} + #{home.visitor}"></span>
+		</h1>
+		<a th:href="@{/products/?lang=en}"
+			class="btn btn-outline-secondary mb-3">English</a> <a
+			th:href="@{/products/?lang=zh_TW}"
+			class="btn btn-outline-secondary mb-3">繁體中文</a>
+		<a th:href="@{/admin}" class="btn btn-outline-secondary mb-3" th:text="#{a.back}">Back</a>
 		<!-- 登出+註冊按鈕 -->
 		<div th:if="${name}">
 			<a th:href="@{/logout}" class="btn btn-danger me-2"
@@ -31,35 +39,35 @@
 				th:text="#{a.login}">Login</a> <a th:href="@{/users/add}"
 				class="btn btn-warning" th:text="#{a.register}">Register</a>
 		</div>
-		<h1>Product List</h1>
+		<h1 th:text="#{a.product_list}">Product List</h1>
 
 		<!-- 新增商品按鈕 -->
-		<a th:href="@{/products/add}" class="btn btn-primary mb-3">Add New
+		<a th:href="@{/products/add}" class="btn btn-primary mb-3" th:text="#{a.add_new_product}">Add New
 			Product</a> <a th:href="@{/customers}" class="btn btn-primary mb-3"
 			th:text="#{a.customer_list}">Customer List</a> <a th:href="@{/users}"
 			class="btn btn-primary mb-3" th:text="#{a.user_list}">User List</a> <a
 			th:href="@{/orders}" class="btn btn-primary mb-3"
 			th:text="#{a.order_list}">Order List</a> <a th:href="@{/categories}"
-			class="btn btn-primary mb-3">Category List</a>
+			class="btn btn-primary mb-3" th:text="#{a.category_list}">Category List</a>
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>Product Num</th>
-					<th>Product Tag</th>
-					<th>Product Image</th>
+					<th th:text="#{a.id}">ID</th>
+					<th th:text="#{a.product_tag}">Product Tag</th>
+					<th th:text="#{a.product_images}">Product Images</th>
 					<!---類別--->
-					<th>Product Type</th>
-					<th>Product Line</th>
-					<th>Product Type Info</th>
-					<!---細項--->
-					<th>Product Name</th>
-					<th>Product Information</th>
-					<th>Product Created Time</th>
-					<th>Product Price</th>
-					<th>Product Keywords</th>
-					<th>Product Stock Quantity</th>
-					<th>Product Barcode</th>
-					<th>Actions</th>
+					<th th:text="#{a.prod_Type}">Product Type</th>
+					<th th:text="#{a.prod_Line}">Product Line</th>
+					<th th:text="#{a.description}">Product Type Info</th>
+					<!---資訊--->
+					<th th:text="#{a.product_name}">Product Name</th>
+					<th th:text="#{a.product_info}">Product Info</th>
+					<th th:text="#{a.create_time}">Created Time</th>
+					<th th:text="#{a.price}">Price</th>
+					<th th:text="#{a.product_keywords}">Product Keywords</th>
+					<th th:text="#{a.inventory_quantity}">Inventory Quantity</th>
+					<th th:text="#{a.product_barcode}">Product Barcode</th>
+					<th th:text="#{a.operate}">Operate</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -77,16 +85,16 @@
 					<td th:text="${product.prodInfo}"></td>
 					<td th:text="${product.createdTime}"></td>
 					<td><span
-						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' 元'">0元</span>
+						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}">0.00 dollar</span>
 					</td>
 					<td th:text="${product.prodKeywords}"></td>
 					<td th:text="${product.prodStockQty}"></td>
 					<td th:text="${product.prodBarcode}"></td>
 					<td><a
 						th:href="@{/products/edit/{prodNum}(prodNum=${product.prodNum})}"
-						class="btn btn-warning btn-sm">Edit</a> <a
+						class="btn btn-warning btn-sm" th:text="#{a.edit}">edit</a> <a
 						th:href="@{/products/delete/{prodNum}(prodNum=${product.prodNum})}"
-						class="btn btn-danger btn-sm">Delete</a></td>
+						class="btn btn-danger btn-sm" th:onclick="|return confirm('#{a.delete_this_product}')|"th:text="#{a.delete}">delete</a></td>
 				</tr>
 			</tbody>
 		</table>

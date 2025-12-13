@@ -47,7 +47,7 @@ th, td {
 		<a th:href="@{/users}" class="btn btn-primary mb-3"th:text="#{a.user_list}">User List</a>
 		<a th:href="@{/customers}" class="btn btn-primary mb-3"th:text="#{a.customer_list}">Customer List</a>	
     	<a th:href="@{/orders}" class="btn btn-primary mb-3"th:text="#{a.order_list}">Order List</a>
-		<a th:href="@{/products}" class="btn btn-primary mb-3"th:text="#{a.products}">products</a>
+		<a th:href="@{/products}" class="btn btn-primary mb-3"th:text="#{a.product_list}">Product List</a>
 		<br /> <br />
 		<table>
 			<thead>
@@ -55,10 +55,10 @@ th, td {
 					<th th:text="#{a.id}">ID</th>
 					<th th:text="#{a.prod_Type}">Product Type</th>
 					<th th:text="#{a.prod_Line}">Product Line</th>
-					<th th:text="#{a.description}">Product Description</th>
+					<th th:text="#{a.description}">Product Type Info</th>
 					<th th:text="#{a.create_time}">Created Time</th>
 					<th th:text="#{a.update_time}">Updated Time</th>
-					<th th:text="#{a.products}">Operate</th>
+					<th th:text="#{a.operate}">Operate</th>
 				</tr>
 			</thead>
 			<tbody>
