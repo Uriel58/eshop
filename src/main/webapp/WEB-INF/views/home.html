@@ -180,21 +180,39 @@
     function updateProducts(products) {
         productContainer.innerHTML = '';
         if (products.length === 0) {
-            productContainer.innerHTML = '<div class="col-12 text-center"><p>${no_matching_Text}</p></div>';
+            productContainer.innerHTML = `<div class="col-12 text-center"><p>${no_matching_Text}</p></div>`;
             return;
         }
+
         products.forEach(product => {
-            const html = `
-                <div class="col-md-3">
-                    <a href="${ctx}products/details/${product.prodNum}" style="text-decoration: none; color: inherit;">
-                        <div class="product-card">
-                            <img class="product-image" src="${ctx}resources/images/${product.prodImages}" />
-                            <h5>${product.prodName}</h5>
-                            <p class="price">${Number(product.prodPrice).toLocaleString() + dollarText} </p>
+            const productHtml = `
+            <div class="col-md-3">
+                <a href="${ctx}products/details/${product.prodNum}" style="text-decoration: none; color: inherit;">
+                    <div class="product-card">
+                        <!-- 圖片區 -->
+                        <div class="image-wrapper">
+                            ${product.prodImages && product.prodImages.length > 0
+                                ? `<img class="product-image"
+                                        src="${ctx}${product.prodImages}"
+                                        alt="${product.prodName}"
+                                        style="width: 100px; height: auto;"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />`
+                                : `<div class="no-image">無圖片</div>`}
+                            <div class="no-image" style="display: none;">無圖片</div>
                         </div>
-                    </a>
-                </div>`;
-            productContainer.insertAdjacentHTML('beforeend', html);
+
+                        <!-- 商品名稱 -->
+                        <h5>${product.prodName}</h5>
+
+                        <!-- 價格 -->
+                        <p class="price">${Number(product.prodPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${dollarText}</p>
+
+                    </div>
+                </a>
+            </div>
+            `;
+
+            productContainer.insertAdjacentHTML('beforeend', productHtml);
         });
     }
 
