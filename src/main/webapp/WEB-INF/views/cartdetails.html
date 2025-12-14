@@ -51,7 +51,8 @@
 								<th th:text="#{a.product_name}">Product Name</th>
 								<th th:text="#{a.product_images}">Product Images</th>
 								<th th:text="#{a.price}">Price</th>
-								<th th:text="#{a.quantity_of_products}">Quantity of products</th>
+								<th th:text="#{a.quantity_of_products}">Quantity of
+									products</th>
 								<th th:text="#{a.fare}">Fare</th>
 								<th th:text="#{a.total_price}">Total Price</th>
 								<th th:text="#{a.operate}">Operate</th>
@@ -61,40 +62,55 @@
 							<!-- 顯示每個商品 -->
 							<tr th:each="detail : ${details}">
 								<td th:text="${detail.product.prodName}">Product Name</td>
-								<td><img
-									th:src="@{'/resources/images/' + ${detail.product.prodImages}}"
-									class="product-image" alt="Product Image"></td>
+								<td>
+									<!-- 有圖片時顯示 --> <img
+									th:if="${detail.product != null 
+                 					and detail.product.prodImages != null 
+                 					and !detail.product.prodImages.isEmpty()}"
+									th:src="@{${detail.product.prodImages}}"
+									th:alt="${detail.product.prodName}" class="product-image"
+									onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+									<!-- 圖片載入失敗時顯示 -->
+									<div class="no-image" style="display: none;">無圖片</div> <!-- prodImages 為 null 或空字串時直接顯示 -->
+									<div
+										th:if="${detail.product == null 
+                 						or detail.product.prodImages == null 
+                 						or detail.product.prodImages.isEmpty()}"
+										class="no-image">無圖片</div>
+								</td>
 								<td
 									th:text="${#numbers.formatDecimal(detail.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}">Price</td>
 								<td>
 									<div class="d-flex align-items-center gap-2">
-										<input type="number" 
+										<input type="number"
 											th:id="'qty-' + ${detail.product.prodNum}"
-											th:value="${detail.cartQty}" 
-											class="form-control qty-input" 
-											min="1"
-											style="width: 80px;"
+											th:value="${detail.cartQty}" class="form-control qty-input"
+											min="1" style="width: 80px;"
 											th:data-product-id="${detail.product.prodNum}">
-										<button type="button" 
+										<button type="button"
 											class="btn btn-primary btn-sm update-qty-btn"
 											th:data-cart-id="${cart.id}"
-											th:data-product-id="${detail.product.prodNum}" th:text="#{a.update}">update</button>
+											th:data-product-id="${detail.product.prodNum}"
+											th:text="#{a.update}">update</button>
 									</div>
 								</td>
 								<!-- ✅ 運費欄位 -->
-								<td class="shipping-fee" 
+								<td class="shipping-fee"
 									th:attr="data-fee=${detail.shippingFee != null ? detail.shippingFee : 0}">
-									<span th:text="${detail.shippingFee != null ? #numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT')  : '0.00' } + ' ' + #{a.dollar}">運費</span>
+									<span
+									th:text="${detail.shippingFee != null ? #numbers.formatDecimal(detail.shippingFee, 0, 'COMMA', 2, 'POINT')  : '0.00' } + ' ' + #{a.dollar}">運費</span>
 								</td>
 
 								<!-- ✅ 小計 = 商品價格 × 數量 (不含運費) -->
 								<td class="item-total"
 									th:text="${#numbers.formatDecimal(detail.cartTotal, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}"
-									th:attr="data-base=${detail.prodPrice * detail.cartQty}">Total Price</td>
+									th:attr="data-base=${detail.prodPrice * detail.cartQty}">Total
+									Price</td>
 								<td>
-									<!-- 刪除商品 --> 
-									<a th:href="@{/cart/{cartId}/remove-product/{productId}(cartId=${cart.id}, productId=${detail.product.prodNum})}"
-										class="btn btn-danger btn-sm" th:text="#{a.delete}">delete</a>
+									<!-- 刪除商品 --> <a
+									th:href="@{/cart/{cartId}/remove-product/{productId}(cartId=${cart.id}, productId=${detail.product.prodNum})}"
+									class="btn btn-danger btn-sm" th:text="#{a.delete}">delete</a>
 								</td>
 							</tr>
 						</tbody>
@@ -105,20 +121,23 @@
 				<div id="cart-total-container"
 					class="d-flex justify-content-between align-items-center mt-4">
 					<h3 class="cartTotal" th:if="${total != null and total > 0}">
-						<span th:text="#{a.total_price} + ': '">Total Price: </span><span id="cart-total-value"
+						<span th:text="#{a.total_price} + ': '">Total Price: </span><span
+							id="cart-total-value"
 							th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}"></span>
 					</h3>
 					<h3 class="cartTotal" th:unless="${total != null and total > 0}">
-						<span th:text="#{a.total_price} + ': '">Total Price: </span><span id="cart-total-value" th:text="'0.00 ' + #{a.dollar}">0.00 dollar</span>
+						<span th:text="#{a.total_price} + ': '">Total Price: </span><span
+							id="cart-total-value" th:text="'0.00 ' + #{a.dollar}">0.00
+							dollar</span>
 					</h3>
 				</div>
 				<form th:action="@{/cart/{cartId}/checkout(cartId=${cart.id})}"
 					method="post" th:object="${order}" id="checkoutForm">
 					<div class="mb-3">
 						<div class="mb-3">
-							<label th:text="#{a.county}">County</label> <select th:field="*{county}"
-								class="form-control" id="countySelect">
-								<option value=""th:text="#{a.select}">-- Select --</option>
+							<label th:text="#{a.county}">County</label> <select
+								th:field="*{county}" class="form-control" id="countySelect">
+								<option value="" th:text="#{a.select}">-- Select --</option>
 								<option value="台北市">台北市</option>
 								<option value="新北市">新北市</option>
 								<option value="台中市">台中市</option>
@@ -144,27 +163,30 @@
 							</select>
 						</div>
 						<div class="mb-3">
-							<label th:text="#{a.payment_method}">Payment Method</label><br /> 
-							<input type="radio" th:field="*{paymentMethod}" value="CASH" id="payCash" /> 現金 
-							<input type="radio" th:field="*{paymentMethod}" value="CREDIT_CARD" id="payCredit" /> 刷卡 
-							<input type="radio" th:field="*{paymentMethod}" value="E_PAYMENT" id="payEPay" /> 電子支付
+							<label th:text="#{a.payment_method}">Payment Method</label><br />
+							<input type="radio" th:field="*{paymentMethod}" value="CASH"
+								id="payCash" /> 現金 <input type="radio"
+								th:field="*{paymentMethod}" value="CREDIT_CARD" id="payCredit" />
+							刷卡 <input type="radio" th:field="*{paymentMethod}"
+								value="E_PAYMENT" id="payEPay" /> 電子支付
 						</div>
 						<div class="mb-3">
-							<label th:text="#{a.delivery_method}">Delivery Method</label><br /> 
+							<label th:text="#{a.delivery_method}">Delivery Method</label><br />
 							<input type="radio" th:field="*{deliveryMethod}"
 								th:checked="${order.deliveryMethod == 'PICK_UP'}"
-								value="PICK_UP" id="deliveryPickUp" /> 自取(PICK_UP) 
-							<input type="radio" th:field="*{deliveryMethod}"
+								value="PICK_UP" id="deliveryPickUp" /> 自取(PICK_UP) <input
+								type="radio" th:field="*{deliveryMethod}"
 								th:checked="${order.deliveryMethod == 'HOME_DELIVERY'}"
-								value="HOME_DELIVERY" id="deliveryHome" /> 宅配到府 (HOME_DELIVERY) 
+								value="HOME_DELIVERY" id="deliveryHome" /> 宅配到府 (HOME_DELIVERY)
 							<input type="radio" th:field="*{deliveryMethod}"
 								th:checked="${order.deliveryMethod == 'STORE_DELIVERY'}"
-								value="STORE_DELIVERY" id="deliveryStore" /> 超商取貨 (STORE_DELIVERY) 
-							<input type="radio" th:field="*{deliveryMethod}"
-								th:checked="${order.deliveryMethod == 'POSTAL'}" 
-								value="POSTAL" id="deliveryPostal" /> 郵寄 (POSTAL)
+								value="STORE_DELIVERY" id="deliveryStore" /> 超商取貨
+							(STORE_DELIVERY) <input type="radio" th:field="*{deliveryMethod}"
+								th:checked="${order.deliveryMethod == 'POSTAL'}" value="POSTAL"
+								id="deliveryPostal" /> 郵寄 (POSTAL)
 						</div>
-						<button type="submit" class="btn btn-success" th:text="#{a.checkout}">checkout</button>
+						<button type="submit" class="btn btn-success"
+							th:text="#{a.checkout}">checkout</button>
 					</div>
 				</form>
 

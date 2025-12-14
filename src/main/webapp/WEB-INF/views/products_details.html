@@ -36,12 +36,26 @@
 		<h2 th:text="${product.prodName}">Product Name</h2>
 		<div class="row mt-4">
 			<!-- 左半：圖片展示 -->
+			<!-- 圖片區 -->
 			<div class="col-md-6">
-				<img class="product-image" th:if="${product.prodImages != null}"
-					th:src="@{'/resources/images/' + ${product.prodImages}}"
-					style="width: 300px; height: auto;" />
-				<!-- alt="Product Image" -->
+
+				<!-- 有圖片時顯示 -->
+				<img
+					th:if="${product.prodImages != null and !product.prodImages.isEmpty()}"
+					class="product-image" th:src="@{${product.prodImages}}"
+					th:alt="${product.prodName}" style="width: 300px; height: auto;"
+					onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+
+				<!-- 圖片載入失敗時顯示 -->
+				<div class="no-image" style="display: none;">無圖片</div>
+
+				<!-- prodImages 為 null 或空字串時直接顯示 -->
+				<div
+					th:if="${product.prodImages == null or product.prodImages.isEmpty()}"
+					class="no-image">無圖片</div>
+
 			</div>
+
 
 			<!-- 右半：商品資訊 -->
 			<div class="col-md-6 text-center">

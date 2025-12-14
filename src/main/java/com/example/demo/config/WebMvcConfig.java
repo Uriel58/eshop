@@ -3,6 +3,7 @@ package com.example.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,9 +21,9 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import java.util.Locale;
 
 
-@Configuration // 標記此類為 Spring 的設定類
-@EnableWebMvc  // 啟用 Spring MVC 的預設設定（等同於 <mvc:annotation-driven />）
-@ComponentScan(basePackages = "com.example.demo") // 掃描指定包下的 @Component、@Service、@Controller 等 Bean
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.example.demo")
 public class WebMvcConfig implements WebMvcConfigurer {
 
     // ------------------------------
@@ -31,11 +32,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setPrefix("/WEB-INF/views/"); // HTML 模板位置
-        templateResolver.setSuffix(".html");           // HTML 文件後綴
-        templateResolver.setTemplateMode(TemplateMode.HTML); // 模板模式為 HTML
-        templateResolver.setCharacterEncoding("UTF-8"); // 編碼設定
-        templateResolver.setCacheable(false);          // 是否快取模板 (開發階段關閉)
+        templateResolver.setPrefix("/WEB-INF/views/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setCacheable(false);
         return templateResolver;
     }
 
@@ -45,8 +46,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver()); // 設定模板解析器
-        templateEngine.setEnableSpringELCompiler(true);         // 啟用 Spring 表達式語言編譯
+        templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.setEnableSpringELCompiler(true);
         return templateEngine;
     }
 
@@ -56,8 +57,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public ThymeleafViewResolver viewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setTemplateEngine(templateEngine()); // 綁定模板引擎
-        viewResolver.setCharacterEncoding("UTF-8");       // 編碼設定
+        viewResolver.setTemplateEngine(templateEngine());
+        viewResolver.setCharacterEncoding("UTF-8");
         return viewResolver;
     }
 
@@ -66,44 +67,51 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // ------------------------------
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**")  // URL 前綴
-                .addResourceLocations("/resources/"); // 對應專案目錄
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
+    }
+
+    // ------------------------------
+    // ⭐ 關鍵修正：添加 MultipartResolver
+    // ------------------------------
+    @Bean(name = "multipartResolver")
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        resolver.setMaxUploadSize(10485760); // 10MB
+        resolver.setMaxUploadSizePerFile(5242880); // 5MB per file
+        resolver.setDefaultEncoding("UTF-8");
+        return resolver;
     }
 
     // ------------------------------
     // 國際化 (i18n) 設定
     // ------------------------------
 
-    // 訊息資源
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasename("messages"); // 對應 messages.properties 或 messages_zh_TW.properties
-        source.setDefaultEncoding("UTF-8"); // 編碼
+        source.setBasename("messages");
+        source.setDefaultEncoding("UTF-8");
         return source;
     }
 
-    // 預設語系解析器
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver resolver = new CookieLocaleResolver();
-        resolver.setDefaultLocale(Locale.ENGLISH); // 預設語言
-        resolver.setCookieName("lang");            // 存放語言資訊的 Cookie 名稱
-        resolver.setCookieMaxAge(4800);            // Cookie 有效時間 (秒)
+        resolver.setDefaultLocale(Locale.ENGLISH);
+        resolver.setCookieName("lang");
+        resolver.setCookieMaxAge(4800);
         return resolver;
     }
 
-    // 改變語系的攔截器
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-        interceptor.setParamName("lang"); // URL 參數 ?lang=zh_TW 可以切換語系
+        interceptor.setParamName("lang");
         return interceptor;
     }
 
-    // 註冊攔截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor()); // 註冊語系切換攔截器
+        registry.addInterceptor(localeChangeInterceptor());
     }
-
 }

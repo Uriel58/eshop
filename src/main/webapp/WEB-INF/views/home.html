@@ -107,9 +107,26 @@
 			<a th:href="@{/products/details/{id}(id=${product.prodNum})}"
 				style="text-decoration: none; color: inherit;">
 				<div class="product-card">
-					<img class="product-image"
-						th:src="@{'/resources/images/' + ${product.prodImages}}"
-						style="width: 100px; height: auto;" />
+					<!-- 圖片區 -->
+					<div class="image-wrapper">
+
+					<!-- 有圖片時顯示 -->
+					<img
+						th:if="${product.prodImages != null and !product.prodImages.isEmpty()}"
+						class="product-image"
+						th:src="@{${product.prodImages}}"
+						th:alt="${product.prodName}" style="width: 100px; height: auto;"
+						onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+
+					<!-- 圖片載入失敗時顯示 -->
+					<div class="no-image" style="display: none;">無圖片</div>
+
+					<!-- prodImages 為 null 或空字串時直接顯示 -->
+					<div
+						th:if="${product.prodImages == null or product.prodImages.isEmpty()}"
+						class="no-image">無圖片</div>
+
+					</div>
 					<h5 th:text="${product.prodName}">商品名稱</h5>
 					<p class="price"
    						th:text="${#numbers.formatDecimal(product.prodPrice, 0, 'COMMA', 2, 'POINT')} + ' ' + #{a.dollar}">價格</p>
