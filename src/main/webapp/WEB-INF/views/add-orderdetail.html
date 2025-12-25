@@ -10,29 +10,39 @@
 <div class="container mt-4">
     <h1 th:text="#{a.add_new_order_details}">Add New Order Detail</h1>
 
-
     <form th:action="@{/orderDetails/save/{orderId}(orderId=${orderId})}"
           th:object="${orderDetail}" method="post">
         <div class="row">
 
             <div class="col-md-4 mb-3">
                 <label th:text="#{a.product_num}">Product Number</label>
-                <input type="number" th:field="*{prodNum}" class="form-control" required>
+                <select id="prodNum" th:field="*{prodNum}" class="form-control" required>
+                    <option value="">-- 請選擇產品 --</option>
+                    <option th:each="product : ${products}"
+                            th:value="${product.prodNum}"
+                            th:text="${product.prodNum + ' - ' + product.prodName}">
+                    </option>
+                </select>
             </div>
 
             <div class="col-md-4 mb-3">
                 <label th:text="#{a.product_price}">Product Price</label>
-                <input type="number" step="0.01" th:field="*{ordPrice}" class="form-control" required>
+                <input type="number" step="0.01" id="ordPrice" th:field="*{ordPrice}"
+                       class="form-control" required readonly>
             </div>
 
             <div class="col-md-4 mb-3">
                 <label th:text="#{a.quantity_ordered}">Quantity Ordered</label>
-                <input type="number" th:field="*{ordQty}" class="form-control" required>
+                <input type="number" th:field="*{ordQty}" class="form-control" required min="1">
             </div>
 
             <div class="col-md-4 mb-3">
                 <label th:text="#{a.fare}">Fare</label>
-                <input type="number" step="0.01" th:field="*{fare}" class="form-control" required>
+                <input type="number" step="0.01" id="fare" th:field="*{fare}"
+                       class="form-control" required readonly>
+                <small class="form-text text-muted">
+                    運費根據訂單的運送方式自動計算
+                </small>
             </div>
 
         </div>
@@ -41,6 +51,83 @@
         <a th:href="@{/orderDetails/{orderId}(orderId=${orderId})}" class="btn btn-secondary" th:text="#{a.cancel}">cancel</a>
     </form>
 </div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const orderId = /*[[${orderId}]]*/ 0;
+    const contextPath = /*[[@{/}]]*/ '';
+
+    // 頁面載入時獲取運費
+    window.addEventListener('DOMContentLoaded', function() {
+        fetchOrderFare();
+    });
+
+    // 當產品選擇改變時，自動填入價格
+    const prodNumSelect = document.getElementById('prodNum');
+    if (prodNumSelect) {
+        prodNumSelect.addEventListener('change', function() {
+            const productId = this.value;
+            if (productId) {
+                fetchProductPrice(productId);
+            } else {
+                document.getElementById('ordPrice').value = '';
+            }
+        });
+    }
+
+    // 獲取產品價格
+    function fetchProductPrice(productId) {
+        const url = contextPath + 'orderDetails/api/product/' + productId + '/price';
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP error ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('ordPrice').value = data.price;
+                } else {
+                    alert('無法獲取產品價格：' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('獲取產品價格時發生錯誤: ' + error.message);
+            });
+    }
+
+    // 獲取訂單運費
+    function fetchOrderFare() {
+        if (!orderId) {
+            document.getElementById('fare').value = '0.00';
+            return;
+        }
+        
+        const url = contextPath + 'orderDetails/api/order/' + orderId + '/fare';
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP error ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const fareValue = data.fare || 0;
+                    document.getElementById('fare').value = fareValue;
+                } else {
+                    document.getElementById('fare').value = '0.00';
+                    alert('無法獲取運費：' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('fare').value = '0.00';
+                alert('獲取運費時發生錯誤: ' + error.message);
+            });
+    }
+    /*]]>*/
+</script>
 
 </body>
 </html>

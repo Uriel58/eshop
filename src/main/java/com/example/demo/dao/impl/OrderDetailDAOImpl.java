@@ -22,8 +22,9 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
 
     @Override
     public List<OrderDetail> findByOrderId(Long orderId) {
+        // ✅ 修正：使用 order.ordNum 而不是 order.id
         return currentSession()
-                .createQuery("from OrderDetail where order.id = :orderId", OrderDetail.class)
+                .createQuery("from OrderDetail where order.ordNum = :orderId", OrderDetail.class)
                 .setParameter("orderId", orderId)
                 .getResultList();
     }
