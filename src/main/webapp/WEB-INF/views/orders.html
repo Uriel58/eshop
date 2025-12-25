@@ -77,12 +77,14 @@
 					<td th:text="${order.paymentMethod}"></td>
 					<td th:text="${order.deliveryMethod}"></td>
 					<td th:text="${order.orderBarcode}"></td>
-					<td><a
+					<td style="white-space: nowrap;"><a
 						th:href="@{/orders/edit/{orderId}(orderId=${order.ordNum})}"
 						class="btn btn-warning btn-sm" th:text="#{a.edit}">edit</a> <a
 						th:href="@{/orders/delete/{orderId}(orderId=${order.ordNum})}"
 						class="btn btn-warning btn-sm"
-						th:onclick="|return confirm('#{a.delete_this_order}')|"th:text="#{a.delete}">delete</a></td>
+						th:onclick="|return confirm('#{a.delete_this_order}')|"
+						th:text="#{a.delete}">delete</a></td>
+
 				</tr>
 			</tbody>
 		</table>

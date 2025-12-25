@@ -27,9 +27,11 @@ th, td {
 		<h1 th:unless="${name}">
 			<span th:text="#{home.message} + #{home.visitor}"></span>
 		</h1>
-		<a th:href="@{/categories/?lang=en}" class="btn btn-outline-secondary mb-3">English</a> 
-		<a th:href="@{/categories/?lang=zh_TW}" class="btn btn-outline-secondary mb-3">繁體中文</a>
-		<a th:href="@{/admin}" class="btn btn-outline-secondary mb-3">Back</a>
+		<a th:href="@{/categories/?lang=en}"
+			class="btn btn-outline-secondary mb-3">English</a> <a
+			th:href="@{/categories/?lang=zh_TW}"
+			class="btn btn-outline-secondary mb-3">繁體中文</a> <a
+			th:href="@{/admin}" class="btn btn-outline-secondary mb-3" th:text="#{a.back}">Back</a>
 		<!-- 登出+註冊按鈕 -->
 		<div th:if="${name}">
 			<a th:href="@{/logout}" class="btn btn-danger me-2"
@@ -43,12 +45,15 @@ th, td {
 				class="btn btn-warning" th:text="#{a.register}">Register</a>
 		</div>
 		<h1 th:text="#{a.category_list}">Category List</h1>
-		<a th:href="@{/categories/add}" class="btn btn-primary mb-3"th:text="#{a.add_new_category}">Add new Category</a>
-		<a th:href="@{/users}" class="btn btn-primary mb-3"th:text="#{a.user_list}">User List</a>
-		<a th:href="@{/customers}" class="btn btn-primary mb-3"th:text="#{a.customer_list}">Customer List</a>	
-    	<a th:href="@{/orders}" class="btn btn-primary mb-3"th:text="#{a.order_list}">Order List</a>
-		<a th:href="@{/products}" class="btn btn-primary mb-3"th:text="#{a.product_list}">Product List</a>
-		<br /> <br />
+		<a th:href="@{/categories/add}" class="btn btn-primary mb-3"
+			th:text="#{a.add_new_category}">Add new Category</a> <a
+			th:href="@{/users}" class="btn btn-primary mb-3"
+			th:text="#{a.user_list}">User List</a> <a th:href="@{/customers}"
+			class="btn btn-primary mb-3" th:text="#{a.customer_list}">Customer
+			List</a> <a th:href="@{/orders}" class="btn btn-primary mb-3"
+			th:text="#{a.order_list}">Order List</a> <a th:href="@{/products}"
+			class="btn btn-primary mb-3" th:text="#{a.product_list}">Product
+			List</a> <br /> <br />
 		<table>
 			<thead>
 				<tr>
@@ -69,8 +74,9 @@ th, td {
 					<td th:text="${category.description}"></td>
 					<td th:text="${category.createdAt}"></td>
 					<td th:text="${category.updatedAt}"></td>
-					<td><a th:href="@{|/categories/edit/${category.id}|}"
-						class="btn btn-warning btn-sm" th:text="#{a.edit}">edit</a> | <a
+					<td style="white-space: nowrap;"><a
+						th:href="@{|/categories/edit/${category.id}|}"
+						class="btn btn-warning btn-sm" th:text="#{a.edit}">edit</a> <a
 						th:href="@{|/categories/delete/${category.id}|}"
 						onclick="return confirm('確定要刪除嗎?');"
 						class="btn btn-warning btn-sm" th:text="#{a.delete}">delete</a></td>

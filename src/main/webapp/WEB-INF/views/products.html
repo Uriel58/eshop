@@ -64,7 +64,7 @@
 		
 		<table class="table table-striped">
 			<thead>
-				<tr>
+				<tr class="text-nowrap">
 					<th th:text="#{a.id}">ID</th>
 					<th th:text="#{a.product_tag}">Product Tag</th>
 					<th th:text="#{a.product_images}">Product Images</th>
@@ -72,7 +72,7 @@
 					<th th:text="#{a.prod_Line}">Product Line</th>
 					<th th:text="#{a.description}">Product Type Info</th>
 					<th th:text="#{a.product_name}">Product Name</th>
-					<th th:text="#{a.product_info}">Product Info</th>
+					<th style="min-width: 300px;" th:text="#{a.product_info}">Product Info</th>
 					<th th:text="#{a.create_time}">Created Time</th>
 					<th th:text="#{a.price}">Price</th>
 					<th th:text="#{a.product_keywords}">Product Keywords</th>
@@ -111,7 +111,7 @@
 					<td th:text="${product.prodKeywords}"></td>
 					<td th:text="${product.prodStockQty}"></td>
 					<td th:text="${product.prodBarcode}"></td>
-					<td>
+					<td style="white-space: nowrap;">
 						<a th:href="@{/products/edit/{prodNum}(prodNum=${product.prodNum})}"
 						   class="btn btn-warning btn-sm" th:text="#{a.edit}">edit</a>
 						<a th:href="@{/products/delete/{prodNum}(prodNum=${product.prodNum})}"
